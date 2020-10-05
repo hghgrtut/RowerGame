@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.MainActivity">
+
+    <TextView
+        android:id="@+id/money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/centralizeable_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Money: 1200" />
+
+    <Button
+        android:id="@+id/go_to_boats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/boats"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/money" />
+
+
+    <Button
+        android:id="@+id/go_to_oars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/oars"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_boats" />
+
+    <Button
+        android:id="@+id/go_to_rowers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rowers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_oars" />
+
+    <Button
+        android:id="@+id/go_to_legends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/legends"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_rowers" />
+
+    <Button
+        android:id="@+id/go_to_new_pair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_pairs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_legends" />
+
+    <Button
+        android:id="@+id/go_to_existing_pairs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trainings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_new_pair" />
+
+    <Button
+        android:id="@+id/go_to_competitions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/competitions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_to_existing_pairs" />
+
+
+    <Button
+        android:id="@+id/change_theme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_theme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_theme"
+        tools:text="@string/day_with_instruction" />
+
+    <Button
+        android:id="@+id/give_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/give_money"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

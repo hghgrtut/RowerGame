@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.TrainingActivity">
+
+
+    <include
+        android:id="@+id/list"
+        layout="@layout/fragment_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/day" />
+
+    <Button
+        android:id="@+id/button_train_endurance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/train_endurance"
+        app:layout_constraintBottom_toTopOf="@id/button_train_all"
+        app:layout_constraintHorizontal_weight="1.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_train_power"/>
+
+    <Button
+        android:id="@+id/button_train_power"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/train_power"
+        app:layout_constraintBottom_toTopOf="@id/button_train_all"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/button_train_endurance"
+        app:layout_constraintEnd_toStartOf="@+id/button_train_technicality" />
+
+    <Button
+        android:id="@+id/button_train_technicality"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:text="@string/train_technicality"
+        app:layout_constraintBottom_toTopOf="@id/button_train_all"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1.2"
+        app:layout_constraintStart_toEndOf="@+id/button_train_power" />
+
+    <Button
+        android:id="@+id/button_train_all"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/train_all"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/day" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

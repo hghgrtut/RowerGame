@@ -1,0 +1,96 @@
+<resources>
+    <string name="about">Дополнительная информация:</string>
+    <string name="achievements">Достижения:</string>
+    <string name="app_name">RowGame</string>
+    <string name="buy">Купить</string>
+    <string name="sell">Продать</string>
+    <string name="cost">Цена:\n%1$d</string>
+    <string name="scull">П</string>
+    <string name="sweep">Р</string>
+    <string name="take">Взять</string>
+    <string name="money_balance">Money: %1$d</string>
+    <string name="day">Сегодня: %1$d</string>
+    <string name="day_with_instruction">Сегодня: %1$d\nСоревнования каждый 30-ый день</string>
+    <!-- Activity titles -->
+    <string name="boat_inventory">Мои лодки</string>
+    <string name="boat_shop">Магазин лодок</string>
+    <string name="final_a">Финал А</string>
+    <string name="final_b">Финал В</string>
+    <string name="oar_inventory">Мои вёсла</string>
+    <string name="oar_shop">Магазин вёсел</string>
+    <string name="choose_boat">Выберите лодку</string>
+    <string name="choose_oar">Выберите весло</string>
+    <string name="choose_rower">Выберите гребца</string>
+    <string name="results">Результаты</string>
+    <string name="rower_inventory">Мои спортсмены</string>
+
+    <!-- For buttons in activities -->
+    <string name="bases">Базы</string>
+    <string name="boats">Лодки</string>
+    <string name="change_theme">Сменить тему</string>
+    <string name="detach_pair">Detach</string>
+    <string name="fire_rower">Уволить</string>
+    <string name="give_money">Money</string>
+    <string name="legends">Легенды</string>
+    <string name="new_pairs">Рассадить</string>
+    <string name="oars">Вёсла</string>
+    <string name="race">Гонка</string>
+    <string name="recruit">Нанять</string>
+    <string name="rowers">Гребцы</string>
+    <string name="title_activity_bases_map">Map</string>
+    <string name="trainings">Тренировки</string>
+    <!-- Buttons with training types -->
+    <string name="train_all">Тренироваться</string>
+    <string name="train_endurance">Выносливость</string>
+    <string name="train_power">Сила</string>
+    <string name="train_technicality">Техничность</string>
+
+    <!-- For all items -->
+    <string name="damage">Ущерб: %1$d</string>
+    <string name="manufacturer">Производитель: %1$s</string>
+    <string name="model">Модель: %1$s</string>
+    <string name="weight">Вес: %1$s кг</string>
+    <!-- For boat item -->
+    <string name="rigger">Отводы: %1$s</string>
+    <string name="recommended_weight">Вес гребца:\n%1$s</string>
+    <string name="shell_lenght">Длина: %1$s м</string>
+    <string name="type">Тип: %1$s</string>
+    <!-- For oar item -->
+    <string name="blade">Лопасть: %1$s</string>
+    <!-- For rower item -->
+    <string name="rower_age">Возраст: %1$d лет</string>
+    <string name="rower_endurance">Выносливость: %1$d</string>
+    <string name="rower_height">Рост: %1$d см</string>
+    <string name="rower_power">Мощь: %1$d</string>
+    <string name="rower_technicality">Техничность: %1$d</string>
+    <string name="rower_weight">Вес: %1$d кг</string>
+    <string name="fame_balance">Ваша слава: %1$d.</string>
+    <string name="fame_cost">Стоимость гребца: %1$d</string>
+    <!-- Toasts -->
+    <string name="buy_sucess">Куплено</string>
+    <string name="competitions">Соревнования</string>
+    <string name="check_balance">Недостаточно денег!</string>
+    <string name="error">Ошибка!</string>
+    <string name="fired">Выгнан!</string>
+    <string name="money_not_reseted">Деньги не сброшены, т.к. у вас их достаточно либо есть вёсла или лодка</string>
+    <string name="money_reseted">Деньги сброшены</string>
+    <string name="recruit_fail">Недостаточно славы!</string>
+    <string name="recruit_success">Нанят</string>
+    <string name="sell_sucess">Продано</string>
+    <string name="semifinals_wins">Первое место: %1$s\nВторое место: %2$s</string>
+    <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
+    <string name="train_sucess">Тренировка прошла</string>
+    <!-- Images content descriptions -->
+    <string name="cont_descr_boat_type_image">Изображение типа лодки</string>
+    <string name="cont_descr_logo">Логотип</string>
+    <string name="cont_descr_wing">Изображение отвода</string>
+    <!-- Riggers -->
+    <string name="rigger_aluminium_wing">Алюминиевое крыло</string>
+    <string name="rigger_carbon_wing">Карбоновое крыло</string>
+    <string name="rigger_classic">Три прута</string>
+    <string name="rigger_backwing">Backwing</string>
+    <!-- Errors -->
+    <string name="error_network_connection">Мы не можем его найти...\nПроверьте своё интернет-соединение :)</string>
+    <string name="error_server">Sorry, error on server\nError: %1$s</string>
+    <string name="error_wrong_day">Сегодня соревнований нет, возвращайтесь в другой день ;)</string>
+</resources>

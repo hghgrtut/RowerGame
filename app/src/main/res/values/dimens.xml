@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="big_margin">32dp</dimen>
+    <dimen name="centralizeable_margin">200dp</dimen>
+    <dimen name="padding">16dp</dimen>
+
+    <dimen name="boat_item_height">156dp</dimen>
+    <dimen name="result_item_height">80dp</dimen>
+    <dimen name="oar_item_height">115dp</dimen>
+    <dimen name="pair_item_height">320dp</dimen>
+    <dimen name="rower_item_height">163dp</dimen>
+
+    <dimen name="boat_type_image_size">70dp</dimen>
+    <dimen name="boat_logo_height">45dp</dimen>
+    <dimen name="boat_wing_picture_size">100dp</dimen>
+    <dimen name="oar_blade_picture_size">100dp</dimen>
+    <dimen name="pair_picture_size">80dp</dimen>
+    <dimen name="rower_picture_size">100dp</dimen>
+    <dimen name="rower_big_picture_size">200dp</dimen>
+</resources>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/boat_item_height"
+    android:layout_marginVertical="@dimen/padding">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="@dimen/boat_type_image_size"
+        android:layout_height="@dimen/boat_logo_height"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/logo_empacher"
+        android:contentDescription="@string/cont_descr_logo"/>
+
+    <ImageView
+        android:id="@+id/type_image"
+        android:layout_width="@dimen/boat_type_image_size"
+        android:layout_height="@dimen/boat_type_image_size"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@drawable/boat_single_scull"
+        android:contentDescription="@string/cont_descr_boat_type_image"/>
+
+    <ImageView
+        android:id="@+id/wing_image"
+        android:layout_width="@dimen/boat_wing_picture_size"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@drawable/wing_backwing"
+        android:contentDescription="@string/cont_descr_wing"/>
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/manufacturer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/manufacturer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/model"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manufacturer" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/model" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/shell_lenght"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/shell_lenght"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/type" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/rigger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rigger"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shell_lenght" />
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/weight"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rigger" />
+
+    <TextView
+        android:id="@+id/damage"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight"
+        tools:text="@string/damage" />
+
+    <TextView
+        android:id="@+id/rower_weight"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/cost"
+        app:layout_constraintEnd_toStartOf="@+id/wing_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/recommended_weight" />
+
+    <TextView
+        android:id="@+id/cost"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buyOar"
+        app:layout_constraintStart_toEndOf="@+id/damage"
+        tools:text="@string/cost" />
+
+    <Button
+        android:id="@+id/buyOar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/wing_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
