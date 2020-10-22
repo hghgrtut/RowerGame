@@ -12,7 +12,7 @@
         layout="@layout/fragment_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_train_power"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/day" />
@@ -35,17 +35,16 @@
         app:layout_constraintBottom_toTopOf="@id/button_train_all"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/button_train_endurance"
-        app:layout_constraintEnd_toStartOf="@+id/button_train_technicality" />
+        app:layout_constraintEnd_toStartOf="@+id/button_train_technicalit" />
 
     <Button
-        android:id="@+id/button_train_technicality"
+        android:id="@+id/button_train_technicalit"
         android:layout_width="136dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
         android:text="@string/train_technicality"
         app:layout_constraintBottom_toTopOf="@id/button_train_all"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1.2"
+        app:layout_constraintHorizontal_weight="1.5"
         app:layout_constraintStart_toEndOf="@+id/button_train_power" />
 
     <Button

@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/result_item_height">
-
+    android:layout_height="80dp"
+    android:orientation="horizontal">
     <TextView
         android:id="@+id/position"
         style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="11" />
+        tools:text="11"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:layout_weight="8"/>
 
     <TextView
         android:id="@+id/name"
         style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/big_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
         tools:text="Александр Дорощенко" />
 
     <ImageView
         android:id="@+id/rower_pic"
         android:layout_width="@dimen/rower_picture_size"
         android:layout_height="@dimen/result_item_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="@dimen/small_margin"
+        android:layout_weight="8"
         tools:srcCompat="@drawable/placeholder_man" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

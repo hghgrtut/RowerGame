@@ -154,9 +154,9 @@ class PairViewAdapter(
                             2 -> rower.upTechnics()
                         }
                     }
-                    TRAIN_ENDURANCE -> rower.upEndurance(random + 1)
-                    TRAIN_POWER -> rower.upPower(random + 1)
-                    TRAIN_TECHNICALITY -> rower.upTechnics(random + 1)
+                    TRAIN_ENDURANCE -> rower.upEndurance()
+                    TRAIN_POWER -> rower.upPower()
+                    TRAIN_TECHNICALITY -> rower.upTechnics()
                 }
                 rowerDao.updateItem(rower)
             }

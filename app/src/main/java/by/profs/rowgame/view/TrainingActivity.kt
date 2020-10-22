@@ -53,7 +53,7 @@ class TrainingActivity : AppCompatActivity() {
         binding.buttonTrainAll.setOnClickListener { train(viewAdapter, TRAIN_ALL) }
         binding.buttonTrainEndurance.setOnClickListener { train(viewAdapter, TRAIN_ENDURANCE) }
         binding.buttonTrainPower.setOnClickListener { train(viewAdapter, TRAIN_POWER) }
-        binding.buttonTrainTechnicality.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
+        binding.buttonTrainTechnicalit.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
     }
 
     fun showDay() { binding.day.text = this.getString(R.string.day, prefEditor.getDay()) }
@@ -62,6 +62,9 @@ class TrainingActivity : AppCompatActivity() {
         scope.launch { viewAdapter.startTraining(mode) }
         prefEditor.nextDay()
         showDay()
-        HelperFuns.showToast(this, R.string.train_sucess)
+        HelperFuns.showToast(this,
+            if (prefEditor.getDay() % DIM != 0) R.string.train_sucess else R.string.time_to_race)
     }
+
+    companion object { private const val DIM = 30 } // Days in month
 }

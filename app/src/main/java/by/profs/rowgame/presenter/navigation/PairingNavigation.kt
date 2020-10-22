@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import by.profs.rowgame.utils.ITEM
 import by.profs.rowgame.view.CompetitionActivity
-import by.profs.rowgame.view.TrainingActivity
 import by.profs.rowgame.view.PairingActivity
+import by.profs.rowgame.view.TrainingActivity
 
 class PairingNavigation(private val context: Context) {
     fun goToDetach() { startActivity(context, Intent(context, TrainingActivity::class.java), null) }

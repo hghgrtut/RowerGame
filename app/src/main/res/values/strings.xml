@@ -79,6 +79,7 @@
     <string name="sell_sucess">Продано</string>
     <string name="semifinals_wins">Первое место: %1$s\nВторое место: %2$s</string>
     <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
+    <string name="time_to_race">Время гоняться :)</string>
     <string name="train_sucess">Тренировка прошла</string>
     <!-- Images content descriptions -->
     <string name="cont_descr_boat_type_image">Изображение типа лодки</string>
