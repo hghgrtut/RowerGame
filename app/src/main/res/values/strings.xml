@@ -43,7 +43,7 @@
     <string name="train_all">Тренироваться</string>
     <string name="train_endurance">Выносливость</string>
     <string name="train_power">Сила</string>
-    <string name="train_technicality">Техничность</string>
+    <string name="train_technicality">Техника</string>
 
     <!-- For all items -->
     <string name="damage">Ущерб: %1$d</string>
