@@ -11,12 +11,11 @@ class RowerTest : TestCase() {
     private val power = 20
     private val rower: Rower = Rower("Hg Hg", Rower.MALE, 19, 200, 84, power, technics, endurance)
 
-
     @Test
     fun testUpEndurance() {
         rower.upEndurance()
         // Check that we successfully add necessary characteristic ...
-        Assert.assertEquals(endurance+1, rower.endurance)
+        Assert.assertEquals(endurance + 1, rower.endurance)
         // ... and didn't made impact on others
         Assert.assertEquals(technics, rower.technics)
         Assert.assertEquals(power, rower.power)
@@ -26,7 +25,7 @@ class RowerTest : TestCase() {
     fun testUpTechnics() {
         rower.upTechnics()
         // Check that we successfully add necessary characteristic ...
-        Assert.assertEquals(technics+1, rower.technics)
+        Assert.assertEquals(technics + 1, rower.technics)
         // ... and didn't made impact on others
         Assert.assertEquals(endurance, rower.endurance)
         Assert.assertEquals(power, rower.power)
@@ -36,7 +35,7 @@ class RowerTest : TestCase() {
     fun testUpPower() {
         rower.upPower()
         // Check that we successfully add necessary characteristic ...
-        Assert.assertEquals(power+1, rower.power)
+        Assert.assertEquals(power + 1, rower.power)
         // ... and didn't made impact on others
         Assert.assertEquals(technics, rower.technics)
         Assert.assertEquals(endurance, rower.endurance)
