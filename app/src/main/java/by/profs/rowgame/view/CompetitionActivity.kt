@@ -21,7 +21,6 @@ import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.CompetitionViewAdapter
 import by.profs.rowgame.view.adapters.FinalStandingViewAdapter
@@ -110,19 +109,29 @@ class CompetitionActivity : AppCompatActivity() {
                 final('B')
                 from ++
             } else if (finalists == null) {
-                finalists = RaceCalculator.calculateFinal(finalBBoats, finalBOars, finalBRowers)
+                finalists =
+                    ArrayList(calculateRace(finalBBoats, finalBOars, finalBRowers).map { it.first })
+                showToastResults(finalists!!)
                 final('A')
-            } else {
-                finalists!! // not-null check higher
-                    .addAll(0, RaceCalculator.calculateFinal(finalABoats, finalAOars, finalARowers))
+            } else { // not-null check higher
+                finalists!!.addAll(0, ArrayList(
+                    calculateRace(finalABoats, finalAOars, finalARowers).map { it.first }))
                 showResults()
                 CoroutineScope(Dispatchers.IO).launch { reward() }
             }
         }
     }
 
+    private fun calculateRace(
+        boats: List<Boat>,
+        oars: List<Oar>,
+        rowers: List<Rower>,
+        rating: ArrayList<Pair<Rower, Int>> = ArrayList()
+    ): ArrayList<Pair<Rower, Int>> =
+        ArrayList(RaceCalculator.calculateRace(boats, oars, rowers, rating).sortedBy { it.second })
+
     private fun calculateSemifinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>) {
-        val rating = RaceCalculator.calculateRace(boats, oars, rowers).sortedBy { it.second }
+        val rating = calculateRace(boats, oars, rowers)
         var finalistA = 0
         var finalistB = 0
         while (rowers[finalistA].name != rating[FIRST].first.name) finalistA++
@@ -192,16 +201,15 @@ class CompetitionActivity : AppCompatActivity() {
     private fun reward() {
         if (finalists == null) return
         val myRowers = singleComboDao.getRowerIds()
-        if (myRowers.contains(finalists!![0].name)) {
+        if (myRowers.contains(finalists!![FIRST].name)) {
             boatDao.insert(Randomizer.getRandomBoat())
             prefEditor.setFame(prefEditor.getFame() + 1)
         }
-        if (myRowers.contains(finalists!![1].name)) oarDao.insert(Randomizer.getRandomOar())
-        if (myRowers.contains(finalists!![2].name)) oarDao.insert(Randomizer.getRandomOar())
+        if (myRowers.contains(finalists!![SECOND].name)) oarDao.insert(Randomizer.getRandomOar())
+        if (myRowers.contains(finalists!![THIRD].name)) oarDao.insert(Randomizer.getRandomOar())
     }
 
     companion object {
-        const val MAX_GAP = 25 // max increase in distance between leader and last boat every 500 m
         const val raceDay = 30
         const val raceSize = 6
         const val totalRowers = 30 // 6 starts

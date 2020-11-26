@@ -7,24 +7,14 @@ import by.profs.rowgame.utils.NumberGenerator
 import by.profs.rowgame.view.CompetitionActivity
 
 object RaceCalculator {
-    fun calculateFinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>):
-            ArrayList<Rower> {
-        val rating = calculateRace(boats, oars, rowers)
-        return ArrayList(rating.map { it.first })
-    }
 
     fun calculateRace(
-        boats: List<Boat>,
-        oars: List<Oar>,
-        rowers: List<Rower>,
-        rating: ArrayList<Pair<Rower, Int>> = ArrayList()
+        boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>, rating: ArrayList<Pair<Rower, Int>>
     ): ArrayList<Pair<Rower, Int>> {
 
         if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
         val distances = IntArray(CompetitionActivity.raceSize) {
-            NumberGenerator.generatePositiveIntOrNull(
-                CompetitionActivity.MAX_GAP
-            )
+            NumberGenerator.generatePositiveIntOrNull(MAX_GAP)
         }
         val chances: MutableList<Int> = MutableList(CompetitionActivity.raceSize) { pos ->
             calculatePower(boats[pos], oars[pos], rowers[pos])
@@ -51,5 +41,6 @@ object RaceCalculator {
             rower.endurance + (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
 
 
-    const val BOAT_OAR_COEF = 10
+    private const val BOAT_OAR_COEF = 10
+    private const val MAX_GAP = 25 // max increase in distance between leader and last boat every 500 m
 }
