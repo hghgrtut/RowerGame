@@ -120,7 +120,7 @@ object Randomizer {
     }
 
     private const val AGE_KID = 14
-    private const val AGE_JUN = 14
+    private const val AGE_JUN = 16
     private const val HEIGHT_WOMAN_KID_DEVIATION = 62
     private const val HEIGHT_WOMAN_JUN_DEVIATION = 47
     private const val HEIGHT_WOMAN_DEVIATION = 54

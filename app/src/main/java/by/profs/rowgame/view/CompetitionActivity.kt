@@ -13,6 +13,7 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.ActivityCompetitionBinding
+import by.profs.rowgame.presenter.competition.RaceCalculator
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
@@ -109,25 +110,19 @@ class CompetitionActivity : AppCompatActivity() {
                 final('B')
                 from ++
             } else if (finalists == null) {
-                finalists = calculateFinal(finalBBoats, finalBOars, finalBRowers)
+                finalists = RaceCalculator.calculateFinal(finalBBoats, finalBOars, finalBRowers)
                 final('A')
-            } else { // not-null check higher
-                finalists!!.addAll(0, calculateFinal(finalABoats, finalAOars, finalARowers))
+            } else {
+                finalists!! // not-null check higher
+                    .addAll(0, RaceCalculator.calculateFinal(finalABoats, finalAOars, finalARowers))
                 showResults()
                 CoroutineScope(Dispatchers.IO).launch { reward() }
             }
         }
     }
 
-    private fun calculateFinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>):
-            ArrayList<Rower> {
-        val rating = calculateRace(boats, oars, rowers)
-        showToastResults(rating.map { it.first })
-        return ArrayList(rating.map { it.first })
-    }
-
     private fun calculateSemifinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>) {
-        val rating = calculateRace(boats, oars, rowers).sortedBy { it.second }
+        val rating = RaceCalculator.calculateRace(boats, oars, rowers).sortedBy { it.second }
         var finalistA = 0
         var finalistB = 0
         while (rowers[finalistA].name != rating[FIRST].first.name) finalistA++
@@ -140,39 +135,6 @@ class CompetitionActivity : AppCompatActivity() {
         finalBRowers.add(rowers[finalistB])
         showToastResults(rating.map { it.first })
     }
-
-    private fun calculateRace(
-        boats: List<Boat>,
-        oars: List<Oar>,
-        rowers: List<Rower>,
-        rating: ArrayList<Pair<Rower, Int>> = ArrayList()
-    ): ArrayList<Pair<Rower, Int>> {
-
-        if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
-        val distances = IntArray(raceSize) { generatePositiveIntOrNull(MAX_GAP) }
-        val chances: MutableList<Int> = MutableList(raceSize) { pos ->
-            calculatePower(boats[pos], oars[pos], rowers[pos])
-        }
-        distances.sort()
-        var j = 0
-        var total = chances.sum()
-        while (total > 0) {
-            var rand = generatePositiveIntOrNull(total)
-            var i = -1
-            while (rand >= 0) {
-                i++
-                rand -= chances[i]
-            }
-            rating[i] = Pair(rowers[i], rating[i].second + distances[j])
-            total -= chances[i]
-            chances[i] = 0
-            j++
-        }
-        return rating
-    }
-
-    private fun calculatePower(boat: Boat, oar: Oar, rower: Rower) = rower.power + rower.technics +
-            rower.endurance + (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
 
     private fun final(char: Char) {
         MainScope().launch { when (char.toUpperCase()) {
@@ -239,7 +201,6 @@ class CompetitionActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val BOAT_OAR_COEF = 10
         const val MAX_GAP = 25 // max increase in distance between leader and last boat every 500 m
         const val raceDay = 30
         const val raceSize = 6
