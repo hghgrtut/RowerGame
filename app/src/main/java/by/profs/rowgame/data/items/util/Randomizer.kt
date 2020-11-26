@@ -4,12 +4,12 @@ import android.util.Log
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
+import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 
 object Randomizer {
-    private const val big = 1000000
     // from 1 to max inclusive
-    private fun getRandomInt(max: Int): Int = (Math.random() * big).toInt() % max + 1
-    private fun getRandomFromList(list: List<*>) = list[getRandomInt(list.size) - 1]
+    private fun getRandomInt(max: Int): Int = generatePositiveIntOrNull(max) + 1
+    private fun getRandomFromList(list: List<*>) = list[generatePositiveIntOrNull(list.size)]
 
     fun getRandomOar(): Oar {
         val manufacturers = Oar.getManufacturersList()
