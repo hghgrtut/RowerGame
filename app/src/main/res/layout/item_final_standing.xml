@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/position"
         style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="50dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         tools:text="11"
         android:layout_gravity="center"
@@ -17,11 +17,12 @@
     <TextView
         android:id="@+id/name"
         style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
         tools:text="Александр Дорощенко" />
+
     <TextView
         android:id="@+id/gap"
         style="@style/TextAppearance.AppCompat.Title"
