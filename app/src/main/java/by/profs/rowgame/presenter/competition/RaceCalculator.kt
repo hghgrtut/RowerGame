@@ -9,7 +9,10 @@ import by.profs.rowgame.view.CompetitionActivity
 object RaceCalculator {
 
     fun calculateRace(
-        boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>, rating: ArrayList<Pair<Rower, Int>>
+        boats: List<Boat>,
+        oars: List<Oar>,
+        rowers: List<Rower>,
+        rating: ArrayList<Pair<Rower, Int>>
     ): ArrayList<Pair<Rower, Int>> {
 
         if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
@@ -40,7 +43,6 @@ object RaceCalculator {
     private fun calculatePower(boat: Boat, oar: Oar, rower: Rower) = rower.power + rower.technics +
             rower.endurance + (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
 
-
     private const val BOAT_OAR_COEF = 10
-    private const val MAX_GAP = 25 // max increase in distance between leader and last boat every 500 m
+    private const val MAX_GAP = 25 // max increase in distance between leader and last boat on 500 m
 }
