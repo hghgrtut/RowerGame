@@ -108,8 +108,8 @@ class CompetitionActivity : AppCompatActivity() {
         oars: List<Oar>,
         rowers: List<Rower>
     ) {
-        rating = ArrayList(calculateRace(boats, oars, rowers, rating).sortedBy { it.second })
-        val excessGap = rating[FIRST].second
+        rating = ArrayList(calculateRace(boats, oars, rowers, rating))
+        val excessGap: Int = rating.map { it.second }.minOrNull()!!
         rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
     }
 
@@ -124,7 +124,6 @@ class CompetitionActivity : AppCompatActivity() {
         finalBBoats.add(boats[finalistB])
         finalBOars.add(oars[finalistB])
         finalBRowers.add(rowers[finalistB])
-        showToastResults(rating.map { it.first })
     }
 
     private fun final(char: Char) {
@@ -226,15 +225,9 @@ class CompetitionActivity : AppCompatActivity() {
                     setupRace()
                     setTitle(R.string.phase_start)
                 }
-                HALF -> {
-                    setTitle(R.string.phase_half)
-                }
-                ONE_AND_HALF -> {
-                    setTitle(R.string.phase_one_and_half)
-                }
-                FINISH -> {
-                    setTitle(R.string.phase_finish)
-                }
+                HALF -> setTitle(R.string.phase_half)
+                ONE_AND_HALF -> setTitle(R.string.phase_one_and_half)
+                FINISH -> setTitle(R.string.phase_finish)
                 else -> {
                     phase = START
                     binding.buttonRace.visibility = View.VISIBLE
@@ -243,8 +236,8 @@ class CompetitionActivity : AppCompatActivity() {
                 }
             }
             calculateRace(raceBoats, raceOars, raceRowers)
-            recyclerView.apply {
-                adapter = StandingViewAdapter(rating, StandingViewAdapter.RACE) }
+            recyclerView.apply { adapter = StandingViewAdapter(
+                    ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
             phase += phaseLenght
         }
@@ -257,8 +250,10 @@ class CompetitionActivity : AppCompatActivity() {
         }
 
         private fun raceCommon() {
+            rating.sortBy { it.second }
             if (from <= totalRowers) {
                 calculateSemifinal(raceBoats, raceOars, raceRowers)
+                showToastResults(rating.map { it.first })
                 from += raceSize
                 if (from <= totalRowers) newSemifinal() else final('B')
             } else if (finalists == null) {

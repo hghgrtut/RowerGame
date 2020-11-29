@@ -42,7 +42,6 @@ object Randomizer {
                 else -> getRandomInt(2) + 1
             }
         val wing = getRandomWing(manufacturer)
-        Log.d("competitionDebug", "boat generated")
         return Boat(null, type, manufacturer, body, weight, wing)
     }
 

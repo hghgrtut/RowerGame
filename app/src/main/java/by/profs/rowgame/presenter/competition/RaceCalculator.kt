@@ -44,5 +44,5 @@ object RaceCalculator {
             rower.endurance + (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
 
     private const val BOAT_OAR_COEF = 10
-    private const val MAX_GAP = 25 // max increase in distance between leader and last boat on 500 m
+    private const val MAX_GAP = 15 // max increase in distance between leader and last boat on 500 m
 }

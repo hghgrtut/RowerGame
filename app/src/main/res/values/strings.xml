@@ -84,7 +84,8 @@
     <string name="money_not_reseted">Деньги не сброшены, т.к. у вас их достаточно либо есть вёсла или лодка</string>
     <string name="money_reseted">Деньги сброшены</string>
     <string name="recruit_fail">Недостаточно славы!</string>
-    <string name="recruit_success">Нанят</string>
+    <string name="recruit_success_male">Нанят</string>
+    <string name="recruit_success_female">Нанята</string>
     <string name="sell_sucess">Продано</string>
     <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
     <string name="time_to_race">Время гоняться :)</string>

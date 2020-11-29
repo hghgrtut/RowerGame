@@ -45,7 +45,7 @@ class RowerDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    suspend fun showRower() {
+    private suspend fun showRower() {
         try {
             val source = intent.extras?.getInt(ROWER_SOURCE)
             val rower: Rower = withContext(Dispatchers.IO) { when (source) {
@@ -114,26 +114,27 @@ class RowerDetailsActivity : AppCompatActivity() {
         }
     }
 
-    fun setAsExisting() {
+    private fun setAsExisting() {
         binding.button.text = this.getString(R.string.fire_rower)
         binding.fame.visibility = View.GONE
     }
 
-    fun setAsNew() {
+    private fun setAsNew() {
         binding.button.text = this.getString(R.string.recruit)
         binding.fame.text = this.getString(R.string.fame_balance, prefEditor.getFame())
         binding.fame.visibility = View.VISIBLE
     }
 
-    fun recruit(rower: Rower) {
+    private fun recruit(rower: Rower) {
         if (recruiter.buy(rower)) {
-            showToast(this, R.string.recruit_success)
+            showToast(this, if (rower.gender == Rower.MALE) R.string.recruit_success_male
+            else R.string.recruit_success_female)
             setAsExisting()
         } else { showToast(this, R.string.recruit_fail) }
         binding.button.setOnClickListener { fire(rower) }
     }
 
-    fun fire(rower: Rower) {
+    private fun fire(rower: Rower) {
         recruiter.sell(rower)
         setAsNew()
         binding.button.setOnClickListener { recruit(rower) }
