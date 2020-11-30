@@ -143,7 +143,7 @@ class CompetitionActivity : AppCompatActivity() {
     }
 
     private fun newSemifinal() {
-        setTitle(R.string.semifinal)
+        MainScope().launch { setTitle(R.string.semifinal) }
         val to = from + raceSize
         val free = to - allBoats.size
         CoroutineScope(Dispatchers.Default).launch {
@@ -151,10 +151,11 @@ class CompetitionActivity : AppCompatActivity() {
             allOars.addAll(List(free) { Randomizer.getRandomOar() })
             allRowers.addAll(List(free) { Randomizer.getRandomRower() })
 
+            raceBoats = allBoats.subList(from, to)
+            raceOars = allOars.subList(from, to)
+            raceRowers = allRowers.subList(from, to)
+
             MainScope().launch {
-                raceBoats = allBoats.subList(from, to)
-                raceOars = allOars.subList(from, to)
-                raceRowers = allRowers.subList(from, to)
                 val viewAdapter = CompetitionViewAdapter(raceBoats, raceOars, raceRowers)
                 recyclerView.apply { adapter = viewAdapter }
             }
@@ -183,15 +184,19 @@ class CompetitionActivity : AppCompatActivity() {
 
     private fun reward() {
         if (finalists == null) return
-        val myRowers = singleComboDao.getRowerIds()
-        if (myRowers.contains(finalists!![FIRST].first.name)) {
-            boatDao.insert(Randomizer.getRandomBoat())
-            prefEditor.setFame(prefEditor.getFame() + 1)
+        CoroutineScope(Dispatchers.IO).launch {
+            val myRowers = singleComboDao.getRowerIds()
+            if (myRowers.contains(finalists!![FIRST].first.name)) {
+                boatDao.insert(Randomizer.getRandomBoat())
+                prefEditor.setFame(prefEditor.getFame() + 1)
+            }
+            if (myRowers.contains(finalists!![SECOND].first.name)) {
+                oarDao.insert(Randomizer.getRandomOar())
+            }
+            if (myRowers.contains(finalists!![THIRD].first.name)) {
+                oarDao.insert(Randomizer.getRandomOar())
+            }
         }
-        if (myRowers.contains(finalists!![SECOND].first.name)) {
-            oarDao.insert(Randomizer.getRandomOar()) }
-        if (myRowers.contains(finalists!![THIRD].first.name)) {
-            oarDao.insert(Randomizer.getRandomOar()) }
     }
 
     inner class Race {
