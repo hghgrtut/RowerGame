@@ -1,6 +1,14 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight"/>
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/tint</item>
+<!--        <item name="colorSecondary">@color/tint</item>-->
+        <item name="colorControlHighlight">@color/tint_ripple</item>
+
+        <item name="android:colorBackground">@color/background_primary</item>
+        <item name="android:windowBackground">@color/background_primary</item>
+        <item name="colorSurface">@color/background_secondary</item>
+    </style>
 
     <style name="rowerDetailsTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:layout_width">wrap_content</item>

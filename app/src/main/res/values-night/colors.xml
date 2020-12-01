@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tint">@android:color/black</color>
+    <color name="tint_ripple">#D34F4F</color>
+    <color name="background_primary">#3B4147</color>
+    <color name="background_secondary">#7E241D</color>
+</resources>
