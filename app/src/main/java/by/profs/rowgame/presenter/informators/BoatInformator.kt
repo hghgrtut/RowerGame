@@ -57,13 +57,6 @@ class BoatInformator : Informator<Boat> {
         }
     }
 
-    private fun getNeloInfo(boat: Boat): List<String> = when (boat.body) {
-            Boat.SMALL -> listOf("7,53", "55-70", "60")
-            Boat.MEDIUM_LONG -> listOf("7,73", "70-85", "75")
-            Boat.LONG -> listOf("7,75", "85-100", "90")
-            else -> listOf("8,2", "100-115", "100")
-    }
-
     private fun getNemigaInfo(boat: Boat): List<String> = when (boat.body) {
             Boat.LONG -> listOf("7,96", "85-100", "СНЛК 855")
             else -> listOf("8,0", "75-85", "СНЛК 823")

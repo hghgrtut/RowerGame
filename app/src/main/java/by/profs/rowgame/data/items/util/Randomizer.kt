@@ -1,6 +1,5 @@
 package by.profs.rowgame.data.items.util
 
-import android.util.Log
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
