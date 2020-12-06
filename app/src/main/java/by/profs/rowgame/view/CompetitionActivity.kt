@@ -147,9 +147,11 @@ class CompetitionActivity : AppCompatActivity() {
         val to = from + raceSize
         val free = to - allBoats.size
         CoroutineScope(Dispatchers.Default).launch {
-            allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
-            allOars.addAll(List(free) { Randomizer.getRandomOar() })
-            allRowers.addAll(List(free) { Randomizer.getRandomRower() })
+            if (free > 0) {
+                allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
+                allOars.addAll(List(free) { Randomizer.getRandomOar() })
+                allRowers.addAll(List(free) { Randomizer.getRandomRower() })
+            }
 
             raceBoats = allBoats.subList(from, to)
             raceOars = allOars.subList(from, to)
@@ -275,20 +277,20 @@ class CompetitionActivity : AppCompatActivity() {
 
     companion object {
         private const val phaseLenght = 500
-        const val raceDay = 30
+        private const val raceDay = 30
         const val raceSize = 6
-        const val totalRowers = 30 // 6 starts
+        private const val totalRowers = 30 // 6 starts
         // Numeration in rowers array
-        const val FIRST = 0
-        const val SECOND = 1
-        const val THIRD = 2
-        const val FOURTH = 3
-        const val FIFTH = 4
-        const val SIXTH = 5
+        private const val FIRST = 0
+        private const val SECOND = 1
+        private const val THIRD = 2
+        private const val FOURTH = 3
+        private const val FIFTH = 4
+        private const val SIXTH = 5
         // Phases
-        const val START = phaseLenght
-        const val HALF = phaseLenght * 2
-        const val ONE_AND_HALF = phaseLenght * 3
-        const val FINISH = phaseLenght * 4
+        private const val START = phaseLenght
+        private const val HALF = phaseLenght * 2
+        private const val ONE_AND_HALF = phaseLenght * 3
+        private const val FINISH = phaseLenght * 4
     }
 }
