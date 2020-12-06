@@ -62,7 +62,7 @@ object RaceCalculator {
         Boat.EXTRA_LONG to FOR_EXTRA_LONG_MIN
     )
     private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(
-        Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,1
+        Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,
         Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MAX,
         Boat.SMALL to FOR_SMALL_MAX,
         Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MAX,
