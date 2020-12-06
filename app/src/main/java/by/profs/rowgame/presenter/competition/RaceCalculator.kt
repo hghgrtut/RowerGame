@@ -53,21 +53,21 @@ object RaceCalculator {
     private const val MAX_GAP = 15 // max increase in distance between leader and last boat on 500 m
 
     private val minIdealWeight: HashMap<Int, Int> = hashMapOf(
-        Boat.UNIVERSAL to 60,
-        Boat.EXTRA_SMALL to 50,
-        Boat.SMALL to 61,
-        Boat.MEDIUM_SMALL to 70,
-        Boat.MEDIUM_LONG to 74,
-        Boat.LONG to 84,
-        Boat.EXTRA_LONG to 98
+        Boat.UNIVERSAL to FOR_UNIVERSAL_MIN,
+        Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MIN,
+        Boat.SMALL to FOR_SMALL_MIN,
+        Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MIN,
+        Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MIN,
+        Boat.LONG to FOR_LONG_MIN,
+        Boat.EXTRA_LONG to FOR_EXTRA_LONG_MIN
     )
     private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(
-        Boat.UNIVERSAL to 100,
-        Boat.EXTRA_SMALL to 65,
-        Boat.SMALL to 75,
-        Boat.MEDIUM_SMALL to 85,
-        Boat.MEDIUM_LONG to 87,
-        Boat.LONG to 100,
-        Boat.EXTRA_LONG to 120
+        Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,1
+        Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MAX,
+        Boat.SMALL to FOR_SMALL_MAX,
+        Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MAX,
+        Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MAX,
+        Boat.LONG to FOR_LONG_MAX,
+        Boat.EXTRA_LONG to FOR_EXTRA_LONG_MAX
     )
 }

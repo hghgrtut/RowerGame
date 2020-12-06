@@ -61,17 +61,20 @@ class CompetitionActivity : AppCompatActivity() {
     private var from = 0
     private var phase: Int = START
     private val race: Race = Race()
+    private var competitionNum = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefEditor = PreferenceEditor(
             applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
 
-        if (prefEditor.getDay() % raceDay != 0) {
+        val day = prefEditor.getDay()
+        if (day % raceDay != 0) {
             setContentView(R.layout.error_network_layout)
             findViewById<TextView>(R.id.error).text = getString(R.string.error_wrong_day)
             return
         }
+        competitionNum = day / raceDay
 
         prefEditor.nextDay()
         binding = ActivityCompetitionBinding.inflate(layoutInflater)
@@ -150,7 +153,8 @@ class CompetitionActivity : AppCompatActivity() {
             if (free > 0) {
                 allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
                 allOars.addAll(List(free) { Randomizer.getRandomOar() })
-                allRowers.addAll(List(free) { Randomizer.getRandomRower() })
+                allRowers.addAll(List(free) { Randomizer.getRandomRower(
+                    minSkill = competitionNum, maxSkill = competitionNum * maxSkillCoef) })
             }
 
             raceBoats = allBoats.subList(from, to)
@@ -190,7 +194,7 @@ class CompetitionActivity : AppCompatActivity() {
             val myRowers = singleComboDao.getRowerIds()
             if (myRowers.contains(finalists!![FIRST].first.name)) {
                 boatDao.insert(Randomizer.getRandomBoat())
-                prefEditor.setFame(prefEditor.getFame() + 1)
+                prefEditor.setFame(prefEditor.getFame() + competitionNum / 2)
             }
             if (myRowers.contains(finalists!![SECOND].first.name)) {
                 oarDao.insert(Randomizer.getRandomOar())
@@ -292,5 +296,7 @@ class CompetitionActivity : AppCompatActivity() {
         private const val HALF = phaseLenght * 2
         private const val ONE_AND_HALF = phaseLenght * 3
         private const val FINISH = phaseLenght * 4
+
+        private const val maxSkillCoef = 4
     }
 }

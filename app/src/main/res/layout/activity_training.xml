@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:text="@string/train_endurance"
         android:maxLines="1"
-        app:layout_constraintBottom_toTopOf="@id/button_train_all"
         app:layout_constraintHorizontal_weight="1.2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_train_power"/>
 
@@ -33,8 +33,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/train_power"
-        app:layout_constraintBottom_toTopOf="@id/button_train_all"
         app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_train_endurance"
         app:layout_constraintEnd_toStartOf="@+id/button_train_technicalit" />
 
@@ -43,19 +43,10 @@
         android:layout_width="136dp"
         android:layout_height="wrap_content"
         android:text="@string/train_technicality"
-        app:layout_constraintBottom_toTopOf="@id/button_train_all"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1.5"
         app:layout_constraintStart_toEndOf="@+id/button_train_power" />
-
-    <Button
-        android:id="@+id/button_train_all"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/train_all"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/day"
