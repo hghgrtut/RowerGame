@@ -13,6 +13,7 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.ActivityCompetitionBinding
+import by.profs.rowgame.presenter.competition.RaceCalculator.calculateRace
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
@@ -20,10 +21,9 @@ import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.CompetitionViewAdapter
-import by.profs.rowgame.view.adapters.FinalStandingViewAdapter
+import by.profs.rowgame.view.adapters.StandingViewAdapter
 import by.profs.rowgame.view.utils.HelperFuns
 import kotlin.collections.ArrayList
 import kotlinx.coroutines.CoroutineScope
@@ -51,18 +51,30 @@ class CompetitionActivity : AppCompatActivity() {
     private val finalBBoats = mutableListOf<Boat>()
     private val finalBOars = mutableListOf<Oar>()
     private val finalBRowers = mutableListOf<Rower>()
-    private var finalists: ArrayList<Rower>? = null
+    private var finalists: ArrayList<Pair<Rower, Int>>? = null
+    private var rating: ArrayList<Pair<Rower, Int>> = ArrayList()
+
+    private lateinit var raceBoats: MutableList<Boat>
+    private lateinit var raceOars: MutableList<Oar>
+    private lateinit var raceRowers: MutableList<Rower>
+
+    private var from = 0
+    private var phase: Int = START
+    private val race: Race = Race()
+    private var competitionNum = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefEditor = PreferenceEditor(
             applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
 
-        if (prefEditor.getDay() % raceDay != 0) {
+        val day = prefEditor.getDay()
+        if (day % raceDay != 0) {
             setContentView(R.layout.error_network_layout)
             findViewById<TextView>(R.id.error).text = getString(R.string.error_wrong_day)
             return
         }
+        competitionNum = day / raceDay
 
         prefEditor.nextDay()
         binding = ActivityCompetitionBinding.inflate(layoutInflater)
@@ -74,7 +86,6 @@ class CompetitionActivity : AppCompatActivity() {
         oarDao = OarRoomDatabase.getDatabase(this, scope).oarDao()
         val rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
         singleComboDao = SingleComboRoomDatabase.getDatabase(this, scope).singleComboDao()
-        var from = 0
 
         recyclerView = findViewById<RecyclerView>(R.id.list).apply {
             setHasFixedSize(true)
@@ -88,46 +99,24 @@ class CompetitionActivity : AppCompatActivity() {
                 allRowers.add(withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)[0] })
             }
 
-            semifinal(from)
+            newSemifinal()
         }
 
-        binding.buttonRace.setOnClickListener {
-            if (from < totalRowers) {
-                val to = from + raceSize
-                calculateSemifinal(
-                    allBoats.subList(from, to),
-                    allOars.subList(from, to),
-                    allRowers.subList(from, to))
-                from = to
-                semifinal(from)
-            } else if (from == totalRowers) {
-                val to = from + raceSize
-                calculateSemifinal(
-                    allBoats.subList(from, to),
-                    allOars.subList(from, to),
-                    allRowers.subList(from, to))
-                final('B')
-                from ++
-            } else if (finalists == null) {
-                finalists = calculateFinal(finalBBoats, finalBOars, finalBRowers)
-                final('A')
-            } else { // not-null check higher
-                finalists!!.addAll(0, calculateFinal(finalABoats, finalAOars, finalARowers))
-                showResults()
-                CoroutineScope(Dispatchers.IO).launch { reward() }
-            }
-        }
+        binding.buttonRace.setOnClickListener { race.raceShort() }
+        binding.buttonRaceFull.setOnClickListener { race.raceFull() }
     }
 
-    private fun calculateFinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>):
-            ArrayList<Rower> {
-        val rating = calculateRace(boats, oars, rowers)
-        showToastResults(rating.map { it.first })
-        return ArrayList(rating.map { it.first })
+    private fun calculateRace(
+        boats: List<Boat>,
+        oars: List<Oar>,
+        rowers: List<Rower>
+    ) {
+        rating = ArrayList(calculateRace(boats, oars, rowers, rating))
+        val excessGap: Int = rating.map { it.second }.minOrNull()!!
+        rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
     }
 
     private fun calculateSemifinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>) {
-        val rating = calculateRace(boats, oars, rowers).sortedBy { it.second }
         var finalistA = 0
         var finalistB = 0
         while (rowers[finalistA].name != rating[FIRST].first.name) finalistA++
@@ -138,41 +127,7 @@ class CompetitionActivity : AppCompatActivity() {
         finalBBoats.add(boats[finalistB])
         finalBOars.add(oars[finalistB])
         finalBRowers.add(rowers[finalistB])
-        showToastResults(rating.map { it.first })
     }
-
-    private fun calculateRace(
-        boats: List<Boat>,
-        oars: List<Oar>,
-        rowers: List<Rower>,
-        rating: ArrayList<Pair<Rower, Int>> = ArrayList()
-    ): ArrayList<Pair<Rower, Int>> {
-
-        if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
-        val distances = IntArray(raceSize) { generatePositiveIntOrNull(MAX_GAP) }
-        val chances: MutableList<Int> = MutableList(raceSize) { pos ->
-            calculatePower(boats[pos], oars[pos], rowers[pos])
-        }
-        distances.sort()
-        var j = 0
-        var total = chances.sum()
-        while (total > 0) {
-            var rand = generatePositiveIntOrNull(total)
-            var i = -1
-            while (rand >= 0) {
-                i++
-                rand -= chances[i]
-            }
-            rating[i] = Pair(rowers[i], rating[i].second + distances[j])
-            total -= chances[i]
-            chances[i] = 0
-            j++
-        }
-        return rating
-    }
-
-    private fun calculatePower(boat: Boat, oar: Oar, rower: Rower) = rower.power + rower.technics +
-            rower.endurance + (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
 
     private fun final(char: Char) {
         MainScope().launch { when (char.toUpperCase()) {
@@ -190,29 +145,35 @@ class CompetitionActivity : AppCompatActivity() {
         }
     }
 
-    private fun semifinal(from: Int) {
+    private fun newSemifinal() {
+        MainScope().launch { setTitle(R.string.semifinal) }
         val to = from + raceSize
         val free = to - allBoats.size
         CoroutineScope(Dispatchers.Default).launch {
-            allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
-            allOars.addAll(List(free) { Randomizer.getRandomOar() })
-            allRowers.addAll(List(free) { Randomizer.getRandomRower() })
+            if (free > 0) {
+                allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
+                allOars.addAll(List(free) { Randomizer.getRandomOar() })
+                allRowers.addAll(List(free) { Randomizer.getRandomRower(
+                    minSkill = competitionNum, maxSkill = competitionNum * maxSkillCoef) })
+            }
+
+            raceBoats = allBoats.subList(from, to)
+            raceOars = allOars.subList(from, to)
+            raceRowers = allRowers.subList(from, to)
 
             MainScope().launch {
-                val viewAdapter = CompetitionViewAdapter(
-                    allBoats.subList(from, to),
-                    allOars.subList(from, to),
-                    allRowers.subList(from, to)
-                )
+                val viewAdapter = CompetitionViewAdapter(raceBoats, raceOars, raceRowers)
                 recyclerView.apply { adapter = viewAdapter }
             }
         }
     }
 
     private fun showResults() {
-        recyclerView.apply { adapter = FinalStandingViewAdapter(finalists!!) }
+        recyclerView.apply {
+            adapter = StandingViewAdapter(finalists!!, StandingViewAdapter.RESULTS) }
         setTitle(R.string.results)
         binding.buttonRace.visibility = View.GONE
+        binding.buttonRaceFull.visibility = View.GONE
     }
 
     private fun showToastResults(rowers: List<Rower>) {
@@ -229,27 +190,113 @@ class CompetitionActivity : AppCompatActivity() {
 
     private fun reward() {
         if (finalists == null) return
-        val myRowers = singleComboDao.getRowerIds()
-        if (myRowers.contains(finalists!![0].name)) {
-            boatDao.insert(Randomizer.getRandomBoat())
-            prefEditor.setFame(prefEditor.getFame() + 1)
+        CoroutineScope(Dispatchers.IO).launch {
+            val myRowers = singleComboDao.getRowerIds()
+            if (myRowers.contains(finalists!![FIRST].first.name)) {
+                boatDao.insert(Randomizer.getRandomBoat())
+                prefEditor.setFame(prefEditor.getFame() + competitionNum / 2)
+            }
+            if (myRowers.contains(finalists!![SECOND].first.name)) {
+                oarDao.insert(Randomizer.getRandomOar())
+            }
+            if (myRowers.contains(finalists!![THIRD].first.name)) {
+                oarDao.insert(Randomizer.getRandomOar())
+            }
         }
-        if (myRowers.contains(finalists!![1].name)) oarDao.insert(Randomizer.getRandomOar())
-        if (myRowers.contains(finalists!![2].name)) oarDao.insert(Randomizer.getRandomOar())
+    }
+
+    inner class Race {
+        private fun setupRace() {
+            when (title as String) {
+                getString(R.string.semifinal) -> {
+                    val to = from + raceSize
+                    raceBoats = allBoats.subList(from, to)
+                    raceOars = allOars.subList(from, to)
+                    raceRowers = allRowers.subList(from, to)
+                }
+                getString(R.string.final_b) -> {
+                    raceBoats = finalBBoats
+                    raceOars = finalBOars
+                    raceRowers = finalBRowers
+                }
+                getString(R.string.final_a) -> {
+                    raceBoats = finalABoats
+                    raceOars = finalAOars
+                    raceRowers = finalARowers
+                }
+                else -> throw IllegalArgumentException("Title not recognized: $title")
+            }
+        }
+
+        internal fun raceFull() {
+            when (phase) {
+                START -> {
+                    rating = ArrayList()
+                    binding.buttonRace.visibility = View.GONE
+                    setupRace()
+                    setTitle(R.string.phase_start)
+                }
+                HALF -> setTitle(R.string.phase_half)
+                ONE_AND_HALF -> setTitle(R.string.phase_one_and_half)
+                FINISH -> setTitle(R.string.phase_finish)
+                else -> {
+                    phase = START
+                    binding.buttonRace.visibility = View.VISIBLE
+                    raceCommon()
+                    return
+                }
+            }
+            calculateRace(raceBoats, raceOars, raceRowers)
+            recyclerView.apply { adapter = StandingViewAdapter(
+                    ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
+            if (phase == 0) rating = ArrayList()
+            phase += phaseLenght
+        }
+
+        internal fun raceShort() {
+            rating = ArrayList()
+            setupRace()
+            calculateRace(raceBoats, raceOars, raceRowers)
+            raceCommon()
+        }
+
+        private fun raceCommon() {
+            rating.sortBy { it.second }
+            if (from <= totalRowers) {
+                calculateSemifinal(raceBoats, raceOars, raceRowers)
+                showToastResults(rating.map { it.first })
+                from += raceSize
+                if (from <= totalRowers) newSemifinal() else final('B')
+            } else if (finalists == null) {
+                finalists = rating
+                showToastResults(finalists!!.map { it.first })
+                final('A')
+            } else {
+                finalists!!.addAll(0, rating) // not-null check higher
+                showResults()
+                CoroutineScope(Dispatchers.IO).launch { reward() }
+            }
+        }
     }
 
     companion object {
-        const val BOAT_OAR_COEF = 10
-        const val MAX_GAP = 25 // max increase in distance between leader and last boat every 500 m
-        const val raceDay = 30
+        private const val phaseLenght = 500
+        private const val raceDay = 30
         const val raceSize = 6
-        const val totalRowers = 30 // 6 starts
+        private const val totalRowers = 30 // 6 starts
         // Numeration in rowers array
-        const val FIRST = 0
-        const val SECOND = 1
-        const val THIRD = 2
-        const val FOURTH = 3
-        const val FIFTH = 4
-        const val SIXTH = 5
+        private const val FIRST = 0
+        private const val SECOND = 1
+        private const val THIRD = 2
+        private const val FOURTH = 3
+        private const val FIFTH = 4
+        private const val SIXTH = 5
+        // Phases
+        private const val START = phaseLenght
+        private const val HALF = phaseLenght * 2
+        private const val ONE_AND_HALF = phaseLenght * 3
+        private const val FINISH = phaseLenght * 4
+
+        private const val maxSkillCoef = 4
     }
 }

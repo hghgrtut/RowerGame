@@ -11,11 +11,15 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 
-class FinalStandingViewAdapter(private val standing: ArrayList<Rower>) :
-    RecyclerView.Adapter<FinalStandingViewAdapter.ViewHolder>() {
+class StandingViewAdapter(
+    private val standing: ArrayList<Pair<Rower, Int>>,
+    private val mode: Int
+) : RecyclerView.Adapter<StandingViewAdapter.ViewHolder>() {
+
     private lateinit var context: Context
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val gap: TextView = view.findViewById(R.id.gap)
         val name: TextView = view.findViewById(R.id.name)
         val position: TextView = view.findViewById(R.id.position)
         val rowerPic: ImageView = view.findViewById(R.id.rower_pic)
@@ -23,15 +27,23 @@ class FinalStandingViewAdapter(private val standing: ArrayList<Rower>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return FinalStandingViewAdapter.ViewHolder(
+        return ViewHolder(
             LayoutInflater.from(context).inflate(R.layout.item_final_standing, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (mode == RACE) {
+            holder.gap.text = context.getString(R.string.standing_gap, standing[position].second) }
+        val rower: Rower = standing[position].first
         holder.position.text = (1 + position).toString()
-        holder.name.text = standing[position].name
-        loadThumb(standing[position], holder.rowerPic)
+        holder.name.text = rower.name
+        loadThumb(rower, holder.rowerPic)
     }
 
     override fun getItemCount(): Int = standing.size
+
+    companion object {
+        const val RACE = 0
+        const val RESULTS = 1
+    }
 }

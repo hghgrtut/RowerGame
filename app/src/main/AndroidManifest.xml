@@ -19,10 +19,6 @@
         <activity android:name=".view.shop.ShopActivity" />
         <activity android:name=".view.inventory.InventoryActivity" />
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

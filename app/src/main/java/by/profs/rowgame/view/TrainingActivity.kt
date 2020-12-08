@@ -11,7 +11,6 @@ import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
-import by.profs.rowgame.utils.TRAIN_ALL
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
@@ -50,7 +49,6 @@ class TrainingActivity : AppCompatActivity() {
             adapter = viewAdapter
         }
 
-        binding.buttonTrainAll.setOnClickListener { train(viewAdapter, TRAIN_ALL) }
         binding.buttonTrainEndurance.setOnClickListener { train(viewAdapter, TRAIN_ENDURANCE) }
         binding.buttonTrainPower.setOnClickListener { train(viewAdapter, TRAIN_POWER) }
         binding.buttonTrainTechnicalit.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
@@ -58,7 +56,7 @@ class TrainingActivity : AppCompatActivity() {
 
     fun showDay() { binding.day.text = this.getString(R.string.day, prefEditor.getDay()) }
 
-    fun train(viewAdapter: PairViewAdapter, mode: Int = TRAIN_ALL) {
+    fun train(viewAdapter: PairViewAdapter, mode: Int) {
         scope.launch { viewAdapter.startTraining(mode) }
         prefEditor.nextDay()
         showDay()

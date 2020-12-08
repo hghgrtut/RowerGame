@@ -1,3 +1,5 @@
 package by.profs.rowgame.data.items
+import com.squareup.moshi.JsonClass
 
-data class RowerExtraInfo(val achievements: String?, val otherInfo: String?, val cost: Int)
+@JsonClass(generateAdapter = true)
+data class RowerExtraInfo(val achievements: String?, val otherInfo: String?, val cost: Int?)

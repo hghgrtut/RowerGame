@@ -19,10 +19,15 @@
     <string name="oar_inventory">Мои вёсла</string>
     <string name="oar_shop">Магазин вёсел</string>
     <string name="choose_boat">Выберите лодку</string>
-    <string name="choose_oar">Выберите весло</string>
+    <string name="choose_oar">Выберите весла</string>
     <string name="choose_rower">Выберите гребца</string>
+    <string name="phase_start">500 м</string>
+    <string name="phase_half">1000 м</string>
+    <string name="phase_one_and_half">1500 м</string>
+    <string name="phase_finish">2000 м</string>
     <string name="results">Результаты</string>
     <string name="rower_inventory">Мои спортсмены</string>
+    <string name="semifinal">Полуфинал</string>
 
     <!-- For buttons in activities -->
     <string name="bases">Базы</string>
@@ -34,7 +39,8 @@
     <string name="legends">Легенды</string>
     <string name="new_pairs">Рассадить</string>
     <string name="oars">Вёсла</string>
-    <string name="race">Гонка</string>
+    <string name="race">Результаты</string>
+    <string name="race_full">Смотреть</string>
     <string name="recruit">Нанять</string>
     <string name="rowers">Гребцы</string>
     <string name="title_activity_bases_map">Map</string>
@@ -66,6 +72,9 @@
     <string name="rower_weight">Вес: %1$d кг</string>
     <string name="fame_balance">Ваша слава: %1$d.</string>
     <string name="fame_cost">Стоимость гребца: %1$d</string>
+    <!-- For standing item -->
+    <string name="standing_gap">%1$d м</string>
+
     <!-- Toasts -->
     <string name="buy_sucess">Куплено</string>
     <string name="competitions">Соревнования</string>
@@ -75,9 +84,9 @@
     <string name="money_not_reseted">Деньги не сброшены, т.к. у вас их достаточно либо есть вёсла или лодка</string>
     <string name="money_reseted">Деньги сброшены</string>
     <string name="recruit_fail">Недостаточно славы!</string>
-    <string name="recruit_success">Нанят</string>
+    <string name="recruit_success_male">Нанят</string>
+    <string name="recruit_success_female">Нанята</string>
     <string name="sell_sucess">Продано</string>
-    <string name="semifinals_wins">Первое место: %1$s\nВторое место: %2$s</string>
     <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
     <string name="time_to_race">Время гоняться :)</string>
     <string name="train_sucess">Тренировка прошла</string>

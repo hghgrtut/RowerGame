@@ -21,7 +21,6 @@ import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.imageloader.GlideImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.informators.OarInformator
-import by.profs.rowgame.utils.TRAIN_ALL
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
@@ -148,12 +147,6 @@ class PairViewAdapter(
             if (random < rowerCharacteristicsNumber) {
                 val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)[0] }
                 when (mode) {
-                    TRAIN_ALL -> { when (random) {
-                            0 -> rower.upEndurance()
-                            1 -> rower.upPower()
-                            2 -> rower.upTechnics()
-                        }
-                    }
                     TRAIN_ENDURANCE -> rower.upEndurance()
                     TRAIN_POWER -> rower.upPower()
                     TRAIN_TECHNICALITY -> rower.upTechnics()

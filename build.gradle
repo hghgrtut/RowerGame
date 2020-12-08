@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // Crashlytics
@@ -60,5 +60,5 @@ task clean(type: Delete) {
 ext {
     roomVersion = '2.2.5'
     coroutines = '1.3.7'
-    daggerVersion = '2.27'
+    daggerVersion = '2.28'
 }

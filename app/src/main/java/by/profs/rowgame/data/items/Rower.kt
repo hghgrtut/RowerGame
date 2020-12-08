@@ -4,7 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import by.profs.rowgame.utils.TABLE_ROWERS
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 @Entity(tableName = TABLE_ROWERS)
 data class Rower(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "name_surname") val name: String,

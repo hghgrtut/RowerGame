@@ -1,6 +1,5 @@
 package by.profs.rowgame.data.items.util
 
-import android.util.Log
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
@@ -42,7 +41,6 @@ object Randomizer {
                 else -> getRandomInt(2) + 1
             }
         val wing = getRandomWing(manufacturer)
-        Log.d("competitionDebug", "boat generated")
         return Boat(null, type, manufacturer, body, weight, wing)
     }
 
@@ -120,7 +118,7 @@ object Randomizer {
     }
 
     private const val AGE_KID = 14
-    private const val AGE_JUN = 14
+    private const val AGE_JUN = 16
     private const val HEIGHT_WOMAN_KID_DEVIATION = 62
     private const val HEIGHT_WOMAN_JUN_DEVIATION = 47
     private const val HEIGHT_WOMAN_DEVIATION = 54
