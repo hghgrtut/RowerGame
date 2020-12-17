@@ -10,21 +10,18 @@ import by.profs.rowgame.utils.NAME_ROWER
 import by.profs.rowgame.utils.TABLE_ROWERS
 
 @Dao
-interface RowerDao : MyDao<Rower> {
+interface RowerDao : MyDao<Rower, String> {
     @Query("SELECT * FROM $TABLE_ROWERS")
     override fun getItems(): List<Rower>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override fun insert(item: Rower)
 
-    @Query("SELECT * FROM $TABLE_ROWERS")
-    override fun deleteItem(id: Int) { throw NotImplementedError("Use deleteRower instead") }
-
     @Query("DELETE FROM $TABLE_ROWERS WHERE $NAME_ROWER = (:name)")
-    fun deleteRower(name: String)
+    override fun deleteItem(name: String)
 
     @Query("SELECT * FROM $TABLE_ROWERS WHERE $NAME_ROWER = (:name) LIMIT 1")
-    fun search(name: String): List<Rower>
+    override fun search(id: String): Rower
 
     @Update
     override fun updateItem(item: Rower)

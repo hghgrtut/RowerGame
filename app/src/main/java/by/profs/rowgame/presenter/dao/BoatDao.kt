@@ -9,12 +9,12 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.utils.TABLE_BOAT
 
 @Dao
-interface BoatDao : MyDao<Boat> {
+interface BoatDao : MyDao<Boat, Int> {
     @Query("SELECT * FROM $TABLE_BOAT")
     override fun getItems(): List<Boat>
 
     @Query("SELECT * FROM $TABLE_BOAT WHERE boat_id = (:id) LIMIT 1")
-    fun search(id: Int): List<Boat>
+    override fun search(id: Int): Boat
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override fun insert(item: Boat)

@@ -94,9 +94,9 @@ class CompetitionActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             singleComboDao.getAllCombos().forEach { combo ->
-                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)[0] })
-                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)[0] })
-                allRowers.add(withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)[0] })
+                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId) })
+                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId) })
+                allRowers.add(withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId) })
             }
 
             newSemifinal()
