@@ -5,6 +5,7 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.utils.NumberGenerator
 import by.profs.rowgame.view.CompetitionActivity
+import kotlin.math.abs
 
 object RaceCalculator {
 
@@ -41,7 +42,11 @@ object RaceCalculator {
     }
 
     private fun calculatePower(boat: Boat, oar: Oar, rower: Rower): Int {
-        var power = rower.power + rower.technics + rower.endurance +
+        val rowerPenalty = abs(rower.power - rower.technics).coerceAtLeast(
+            abs(rower.power - rower.endurance).coerceAtLeast(
+                abs(rower.technics - rower.endurance))
+        )
+        var power = rower.power + rower.technics + rower.endurance - rowerPenalty +
                 (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
         if (minIdealWeight[boat.body]!! <= rower.weight &&
             rower.weight <= maxIdealWeight[boat.body]!!) power = (power * IDEAL_WEIGHT_COEF).toInt()
