@@ -35,13 +35,13 @@ class OarInformator : Informator<Oar> {
         const val BL = 10
 
         // Blades
-        const val ARROW = "Arrow"
-        const val BIG_BLADE = "Big Blade"
-        const val DOUBLE_WING = "Double Wing"
-        const val FAT2 = "Fat2"
-        const val MACON = "Macon"
-        const val SLICK = "Slick"
-        const val SMOOTHIE2 = "Smoothie2"
+        private const val ARROW = "Arrow"
+        private const val BIG_BLADE = "Big Blade"
+        private const val DOUBLE_WING = "Double Wing"
+        private const val FAT2 = "Fat2"
+        private const val MACON = "Macon"
+        private const val SLICK = "Slick"
+        private const val SMOOTHIE2 = "Smoothie2"
 
         val bladeImages: HashMap<String, Int> = hashMapOf(
             ARROW to R.drawable.blade_arrow,

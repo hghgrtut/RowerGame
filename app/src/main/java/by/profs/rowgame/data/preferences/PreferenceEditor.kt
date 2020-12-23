@@ -45,21 +45,21 @@ class PreferenceEditor(private val preferences: SharedPreferences) {
     }
 
     fun occupyBoat(id: Int) {
-        preferences.edit().apply() {
+        preferences.edit().apply {
             putInt(BOAT, id)
             apply()
         }
     }
 
     fun occupyRower(id: Int) {
-        preferences.edit().apply() {
+        preferences.edit().apply {
             putInt(FIRST_ROWER, id)
             apply()
         }
     }
 
     fun occupyOar(id: Int, number: Int = 1) {
-        preferences.edit().apply() {
+        preferences.edit().apply {
             putInt(when (number) { else -> FIRST_OAR }, id)
             apply()
         }

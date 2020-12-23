@@ -59,9 +59,9 @@ class TrainingActivity : AppCompatActivity() {
         binding.buttonTrainTechnicalit.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
     }
 
-    fun showDay() { binding.day.text = this.getString(R.string.day, calendar.getDayOfYear()) }
+    private fun showDay() { binding.day.text = this.getString(R.string.day, calendar.getDayOfYear()) }
 
-    fun train(viewAdapter: PairViewAdapter, mode: Int) {
+    private fun train(viewAdapter: PairViewAdapter, mode: Int) {
         scope.launch { viewAdapter.startTraining(mode) }
         calendar.nextDay()
         showDay()

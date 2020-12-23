@@ -22,15 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RowerViewAdapter(private val target: Int, dao: RowerDao, comboDao: SingleComboDao? = null) :
+class RowerViewAdapter(
+    private val target: Int,
+    private var dao: RowerDao,
+    private var singleComboDao: SingleComboDao? = null) :
     RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
 
     private lateinit var rowers: List<Rower>
     private lateinit var context: Context
-    private var dao = dao
     private val imageLoader: ImageLoader = GlideImageLoader
     private lateinit var prefEditor: PreferenceEditor
-    private var singleComboDao: SingleComboDao? = comboDao
 
     init { refreshDataSet() }
 
@@ -75,7 +76,7 @@ class RowerViewAdapter(private val target: Int, dao: RowerDao, comboDao: SingleC
         val weight: TextView = view.findViewById(R.id.weight)
     }
 
-    fun refreshDataSet() { CoroutineScope(Dispatchers.IO).launch {
+    private fun refreshDataSet() { CoroutineScope(Dispatchers.IO).launch {
         rowers = withContext(Dispatchers.IO) { if (target == INVENTORY) { dao.getItems()
             } else {
                 val rowerIds = singleComboDao!!.getRowerIds()

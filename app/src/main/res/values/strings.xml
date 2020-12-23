@@ -30,7 +30,6 @@
     <string name="semifinal">Полуфинал</string>
 
     <!-- For buttons in activities -->
-    <string name="bases">Базы</string>
     <string name="boats">Лодки</string>
     <string name="change_theme">Сменить тему</string>
     <string name="detach_pair">Detach</string>
@@ -43,10 +42,8 @@
     <string name="race_full">Смотреть</string>
     <string name="recruit">Нанять</string>
     <string name="rowers">Гребцы</string>
-    <string name="title_activity_bases_map">Map</string>
     <string name="trainings">Тренировки</string>
     <!-- Buttons with training types -->
-    <string name="train_all">Тренироваться</string>
     <string name="train_endurance">Выносливость</string>
     <string name="train_power">Сила</string>
     <string name="train_technicality">Техника</string>
@@ -100,7 +97,7 @@
     <string name="rigger_classic">Три прута</string>
     <string name="rigger_backwing">Backwing</string>
     <!-- Errors -->
-    <string name="error_network_connection">Мы не можем его найти...\nПроверьте своё интернет-соединение :)</string>
+    <string name="error_network_connection">Мы не можем его найти…\nПроверьте своё интернет-соединение :)</string>
     <string name="error_server">Sorry, error on server\nError: %1$s</string>
     <string name="error_wrong_day">Сегодня соревнований нет, возвращайтесь в другой день ;)</string>
 </resources>

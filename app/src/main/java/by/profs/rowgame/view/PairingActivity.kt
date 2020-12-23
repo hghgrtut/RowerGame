@@ -42,8 +42,7 @@ class PairingActivity : AppCompatActivity() {
             setHasFixedSize(true)
             this.layoutManager = layoutManager
         }
-        val intentType = intent.extras?.getInt(ITEM)
-        when (intentType) {
+        when (intent.extras?.getInt(ITEM)) { // intent type
             INTENT_BOATS -> choosingBoat()
             INTENT_OARS -> choosingOar()
             INTENT_ROWERS -> choosingRower()

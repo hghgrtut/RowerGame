@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 class OarViewAdapter(
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    dao: OarDao,
+    private var dao: OarDao,
     private val singleComboDao: SingleComboDao? = null
 ) : RecyclerView.Adapter<OarViewAdapter.ViewHolder>(), MyViewAdapter<Oar> {
 
@@ -40,7 +40,6 @@ class OarViewAdapter(
     private lateinit var context: Context
     private val informator: OarInformator = OarInformator()
     private val trader: OarTrader = OarTrader(prefEditor, dao)
-    private var dao = dao
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init { refreshDataSet() }

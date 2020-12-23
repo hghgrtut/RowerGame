@@ -51,9 +51,9 @@ data class Boat(
     }
 
     override fun broke(damag: Int): Boolean {
-        if (damage + damag < IDEAL) {
+        return if (damage + damag < IDEAL) {
             damage += damag
-            return true
-        } else return false
+            true
+        } else false
     }
 }
