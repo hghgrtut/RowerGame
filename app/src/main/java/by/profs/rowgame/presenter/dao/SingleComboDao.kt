@@ -8,7 +8,7 @@ import by.profs.rowgame.data.combos.CombinationSingleScull
 import by.profs.rowgame.utils.ID_BOAT
 import by.profs.rowgame.utils.ID_COMBO
 import by.profs.rowgame.utils.ID_OAR
-import by.profs.rowgame.utils.NAME_ROWER
+import by.profs.rowgame.utils.ID_ROWER
 import by.profs.rowgame.utils.TABLE_COMBO_SINGLE
 
 @Dao
@@ -22,8 +22,8 @@ interface SingleComboDao {
     @Query("SELECT $ID_OAR FROM $TABLE_COMBO_SINGLE")
     fun getOarIds(): List<Int>
 
-    @Query("SELECT $NAME_ROWER FROM $TABLE_COMBO_SINGLE")
-    fun getRowerIds(): List<String>
+    @Query("SELECT $ID_ROWER FROM $TABLE_COMBO_SINGLE")
+    fun getRowerIds(): List<Int>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertCombo(combo: CombinationSingleScull)

@@ -8,11 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.informators.BoatInformator

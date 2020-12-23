@@ -3,15 +3,15 @@ package by.profs.rowgame.presenter.navigation
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import by.profs.rowgame.utils.NAME_ROWER
+import by.profs.rowgame.utils.ID_ROWER
 import by.profs.rowgame.utils.ROWER_SOURCE
 import by.profs.rowgame.view.inventory.RowerDetailsActivity
 
 class ItemDetailNavigation(private val context: Context) {
-    fun goToRowerFromList(name: String) {
+    fun goToRowerFromList(id: Int) {
         val intent = Intent(context, RowerDetailsActivity::class.java)
         intent.putExtra(ROWER_SOURCE, RowerDetailsActivity.FROM_LIST)
-        intent.putExtra(NAME_ROWER, name)
+        intent.putExtra(ID_ROWER, id)
         ContextCompat.startActivity(context, intent, null)
     }
 

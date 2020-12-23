@@ -1,15 +1,14 @@
 package by.profs.rowgame.view.inventory
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityRowerDetailsBinding
 import by.profs.rowgame.presenter.api.RetrofitApiImplementation
 import by.profs.rowgame.presenter.dao.RowerDao
@@ -17,7 +16,7 @@ import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.imageloader.GlideImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
-import by.profs.rowgame.utils.NAME_ROWER
+import by.profs.rowgame.utils.ID_ROWER
 import by.profs.rowgame.utils.ROWER_SOURCE
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.utils.HelperFuns.showToast
@@ -38,7 +37,7 @@ class RowerDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRowerDetailsBinding.inflate(layoutInflater)
         prefEditor = PreferenceEditor(
-            applicationContext.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
+            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
         dao = RowerRoomDatabase.getDatabase(application, CoroutineScope(Dispatchers.IO)).rowerDao()
         recruiter = Recruiter(prefEditor, dao)
         MainScope().launch { showRower() }
@@ -50,7 +49,7 @@ class RowerDetailsActivity : AppCompatActivity() {
             val source = intent.extras?.getInt(ROWER_SOURCE)
             val rower: Rower = withContext(Dispatchers.IO) { when (source) {
                     FROM_EVENT -> RetrofitApiImplementation.getListOfEventRowers()!![0]
-                    FROM_LIST -> dao.search(intent.extras?.getString(NAME_ROWER)!!)[0]
+                    FROM_LIST -> dao.search(intent.extras?.getInt(ID_ROWER)!!.toInt())!!
                     else -> Randomizer.getRandomRower()
                 }
             }
@@ -65,7 +64,7 @@ class RowerDetailsActivity : AppCompatActivity() {
             if (rower.endpointAbout != null) {
                 showExtraInfo(rower.endpointAbout)
             }
-            if (withContext(Dispatchers.IO) { dao.search(rower.name) }.isEmpty()) {
+            if (rower.id == null || withContext(Dispatchers.IO) { dao.search(rower.id) } == null) {
                 setAsNew()
                 binding.button.setOnClickListener { recruit(rower) }
             } else {

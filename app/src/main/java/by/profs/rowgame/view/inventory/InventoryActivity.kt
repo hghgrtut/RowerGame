@@ -1,12 +1,11 @@
 package by.profs.rowgame.view.inventory
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityInventoryBinding
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
@@ -36,7 +35,7 @@ class InventoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityInventoryBinding.inflate(layoutInflater)
         prefEditor = PreferenceEditor(
-            applicationContext.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
+            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
         layoutManager = LinearLayoutManager(this)
         setContentView(binding.root)
     }

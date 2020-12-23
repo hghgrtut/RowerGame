@@ -1,7 +1,7 @@
 package by.profs.rowgame.presenter.utils
 
 import android.app.Application
-import by.profs.rowgame.data.PreferenceEditor
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.utils.START_MONEY_BALANCE

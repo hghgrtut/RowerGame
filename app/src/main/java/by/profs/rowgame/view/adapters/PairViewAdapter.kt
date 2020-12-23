@@ -77,10 +77,10 @@ class PairViewAdapter(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val boat =
-                    withContext(Dispatchers.IO) { boatDao.search(combos[position].boatId)[0] }
-                val oar = withContext(Dispatchers.IO) { oarDao.search(combos[position].oarId)[0] }
+                    withContext(Dispatchers.IO) { boatDao.search(combos[position].boatId)!! }
+                val oar = withContext(Dispatchers.IO) { oarDao.search(combos[position].oarId)!! }
                 val rower =
-                    withContext(Dispatchers.IO) { rowerDao.search(combos[position].rowerId)[0] }
+                    withContext(Dispatchers.IO) { rowerDao.search(combos[position].rowerId)!! }
             MainScope().launch {
                 loadThumb(rower, holder.rowerPic)
 
@@ -145,7 +145,7 @@ class PairViewAdapter(
         combos.forEach { combo ->
             var random = (Math.random() * big).toInt() % rowerUpChance
             if (random < rowerCharacteristicsNumber) {
-                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)[0] }
+                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
                 when (mode) {
                     TRAIN_ENDURANCE -> rower.upEndurance()
                     TRAIN_POWER -> rower.upPower()
@@ -155,7 +155,7 @@ class PairViewAdapter(
             }
             random = (Math.random() * big).toInt() % damageChance
             if (random < acceptableDamage) {
-                val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId)[0] }
+                val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! }
                 if (boat.broke(random)) boatDao.updateItem(boat)
                 else {
                     singleComboDao.deleteCombo(combo.combinationId!!)
@@ -164,7 +164,7 @@ class PairViewAdapter(
             }
             random = (Math.random() * big).toInt() % damageChance
             if (random < acceptableDamage) {
-                val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId)[0] }
+                val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! }
                 if (oar.broke(random)) oarDao.updateItem(oar)
                 else {
                     singleComboDao.deleteCombo(combo.combinationId!!)

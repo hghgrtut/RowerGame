@@ -1,10 +1,11 @@
 package by.profs.rowgame.view
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
+import by.profs.rowgame.data.preferences.Calendar
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityMainBinding
 import by.profs.rowgame.presenter.navigation.InventoryNavigation
 import by.profs.rowgame.presenter.navigation.PairingNavigation
@@ -20,12 +21,15 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefEditor = PreferenceEditor(
-            applicationContext.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
+        val sharedPreferences: SharedPreferences =
+            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE)
+        calendar = Calendar(sharedPreferences)
+        prefEditor = PreferenceEditor(sharedPreferences)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         val inventoryNav = InventoryNavigation(this)
@@ -53,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDay() {
-        binding.day.text = this.getString(R.string.day_with_instruction, prefEditor.getDay())
+        binding.day.text = this.getString(R.string.day_with_instruction, calendar.getDayOfYear())
     }
 
     private suspend fun resetMoney() {
