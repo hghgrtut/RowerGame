@@ -53,7 +53,8 @@ class TrainingActivity : AppCompatActivity() {
         val singleComboDao = SingleComboRoomDatabase.getDatabase(this, scope).singleComboDao()
 
         trainer = Trainer(boatDao, oarDao, rowerDao, singleComboDao)
-        val viewAdapter = PairViewAdapter(boatDao, oarDao, rowerDao, singleComboDao)
+        val viewAdapter =
+            PairViewAdapter(boatDao, oarDao, rowerDao, singleComboDao, calendar.getGlobalDay())
         recyclerView = findViewById<RecyclerView>(R.id.list).apply {
             setHasFixedSize(true)
             this.layoutManager = layoutManager

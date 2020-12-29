@@ -30,7 +30,8 @@ class PairViewAdapter(
     private val boatDao: BoatDao,
     private val oarDao: OarDao,
     private val rowerDao: RowerDao,
-    private val singleComboDao: SingleComboDao
+    private val singleComboDao: SingleComboDao,
+    private val globalDay: Int = Int.MAX_VALUE
 ) : RecyclerView.Adapter<PairViewAdapter.ViewHolder>() {
 
     val combos = mutableListOf<CombinationSingleScull>()
@@ -60,7 +61,7 @@ class PairViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PairViewAdapter.ViewHolder {
         context = parent.context
-        return PairViewAdapter.ViewHolder(
+        return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_pair, parent, false)
         )
     }
@@ -111,6 +112,9 @@ class PairViewAdapter(
                     } catch (e: KotlinNullPointerException) {
                         Log.e("incomp oar", oar.toString())
                     }
+
+                    if (globalDay <= rower.injury)
+                        holder.itemView.setBackgroundColor(R.color.hurted_rower.toInt())
 
                     holder.button.setOnClickListener {
                         CoroutineScope(Dispatchers.IO).launch {
