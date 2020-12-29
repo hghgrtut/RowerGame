@@ -2,6 +2,7 @@ package by.profs.rowgame.view
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -242,12 +243,16 @@ class CompetitionActivity : AppCompatActivity() {
                 START -> {
                     rating = ArrayList()
                     binding.buttonRace.visibility = View.GONE
+                    binding.buttonRaceFull.visibility = View.GONE
                     setupRace()
                     setTitle(R.string.phase_start)
                 }
                 HALF -> setTitle(R.string.phase_half)
                 ONE_AND_HALF -> setTitle(R.string.phase_one_and_half)
-                FINISH -> setTitle(R.string.phase_finish)
+                FINISH -> {
+                    setTitle(R.string.phase_finish)
+                    binding.buttonRaceFull.visibility = View.VISIBLE
+                }
                 else -> {
                     phase = START
                     binding.buttonRace.visibility = View.VISIBLE
@@ -260,6 +265,7 @@ class CompetitionActivity : AppCompatActivity() {
                     ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
             phase += phaseLenght
+            if (phase <= FINISH) Handler().postDelayed( { raceFull() } , delay)
         }
 
         internal fun raceShort() {
@@ -307,5 +313,6 @@ class CompetitionActivity : AppCompatActivity() {
         private const val FINISH = phaseLenght * 4
 
         private const val maxSkillCoef = 4
+        private const val delay = 650L
     }
 }
