@@ -9,16 +9,19 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityTrainingBinding
+import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
+import by.profs.rowgame.presenter.trainer.Trainer
+import by.profs.rowgame.utils.HelperFuns.resetInjuries
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.PairViewAdapter
-import by.profs.rowgame.view.utils.HelperFuns
+import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +32,9 @@ class TrainingActivity : AppCompatActivity() {
     private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
     private lateinit var recyclerView: RecyclerView
+    private lateinit var rowerDao: RowerDao
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var trainer: Trainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +49,10 @@ class TrainingActivity : AppCompatActivity() {
 
         val boatDao = BoatRoomDatabase.getDatabase(this, scope).boatDao()
         val oarDao = OarRoomDatabase.getDatabase(this, scope).oarDao()
-        val rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
+        rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
         val singleComboDao = SingleComboRoomDatabase.getDatabase(this, scope).singleComboDao()
 
+        trainer = Trainer(boatDao, oarDao, rowerDao, singleComboDao)
         val viewAdapter = PairViewAdapter(boatDao, oarDao, rowerDao, singleComboDao)
         recyclerView = findViewById<RecyclerView>(R.id.list).apply {
             setHasFixedSize(true)
@@ -59,13 +65,15 @@ class TrainingActivity : AppCompatActivity() {
         binding.buttonTrainTechnicalit.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
     }
 
-    private fun showDay() { binding.day.text = this.getString(R.string.day, calendar.getDayOfYear()) }
+    private fun showDay() {
+        binding.day.text = this.getString(R.string.day, calendar.getDayOfYear()) }
 
     private fun train(viewAdapter: PairViewAdapter, mode: Int) {
-        scope.launch { viewAdapter.startTraining(mode) }
+        scope.launch { trainer.startTraining(mode, viewAdapter.combos, calendar.getGlobalDay()) }
         calendar.nextDay()
+        if (calendar.getGlobalDay() == 1) resetInjuries(rowerDao)
         showDay()
-        HelperFuns.showToast(this, if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess
+        showToast(this, if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess
         else R.string.time_to_race)
     }
 

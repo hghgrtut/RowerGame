@@ -18,12 +18,7 @@ import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
-import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.informators.OarInformator
-import by.profs.rowgame.utils.TRAIN_ENDURANCE
-import by.profs.rowgame.utils.TRAIN_POWER
-import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +33,7 @@ class PairViewAdapter(
     private val singleComboDao: SingleComboDao
 ) : RecyclerView.Adapter<PairViewAdapter.ViewHolder>() {
 
-    private val combos = mutableListOf<CombinationSingleScull>()
+    val combos = mutableListOf<CombinationSingleScull>()
     private lateinit var context: Context
     private val oarInformator: OarInformator = OarInformator()
 
@@ -134,51 +129,10 @@ class PairViewAdapter(
 
     override fun getItemCount(): Int = combos.size
 
-    private fun refreshCombos() {
+    fun refreshCombos() {
         CoroutineScope(Dispatchers.IO).launch {
             combos.addAll(singleComboDao.getAllCombos())
             notifyDataSetChanged()
         }
-    }
-
-    suspend fun startTraining(mode: Int) {
-        combos.forEach { combo ->
-            var random = (Math.random() * big).toInt() % rowerUpChance
-            if (random < rowerCharacteristicsNumber) {
-                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
-                when (mode) {
-                    TRAIN_ENDURANCE -> rower.upEndurance()
-                    TRAIN_POWER -> rower.upPower()
-                    TRAIN_TECHNICALITY -> rower.upTechnics()
-                }
-                rowerDao.updateItem(rower)
-            }
-            random = (Math.random() * big).toInt() % damageChance
-            if (random < acceptableDamage) {
-                val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! }
-                if (boat.broke(random)) boatDao.updateItem(boat)
-                else {
-                    singleComboDao.deleteCombo(combo.combinationId!!)
-                    boatDao.deleteItem(boat.id!!)
-                }
-            }
-            random = (Math.random() * big).toInt() % damageChance
-            if (random < acceptableDamage) {
-                val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! }
-                if (oar.broke(random)) oarDao.updateItem(oar)
-                else {
-                    singleComboDao.deleteCombo(combo.combinationId!!)
-                    oarDao.deleteItem(oar.id!!)
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val acceptableDamage = 11
-        private const val big = 1000000
-        private const val damageChance = 365
-        private const val rowerCharacteristicsNumber = 3
-        private const val rowerUpChance = 33
     }
 }

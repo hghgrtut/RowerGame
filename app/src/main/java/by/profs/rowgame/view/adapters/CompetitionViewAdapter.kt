@@ -15,8 +15,6 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
-import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 

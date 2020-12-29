@@ -24,9 +24,12 @@ data class Rower(
     @ColumnInfo(name = "photo") val photo: String? = null,
     @ColumnInfo(name = "endpointAbout") val endpointAbout: String? = null,
     @ColumnInfo(name = "cost") val cost: Int = 0,
-    @ColumnInfo(name = "injury") val injury: Int = 0
+    @ColumnInfo(name = "injury") var injury: Int = 0,
+    @ColumnInfo(name = "injurability") val injurability: Double = 1.0
 ) {
     companion object {
+        private const val daysToDegradation = 15
+
         const val MALE = 1
         const val FEMALE = 2
     }
@@ -36,4 +39,18 @@ data class Rower(
     fun upPower(level: Int = 1) { power += level }
 
     fun upTechnics(level: Int = 1) { technics += level }
+
+    fun hurt(days: Int, today: Int): Boolean {
+        val injur: Int = days / daysToDegradation
+
+        if (endurance < injur || power < injur || technics < injur) return false
+        if (injury < today) injury = today
+        if (Int.MAX_VALUE - injury >= days) { // check on not overflowing of injury property
+            upEndurance(-injur)
+            upPower(-injur)
+            upTechnics(-injur)
+            injury += days
+        }
+        return true
+    }
 }

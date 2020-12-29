@@ -49,7 +49,7 @@ class InventoryActivity : AppCompatActivity() {
         }
 
         val shopNavigator = ShopNavigation(this)
-        when (intent.extras?.getInt(ITEM)) { //intent type
+        when (intent.extras?.getInt(ITEM)) { // intent type
             INTENT_OARS -> {
                 val dao = OarRoomDatabase
                     .getDatabase(application, CoroutineScope(Dispatchers.IO)).oarDao()

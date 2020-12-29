@@ -25,8 +25,8 @@ import kotlinx.coroutines.withContext
 class RowerViewAdapter(
     private val target: Int,
     private var dao: RowerDao,
-    private var singleComboDao: SingleComboDao? = null) :
-    RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
+    private var singleComboDao: SingleComboDao? = null
+) : RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
 
     private lateinit var rowers: List<Rower>
     private lateinit var context: Context

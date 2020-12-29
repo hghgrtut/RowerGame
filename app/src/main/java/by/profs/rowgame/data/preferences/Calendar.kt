@@ -11,7 +11,7 @@ class Calendar(private val preferences: SharedPreferences) {
 
     fun nextDay() {
         preferences.edit().apply {
-            putInt(DAY, if (getGlobalDay() != Int.MAX_VALUE) getGlobalDay() + 1 else 0)
+            putInt(DAY, if (getGlobalDay() != Int.MAX_VALUE) getGlobalDay() + 1 else 1)
             apply()
         }
     }

@@ -98,10 +98,14 @@ class CompetitionActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
+            val globalDay = calendar.getGlobalDay()
             singleComboDao.getAllCombos().forEach { combo ->
-                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
-                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
-                allRowers.add(withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! })
+                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
+                if (rower.injury < globalDay) {
+                    allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
+                    allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
+                    allRowers.add(rower)
+                }
             }
 
             newSemifinal()
