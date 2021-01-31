@@ -1,22 +1,27 @@
 package by.profs.rowgame.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
+import by.profs.rowgame.data.preferences.Calendar
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityTrainingBinding
+import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
+import by.profs.rowgame.presenter.trainer.Trainer
+import by.profs.rowgame.utils.HelperFuns.resetInjuries
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.PairViewAdapter
-import by.profs.rowgame.view.utils.HelperFuns
+import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,14 +29,19 @@ import kotlinx.coroutines.launch
 class TrainingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainingBinding
     private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
     private lateinit var recyclerView: RecyclerView
+    private lateinit var rowerDao: RowerDao
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var trainer: Trainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefEditor = PreferenceEditor(
-            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
+        val sharedPreferences: SharedPreferences =
+            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE)
+        calendar = Calendar(sharedPreferences)
+        prefEditor = PreferenceEditor(sharedPreferences)
         binding = ActivityTrainingBinding.inflate(layoutInflater)
         layoutManager = LinearLayoutManager(this)
         setContentView(binding.root)
@@ -39,10 +49,12 @@ class TrainingActivity : AppCompatActivity() {
 
         val boatDao = BoatRoomDatabase.getDatabase(this, scope).boatDao()
         val oarDao = OarRoomDatabase.getDatabase(this, scope).oarDao()
-        val rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
+        rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
         val singleComboDao = SingleComboRoomDatabase.getDatabase(this, scope).singleComboDao()
 
-        val viewAdapter = PairViewAdapter(boatDao, oarDao, rowerDao, singleComboDao)
+        trainer = Trainer(boatDao, oarDao, rowerDao, singleComboDao)
+        val viewAdapter =
+            PairViewAdapter(boatDao, oarDao, rowerDao, singleComboDao, calendar.getGlobalDay())
         recyclerView = findViewById<RecyclerView>(R.id.list).apply {
             setHasFixedSize(true)
             this.layoutManager = layoutManager
@@ -54,14 +66,16 @@ class TrainingActivity : AppCompatActivity() {
         binding.buttonTrainTechnicalit.setOnClickListener { train(viewAdapter, TRAIN_TECHNICALITY) }
     }
 
-    fun showDay() { binding.day.text = this.getString(R.string.day, prefEditor.getDay()) }
+    private fun showDay() {
+        binding.day.text = this.getString(R.string.day, calendar.getDayOfYear()) }
 
-    fun train(viewAdapter: PairViewAdapter, mode: Int) {
-        scope.launch { viewAdapter.startTraining(mode) }
-        prefEditor.nextDay()
+    private fun train(viewAdapter: PairViewAdapter, mode: Int) {
+        scope.launch { trainer.startTraining(mode, viewAdapter.combos, calendar.getGlobalDay()) }
+        calendar.nextDay()
+        if (calendar.getGlobalDay() == 1) resetInjuries(rowerDao)
         showDay()
-        HelperFuns.showToast(this,
-            if (prefEditor.getDay() % DIM != 0) R.string.train_sucess else R.string.time_to_race)
+        showToast(this, if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess
+        else R.string.time_to_race)
     }
 
     companion object { private const val DIM = 30 } // Days in month

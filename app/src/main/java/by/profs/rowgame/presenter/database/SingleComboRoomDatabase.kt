@@ -9,7 +9,7 @@ import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.utils.TABLE_COMBO_SINGLE
 import kotlinx.coroutines.CoroutineScope
 
-@Database(entities = [CombinationSingleScull::class], version = 1)
+@Database(entities = [CombinationSingleScull::class], version = 2)
 abstract class SingleComboRoomDatabase : RoomDatabase() {
     abstract fun singleComboDao(): SingleComboDao
 

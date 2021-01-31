@@ -1,6 +1,7 @@
+
 package by.profs.rowgame.data.items.util
 
-val commonSurnames = listOf<String>(
+val commonSurnames = listOf(
     "Смирнов",
     "Иванов",
     "Кузнецов",
@@ -252,7 +253,7 @@ val commonSurnames = listOf<String>(
     "Лыткин",
     "Туров"
 )
-val namesMale = listOf<String>(
+val namesMale = listOf(
     "Александр",
     "Алексей",
     "Анатолий",
@@ -288,7 +289,7 @@ val namesMale = listOf<String>(
     "Ян"
 )
 
-val namesFemale = listOf<String>(
+val namesFemale = listOf(
     "Александра",
     "Алеся",
     "Алина",

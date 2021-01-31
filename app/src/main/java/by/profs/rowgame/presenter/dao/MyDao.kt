@@ -7,5 +7,7 @@ interface MyDao<T> {
 
     fun deleteItem(id: Int)
 
+    fun search(id: Int): T?
+
     fun updateItem(item: T)
 }

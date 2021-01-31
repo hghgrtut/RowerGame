@@ -1,9 +1,8 @@
-package by.profs.rowgame.data
+package by.profs.rowgame.data.preferences
 
 import android.content.SharedPreferences
 import by.profs.rowgame.data.combos.CombinationSingleScull
 import by.profs.rowgame.utils.BOAT
-import by.profs.rowgame.utils.DAY
 import by.profs.rowgame.utils.FAME
 import by.profs.rowgame.utils.FIRST_OAR
 import by.profs.rowgame.utils.FIRST_ROWER
@@ -46,21 +45,21 @@ class PreferenceEditor(private val preferences: SharedPreferences) {
     }
 
     fun occupyBoat(id: Int) {
-        preferences.edit().apply() {
+        preferences.edit().apply {
             putInt(BOAT, id)
             apply()
         }
     }
 
-    fun occupyRower(id: String, number: Int = 1) {
-        preferences.edit().apply() {
-            putString(when (number) { else -> FIRST_ROWER }, id)
+    fun occupyRower(id: Int) {
+        preferences.edit().apply {
+            putInt(FIRST_ROWER, id)
             apply()
         }
     }
 
     fun occupyOar(id: Int, number: Int = 1) {
-        preferences.edit().apply() {
+        preferences.edit().apply {
             putInt(when (number) { else -> FIRST_OAR }, id)
             apply()
         }
@@ -70,23 +69,10 @@ class PreferenceEditor(private val preferences: SharedPreferences) {
         null,
         preferences.getInt(BOAT, 0),
         preferences.getInt(FIRST_OAR, 0),
-        preferences.getString(FIRST_ROWER, "")!!
+        preferences.getInt(FIRST_ROWER, 0)
     )
 
-    fun getDay(): Int {
-        var day = preferences.getInt(DAY, lastDay)
-        if (day == lastDay) day = 1
-        return day
-    }
-
-    fun nextDay() {
-        preferences.edit().apply {
-            putInt(DAY, getDay() + 1)
-            apply()
-        }
-    }
-
     companion object {
-        const val lastDay = 366
+        const val lastDay = 365
     }
 }

@@ -200,7 +200,7 @@ exceptions:
      - Error
      - Exception
      - IllegalMonitorStateException
-     - NullPointerException
+    # - NullPointerException
     # - IndexOutOfBoundsException
      - RuntimeException
      - Throwable

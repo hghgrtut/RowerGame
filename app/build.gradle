@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services' // Google Services Gradle plugin
 
@@ -53,6 +52,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation("io.coil-kt:coil:1.1.1")
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     // network dependencies
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
@@ -69,13 +69,13 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
 
     // Crashlytics
-    implementation 'com.google.firebase:firebase-analytics-ktx:18.0.0' // Optional
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:18.0.2' // Optional
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.3.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines"
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -8,11 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Rower
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
+import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.ItemDetailNavigation
 import by.profs.rowgame.presenter.navigation.PairingNavigation
@@ -22,15 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RowerViewAdapter(private val target: Int, dao: RowerDao, comboDao: SingleComboDao? = null) :
-    RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
+class RowerViewAdapter(
+    private val target: Int,
+    private var dao: RowerDao,
+    private var singleComboDao: SingleComboDao? = null
+) : RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
 
     private lateinit var rowers: List<Rower>
     private lateinit var context: Context
-    private var dao = dao
-    private val imageLoader: ImageLoader = GlideImageLoader
+    private val imageLoader: ImageLoader = CoilImageLoader
     private lateinit var prefEditor: PreferenceEditor
-    private var singleComboDao: SingleComboDao? = comboDao
 
     init { refreshDataSet() }
 
@@ -53,9 +54,9 @@ class RowerViewAdapter(private val target: Int, dao: RowerDao, comboDao: SingleC
         holder.weight.text = context.getString(R.string.rower_weight, rower.weight)
         holder.itemView.setOnClickListener {
             if (target == INVENTORY) {
-                ItemDetailNavigation(context).goToRowerFromList(rower.name)
+                ItemDetailNavigation(context).goToRowerFromList(rower.id!!)
             } else {
-                prefEditor.occupyRower(rower.name)
+                prefEditor.occupyRower(rower.id!!)
                 PairingNavigation(context).goToPairingOar()
             }
         }
@@ -75,11 +76,11 @@ class RowerViewAdapter(private val target: Int, dao: RowerDao, comboDao: SingleC
         val weight: TextView = view.findViewById(R.id.weight)
     }
 
-    fun refreshDataSet() { CoroutineScope(Dispatchers.IO).launch {
+    private fun refreshDataSet() { CoroutineScope(Dispatchers.IO).launch {
         rowers = withContext(Dispatchers.IO) { if (target == INVENTORY) { dao.getItems()
             } else {
                 val rowerIds = singleComboDao!!.getRowerIds()
-                dao.getItems().filter { rower -> !rowerIds.contains(rower.name) }
+                dao.getItems().filter { rower -> !rowerIds.contains(rower.id!!) }
             } }
         }
     }

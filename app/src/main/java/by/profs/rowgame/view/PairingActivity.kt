@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityPairingBinding
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
@@ -42,8 +42,7 @@ class PairingActivity : AppCompatActivity() {
             setHasFixedSize(true)
             this.layoutManager = layoutManager
         }
-        val intentType = intent.extras?.getInt(ITEM)
-        when (intentType) {
+        when (intent.extras?.getInt(ITEM)) { // intent type
             INTENT_BOATS -> choosingBoat()
             INTENT_OARS -> choosingOar()
             INTENT_ROWERS -> choosingRower()

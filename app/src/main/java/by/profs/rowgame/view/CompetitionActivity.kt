@@ -1,17 +1,20 @@
 package by.profs.rowgame.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.Calendar
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityCompetitionBinding
 import by.profs.rowgame.presenter.competition.RaceCalculator.calculateRace
 import by.profs.rowgame.presenter.dao.BoatDao
@@ -36,6 +39,7 @@ class CompetitionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCompetitionBinding
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var recyclerView: RecyclerView
+    private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var boatDao: BoatDao
@@ -65,10 +69,12 @@ class CompetitionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefEditor = PreferenceEditor(
-            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE))
+        val sharedPreferences: SharedPreferences =
+            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE)
+        prefEditor = PreferenceEditor(sharedPreferences)
+        calendar = Calendar(sharedPreferences)
 
-        val day = prefEditor.getDay()
+        val day = calendar.getDayOfYear()
         if (day % raceDay != 0) {
             setContentView(R.layout.error_network_layout)
             findViewById<TextView>(R.id.error).text = getString(R.string.error_wrong_day)
@@ -76,7 +82,7 @@ class CompetitionActivity : AppCompatActivity() {
         }
         competitionNum = day / raceDay
 
-        prefEditor.nextDay()
+        calendar.nextDay()
         binding = ActivityCompetitionBinding.inflate(layoutInflater)
         layoutManager = LinearLayoutManager(this)
 
@@ -93,10 +99,14 @@ class CompetitionActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
+            val globalDay = calendar.getGlobalDay()
             singleComboDao.getAllCombos().forEach { combo ->
-                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)[0] })
-                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)[0] })
-                allRowers.add(withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)[0] })
+                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
+                if (rower.injury < globalDay) {
+                    allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
+                    allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
+                    allRowers.add(rower)
+                }
             }
 
             newSemifinal()
@@ -192,14 +202,14 @@ class CompetitionActivity : AppCompatActivity() {
         if (finalists == null) return
         CoroutineScope(Dispatchers.IO).launch {
             val myRowers = singleComboDao.getRowerIds()
-            if (myRowers.contains(finalists!![FIRST].first.name)) {
+            if (myRowers.contains(finalists!![FIRST].first.id)) {
                 boatDao.insert(Randomizer.getRandomBoat())
                 prefEditor.setFame(prefEditor.getFame() + competitionNum / 2)
             }
-            if (myRowers.contains(finalists!![SECOND].first.name)) {
+            if (myRowers.contains(finalists!![SECOND].first.id)) {
                 oarDao.insert(Randomizer.getRandomOar())
             }
-            if (myRowers.contains(finalists!![THIRD].first.name)) {
+            if (myRowers.contains(finalists!![THIRD].first.id)) {
                 oarDao.insert(Randomizer.getRandomOar())
             }
         }
@@ -233,12 +243,16 @@ class CompetitionActivity : AppCompatActivity() {
                 START -> {
                     rating = ArrayList()
                     binding.buttonRace.visibility = View.GONE
+                    binding.buttonRaceFull.visibility = View.GONE
                     setupRace()
                     setTitle(R.string.phase_start)
                 }
                 HALF -> setTitle(R.string.phase_half)
                 ONE_AND_HALF -> setTitle(R.string.phase_one_and_half)
-                FINISH -> setTitle(R.string.phase_finish)
+                FINISH -> {
+                    setTitle(R.string.phase_finish)
+                    binding.buttonRaceFull.visibility = View.VISIBLE
+                }
                 else -> {
                     phase = START
                     binding.buttonRace.visibility = View.VISIBLE
@@ -251,6 +265,7 @@ class CompetitionActivity : AppCompatActivity() {
                     ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
             phase += phaseLenght
+            if (phase <= FINISH) Handler().postDelayed({ raceFull() }, delay)
         }
 
         internal fun raceShort() {
@@ -298,5 +313,6 @@ class CompetitionActivity : AppCompatActivity() {
         private const val FINISH = phaseLenght * 4
 
         private const val maxSkillCoef = 4
+        private const val delay = 650L
     }
 }

@@ -8,11 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.informators.BoatInformator
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class BoatViewAdapter(
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    dao: BoatDao,
+    private var dao: BoatDao,
     private val singleComboDao: SingleComboDao? = null
 ) : RecyclerView.Adapter<BoatViewAdapter.ViewHolder>(),
     MyViewAdapter<Boat> {
@@ -35,9 +35,7 @@ class BoatViewAdapter(
     private val boats = mutableListOf<Boat>()
     private lateinit var context: Context
     private val informator: BoatInformator = BoatInformator()
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private val trader: BoatTrader = BoatTrader(prefEditor, dao)
-    private var dao = dao
 
     init { refreshDataSet() }
 

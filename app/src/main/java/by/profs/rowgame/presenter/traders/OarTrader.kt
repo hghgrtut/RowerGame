@@ -1,7 +1,7 @@
 package by.profs.rowgame.presenter.traders
 
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Oar
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.utils.IDEAL
 import kotlinx.coroutines.CoroutineScope

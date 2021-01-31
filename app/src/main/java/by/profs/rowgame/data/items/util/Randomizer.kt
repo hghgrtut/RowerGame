@@ -67,6 +67,7 @@ object Randomizer {
             else -> getRandomInt(RW_DIAP * 2) + WEIGHT_200
         }
         return Rower(
+            id = null,
             name,
             gender,
             age,

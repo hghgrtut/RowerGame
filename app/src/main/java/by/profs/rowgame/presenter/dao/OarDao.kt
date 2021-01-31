@@ -15,7 +15,7 @@ interface OarDao : MyDao<Oar> {
     override fun getItems(): List<Oar>
 
     @Query("SELECT * FROM $TABLE_OAR WHERE $ID_OAR = (:id) LIMIT 1")
-    fun search(id: Int): List<Oar>
+    override fun search(id: Int): Oar?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override fun insert(item: Oar)

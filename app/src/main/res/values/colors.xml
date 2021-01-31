@@ -3,5 +3,5 @@
     <color name="tint">#0142B3</color>
     <color name="tint_ripple">#657FAD</color>
     <color name="background_primary">#C8D3E6</color>
-    <color name="background_secondary">#7E241D</color>
+    <color name="hurted_rower">#657FAD</color>
 </resources>

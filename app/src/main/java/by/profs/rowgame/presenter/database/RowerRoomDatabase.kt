@@ -9,7 +9,7 @@ import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.utils.TABLE_ROWERS
 import kotlinx.coroutines.CoroutineScope
 
-@Database(entities = [Rower::class], version = 1)
+@Database(entities = [Rower::class], version = 3)
 abstract class RowerRoomDatabase : RoomDatabase() {
     abstract fun rowerDao(): RowerDao
 

@@ -15,8 +15,6 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
-import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 
@@ -27,7 +25,6 @@ class CompetitionViewAdapter(
 ) : RecyclerView.Adapter<CompetitionViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
-    private val imageLoader: ImageLoader = GlideImageLoader
     private val oarInformator: OarInformator = OarInformator()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -40,7 +37,6 @@ class CompetitionViewAdapter(
         val rowerHeight: TextView = view.findViewById(R.id.height)
         val rowerWeight: TextView = view.findViewById(R.id.weight_rower)
         val rowerAge: TextView = view.findViewById(R.id.age)
-        val boatType: TextView = view.findViewById(R.id.type)
         val boatRigger: TextView = view.findViewById(R.id.rigger)
         val boatWeight: TextView = view.findViewById(R.id.weight_boat)
         val oarModel: TextView = view.findViewById(R.id.model_oar)
@@ -50,10 +46,9 @@ class CompetitionViewAdapter(
         val button: Button = view.findViewById(R.id.detachButton)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            CompetitionViewAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return CompetitionViewAdapter.ViewHolder(
+        return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_pair, parent, false)
         )
     }

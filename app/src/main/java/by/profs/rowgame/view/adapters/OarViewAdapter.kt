@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.PreferenceEditor
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 class OarViewAdapter(
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    dao: OarDao,
+    private var dao: OarDao,
     private val singleComboDao: SingleComboDao? = null
 ) : RecyclerView.Adapter<OarViewAdapter.ViewHolder>(), MyViewAdapter<Oar> {
 
@@ -40,7 +40,6 @@ class OarViewAdapter(
     private lateinit var context: Context
     private val informator: OarInformator = OarInformator()
     private val trader: OarTrader = OarTrader(prefEditor, dao)
-    private var dao = dao
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init { refreshDataSet() }
