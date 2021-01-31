@@ -12,7 +12,7 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
+import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.ItemDetailNavigation
 import by.profs.rowgame.presenter.navigation.PairingNavigation
@@ -30,7 +30,7 @@ class RowerViewAdapter(
 
     private lateinit var rowers: List<Rower>
     private lateinit var context: Context
-    private val imageLoader: ImageLoader = GlideImageLoader
+    private val imageLoader: ImageLoader = CoilImageLoader
     private lateinit var prefEditor: PreferenceEditor
 
     init { refreshDataSet() }

@@ -13,7 +13,7 @@ import by.profs.rowgame.databinding.ActivityRowerDetailsBinding
 import by.profs.rowgame.presenter.api.RetrofitApiImplementation
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
+import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.utils.ID_ROWER
@@ -105,7 +105,7 @@ class RowerDetailsActivity : AppCompatActivity() {
     }
 
     private fun showImage(view: ImageView, rower: Rower) {
-        val imageLoader: ImageLoader = GlideImageLoader
+        val imageLoader: ImageLoader = CoilImageLoader
         if (rower.photo != null) { imageLoader.loadImageFromNetwork(view, rower.photo)
         } else { view.setImageResource(
             if (rower.gender == Rower.MALE) { R.drawable.placeholder_man

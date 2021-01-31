@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.presenter.imageloader.GlideImageLoader
+import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 
 object HelperFuns {
@@ -28,7 +28,7 @@ object HelperFuns {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show()
 
     fun loadThumb(rower: Rower, view: ImageView) {
-        val imageLoader: ImageLoader = GlideImageLoader
+        val imageLoader: ImageLoader = CoilImageLoader
         if (rower.thumb != null) {
             imageLoader.loadImageFromNetwork(view, rower.thumb)
         } else { view.setImageResource(

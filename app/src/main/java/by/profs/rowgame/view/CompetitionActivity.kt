@@ -265,7 +265,7 @@ class CompetitionActivity : AppCompatActivity() {
                     ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
             phase += phaseLenght
-            if (phase <= FINISH) Handler().postDelayed( { raceFull() } , delay)
+            if (phase <= FINISH) Handler().postDelayed({ raceFull() }, delay)
         }
 
         internal fun raceShort() {
