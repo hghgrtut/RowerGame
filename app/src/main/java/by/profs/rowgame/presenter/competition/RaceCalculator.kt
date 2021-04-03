@@ -4,7 +4,7 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.utils.NumberGenerator
-import by.profs.rowgame.view.CompetitionActivity
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.raceSize
 import kotlin.math.abs
 
 object RaceCalculator {
@@ -17,10 +17,10 @@ object RaceCalculator {
     ): ArrayList<Pair<Rower, Int>> {
 
         if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
-        val distances = IntArray(CompetitionActivity.raceSize) {
+        val distances = IntArray(raceSize) {
             NumberGenerator.generatePositiveIntOrNull(MAX_GAP)
         }
-        val chances: MutableList<Int> = MutableList(CompetitionActivity.raceSize) { pos ->
+        val chances: MutableList<Int> = MutableList(raceSize) { pos ->
             calculatePower(boats[pos], oars[pos], rowers[pos])
         }
         distances.sort()

@@ -6,6 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
@@ -14,9 +18,11 @@ import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
-import by.profs.rowgame.presenter.navigation.ItemDetailNavigation
-import by.profs.rowgame.presenter.navigation.PairingNavigation
+import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.utils.USER_PREF
+import by.profs.rowgame.view.inventory.InventoryFragmentDirections
+import by.profs.rowgame.view.inventory.RowerDetailsFragment.Companion.FROM_LIST
+import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,11 +31,13 @@ import kotlinx.coroutines.withContext
 class RowerViewAdapter(
     private val target: Int,
     private var dao: RowerDao,
+    private var navController: NavController? = null,
     private var singleComboDao: SingleComboDao? = null
 ) : RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
 
     private lateinit var rowers: List<Rower>
     private lateinit var context: Context
+    private lateinit var fragment: Fragment
     private val imageLoader: ImageLoader = CoilImageLoader
     private lateinit var prefEditor: PreferenceEditor
 
@@ -37,6 +45,7 @@ class RowerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
+        fragment = parent.findFragment()
         prefEditor = PreferenceEditor(context.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_rower, parent, false))
@@ -54,10 +63,15 @@ class RowerViewAdapter(
         holder.weight.text = context.getString(R.string.rower_weight, rower.weight)
         holder.itemView.setOnClickListener {
             if (target == INVENTORY) {
-                ItemDetailNavigation(context).goToRowerFromList(rower.id!!)
+                InventoryFragmentDirections
+                    .actionInventoryFragmentToRowerDetailsFragment(FROM_LIST, rower.id!!)
+                    .also { navController!!.navigate(it) }
             } else {
                 prefEditor.occupyRower(rower.id!!)
-                PairingNavigation(context).goToPairingOar()
+                val navController by lazy(LazyThreadSafetyMode.NONE) {
+                    NavHostFragment.findNavController(fragment) }
+                PairingFragmentDirections.actionPairingFragmentSelf(INTENT_OARS)
+                    .also { navController.navigate(it) }
             }
         }
     }

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="by.profs.rowgame.view.MainFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_inventoryFragment"
+            app:destination="@id/inventoryFragment">
+            <argument
+                android:name="itemType"
+                android:defaultValue="6" />
+        </action>
+        <action
+            android:id="@+id/action_mainFragment_to_rowerDetailsFragment"
+            app:destination="@id/rowerDetailsFragment" >
+            <argument
+                android:name="source"
+                android:defaultValue="1" />
+        </action>
+        <action
+            android:id="@+id/action_mainFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_competitionFragment"
+            app:destination="@id/competitionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_pairingFragment"
+            app:destination="@id/pairingFragment"
+            app:popUpTo="@id/mainFragment">
+            <argument
+                android:name="item"
+                android:defaultValue="1" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/inventoryFragment"
+        android:name="by.profs.rowgame.view.inventory.InventoryFragment"
+        tools:layout="@layout/fragment_inventory">
+        <argument
+            android:name="itemType"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_inventoryFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+        <action
+            android:id="@+id/action_inventoryFragment_to_rowerDetailsFragment"
+            app:destination="@id/rowerDetailsFragment" >
+            <argument
+                android:name="source"
+                android:defaultValue="2" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="by.profs.rowgame.view.shop.ShopFragment"
+        tools:layout="@layout/fragment_shop">
+        <argument
+            android:name="itemType"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/rowerDetailsFragment"
+        android:name="by.profs.rowgame.view.inventory.RowerDetailsFragment"
+        android:label="@string/about_rower"
+        tools:layout="@layout/fragment_rower_details">
+        <argument
+            android:name="source"
+            app:argType="integer" />
+        <argument
+            android:name="rowerId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_rowerDetailsFragment_to_netErrorFragment"
+            app:destination="@id/netErrorFragment"
+            app:popUpTo="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/netErrorFragment"
+        android:name="by.profs.rowgame.view.error.NetErrorFragment"
+        android:label="@string/no_internet"
+        tools:layout="@layout/error_network_layout" />
+    <fragment
+        android:id="@+id/trainingFragment"
+        android:name="by.profs.rowgame.view.training.TrainingFragment"
+        android:label="@string/trainings"
+        tools:layout="@layout/fragment_training" />
+    <fragment
+        android:id="@+id/competitionFragment"
+        android:name="by.profs.rowgame.view.competition.CompetitionFragment"
+        android:label="CompetitionFragment"
+        tools:layout="@layout/fragment_competition" >
+        <action
+            android:id="@+id/action_competitionFragment_to_wrongDayErrorFragment"
+            app:destination="@id/wrongDayErrorFragment"
+            app:popUpTo="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pairingFragment"
+        android:name="by.profs.rowgame.view.pairing.PairingFragment"
+        android:label="PairingFragment"
+        tools:layout="@layout/fragment_pairing" >
+        <argument
+            android:name="item"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <action
+            android:id="@+id/action_pairingFragment_self"
+            app:destination="@id/pairingFragment"
+            app:popUpTo="@id/mainFragment">
+            <argument
+                android:name="item"
+                android:defaultValue="1" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/wrongDayErrorFragment"
+        android:name="by.profs.rowgame.view.error.WrongDayErrorFragment"
+        android:label="@string/not_today"
+        tools:layout="@layout/error_wrong_day" />
+</navigation>

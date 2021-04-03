@@ -46,7 +46,7 @@
         tools:text="@string/rower_endurance" />
 
     <TextView
-        android:id="@+id/technicality"
+        android:id="@+id/technicalit"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,6 +1,6 @@
 package by.profs.rowgame.presenter.utils
 
-import android.app.Application
+import android.content.Context
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
@@ -10,13 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object Resetter {
-    suspend fun giveInitMoney(prefEditor: PreferenceEditor, application: Application): Boolean =
+    suspend fun giveInitMoney(prefEditor: PreferenceEditor, context: Context): Boolean =
         withContext(Dispatchers.IO) {
             val balance = prefEditor.getBalance()
             val scope = CoroutineScope(Dispatchers.IO)
             if (balance >= START_MONEY_BALANCE ||
-                OarRoomDatabase.getDatabase(application, scope).oarDao().getItems().isNotEmpty() ||
-                BoatRoomDatabase.getDatabase(application, scope).boatDao().getItems().isNotEmpty()
+                OarRoomDatabase.getDatabase(context, scope).oarDao().getItems().isNotEmpty() ||
+                BoatRoomDatabase.getDatabase(context, scope).boatDao().getItems().isNotEmpty()
             ) false
             else {
                 prefEditor.setBalance(START_MONEY_BALANCE)

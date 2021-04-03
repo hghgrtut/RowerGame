@@ -3,5 +3,6 @@
     <color name="tint">@android:color/black</color>
     <color name="tint_ripple">#D34F4F</color>
     <color name="background_primary">#3B4147</color>
+    <color name="change_theme">#958639</color>
     <color name="hurted_rower">#D34F4F</color>
 </resources>

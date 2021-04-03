@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.CompetitionActivity">
+    tools:context=".view.MainActivity">
 
-    <include
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        layout="@layout/fragment_list"
+        android:scrollbars="vertical"
+        android:name="by.profs.rowgame.ItemFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/padding"
+        tools:context=".view.inventory.InventoryFragment"
+        tools:listitem="@layout/item_pair"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/button_race"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

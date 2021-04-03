@@ -1,11 +1,14 @@
-package by.profs.rowgame.view
+package by.profs.rowgame.view.competition
 
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
@@ -15,8 +18,8 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.PreferenceEditor
-import by.profs.rowgame.databinding.ActivityCompetitionBinding
-import by.profs.rowgame.presenter.competition.RaceCalculator.calculateRace
+import by.profs.rowgame.databinding.FragmentCompetitionBinding
+import by.profs.rowgame.presenter.competition.RaceCalculator
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
@@ -27,17 +30,15 @@ import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
 import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.CompetitionViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
-import by.profs.rowgame.view.utils.HelperFuns
-import kotlin.collections.ArrayList
+import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CompetitionActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCompetitionBinding
-    private lateinit var layoutManager: RecyclerView.LayoutManager
+class CompetitionFragment : Fragment(R.layout.fragment_competition) {
+    private var binding: FragmentCompetitionBinding? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
@@ -67,35 +68,41 @@ class CompetitionActivity : AppCompatActivity() {
     private val race: Race = Race()
     private var competitionNum = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentCompetitionBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val context = requireContext()
         val sharedPreferences: SharedPreferences =
-            applicationContext.getSharedPreferences(USER_PREF, MODE_PRIVATE)
+            context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
         prefEditor = PreferenceEditor(sharedPreferences)
         calendar = Calendar(sharedPreferences)
 
         val day = calendar.getDayOfYear()
         if (day % raceDay != 0) {
-            setContentView(R.layout.error_network_layout)
-            findViewById<TextView>(R.id.error).text = getString(R.string.error_wrong_day)
+            val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
+            CompetitionFragmentDirections.actionCompetitionFragmentToWrongDayErrorFragment()
+                .also { navController.navigate(it) }
             return
         }
-        competitionNum = day / raceDay
-
         calendar.nextDay()
-        binding = ActivityCompetitionBinding.inflate(layoutInflater)
-        layoutManager = LinearLayoutManager(this)
 
-        setContentView(binding.root)
+        competitionNum = day / raceDay
+        boatDao = BoatRoomDatabase.getDatabase(context, scope).boatDao()
+        oarDao = OarRoomDatabase.getDatabase(context, scope).oarDao()
+        val rowerDao = RowerRoomDatabase.getDatabase(context, scope).rowerDao()
+        singleComboDao = SingleComboRoomDatabase.getDatabase(context, scope).singleComboDao()
 
-        boatDao = BoatRoomDatabase.getDatabase(this, scope).boatDao()
-        oarDao = OarRoomDatabase.getDatabase(this, scope).oarDao()
-        val rowerDao = RowerRoomDatabase.getDatabase(this, scope).rowerDao()
-        singleComboDao = SingleComboRoomDatabase.getDatabase(this, scope).singleComboDao()
-
-        recyclerView = findViewById<RecyclerView>(R.id.list).apply {
+        recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
-            this.layoutManager = layoutManager
+            layoutManager = LinearLayoutManager(context)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -112,8 +119,13 @@ class CompetitionActivity : AppCompatActivity() {
             newSemifinal()
         }
 
-        binding.buttonRace.setOnClickListener { race.raceShort() }
-        binding.buttonRaceFull.setOnClickListener { race.raceFull() }
+        binding?.buttonRace?.setOnClickListener { race.raceShort() }
+        binding?.buttonRaceFull?.setOnClickListener { race.raceFull() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     private fun calculateRace(
@@ -121,7 +133,7 @@ class CompetitionActivity : AppCompatActivity() {
         oars: List<Oar>,
         rowers: List<Rower>
     ) {
-        rating = ArrayList(calculateRace(boats, oars, rowers, rating))
+        rating = ArrayList(RaceCalculator.calculateRace(boats, oars, rowers, rating))
         val excessGap: Int = rating.map { it.second }.minOrNull()!!
         rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
     }
@@ -144,19 +156,18 @@ class CompetitionActivity : AppCompatActivity() {
             'A' -> {
                 val viewAdapter = CompetitionViewAdapter(finalABoats, finalAOars, finalARowers)
                 recyclerView.apply { adapter = viewAdapter }
-                setTitle(R.string.final_a)
+                requireActivity().setTitle(R.string.final_a)
             }
             'B' -> {
                 val viewAdapter = CompetitionViewAdapter(finalBBoats, finalBOars, finalBRowers)
                 recyclerView.apply { adapter = viewAdapter }
-                setTitle(R.string.final_b)
+                requireActivity().setTitle(R.string.final_b)
             }
-            }
-        }
+        } }
     }
 
     private fun newSemifinal() {
-        MainScope().launch { setTitle(R.string.semifinal) }
+        MainScope().launch { requireActivity().setTitle(R.string.semifinal) }
         val to = from + raceSize
         val free = to - allBoats.size
         CoroutineScope(Dispatchers.Default).launch {
@@ -181,13 +192,14 @@ class CompetitionActivity : AppCompatActivity() {
     private fun showResults() {
         recyclerView.apply {
             adapter = StandingViewAdapter(finalists!!, StandingViewAdapter.RESULTS) }
-        setTitle(R.string.results)
-        binding.buttonRace.visibility = View.GONE
-        binding.buttonRaceFull.visibility = View.GONE
+        requireActivity().setTitle(R.string.results)
+        binding?.buttonRace?.visibility = View.GONE
+        binding?.buttonRaceFull?.visibility = View.GONE
     }
 
     private fun showToastResults(rowers: List<Rower>) {
-        HelperFuns.showToast(this, this.getString(
+        val context = requireContext()
+        showToast(context, context.getString(
             R.string.race_results_list,
             rowers[FIRST].name,
             rowers[SECOND].name,
@@ -217,7 +229,8 @@ class CompetitionActivity : AppCompatActivity() {
 
     inner class Race {
         private fun setupRace() {
-            when (title as String) {
+            val title: String = requireActivity().title as String
+            when (title) {
                 getString(R.string.semifinal) -> {
                     val to = from + raceSize
                     raceBoats = allBoats.subList(from, to)
@@ -242,27 +255,27 @@ class CompetitionActivity : AppCompatActivity() {
             when (phase) {
                 START -> {
                     rating = ArrayList()
-                    binding.buttonRace.visibility = View.GONE
-                    binding.buttonRaceFull.visibility = View.GONE
+                    binding?.buttonRace?.visibility = View.GONE
+                    binding?.buttonRaceFull?.visibility = View.GONE
                     setupRace()
-                    setTitle(R.string.phase_start)
+                    requireActivity().setTitle(R.string.phase_start)
                 }
-                HALF -> setTitle(R.string.phase_half)
-                ONE_AND_HALF -> setTitle(R.string.phase_one_and_half)
+                HALF -> requireActivity().setTitle(R.string.phase_half)
+                ONE_AND_HALF -> requireActivity().setTitle(R.string.phase_one_and_half)
                 FINISH -> {
-                    setTitle(R.string.phase_finish)
-                    binding.buttonRaceFull.visibility = View.VISIBLE
+                    requireActivity().setTitle(R.string.phase_finish)
+                    binding?.buttonRaceFull?.visibility = View.VISIBLE
                 }
                 else -> {
                     phase = START
-                    binding.buttonRace.visibility = View.VISIBLE
+                    binding?.buttonRace?.visibility = View.VISIBLE
                     raceCommon()
                     return
                 }
             }
             calculateRace(raceBoats, raceOars, raceRowers)
             recyclerView.apply { adapter = StandingViewAdapter(
-                    ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
+                ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
             phase += phaseLenght
             if (phase <= FINISH) Handler().postDelayed({ raceFull() }, delay)

@@ -14,15 +14,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Money: 1200" />
 
-    <include
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        layout="@layout/fragment_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:name="by.profs.rowgame.ItemFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/padding"
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/money" />
+        app:layout_constraintTop_toBottomOf="@+id/money"
+        tools:context=".view.inventory.InventoryFragment"
+        tools:listitem="@layout/item_oar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

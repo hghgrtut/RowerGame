@@ -12,6 +12,7 @@
     <string name="day">Сегодня: %1$d</string>
     <string name="day_with_instruction">Сегодня: %1$d\nСоревнования каждый 30-ый день</string>
     <!-- Activity titles -->
+    <string name="about_rower">О гребце</string>
     <string name="boat_inventory">Мои лодки</string>
     <string name="boat_shop">Магазин лодок</string>
     <string name="final_a">Финал А</string>
@@ -21,6 +22,8 @@
     <string name="choose_boat">Выберите лодку</string>
     <string name="choose_oar">Выберите весла</string>
     <string name="choose_rower">Выберите гребца</string>
+    <string name="no_internet">No Internet</string>
+    <string name="not_today">Не сегодня</string>
     <string name="phase_start">500 м</string>
     <string name="phase_half">1000 м</string>
     <string name="phase_one_and_half">1500 м</string>
