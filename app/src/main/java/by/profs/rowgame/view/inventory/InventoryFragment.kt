@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,7 +18,6 @@ import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.INVENTORY
 import by.profs.rowgame.view.adapters.OarViewAdapter
@@ -46,8 +44,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefEditor = PreferenceEditor(
-            requireContext().getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE))
+        prefEditor = PreferenceEditor(requireContext())
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)

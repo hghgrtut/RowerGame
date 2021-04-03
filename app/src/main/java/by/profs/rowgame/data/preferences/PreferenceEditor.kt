@@ -1,6 +1,8 @@
 package by.profs.rowgame.data.preferences
 
+import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
 import by.profs.rowgame.data.combos.CombinationSingleScull
 import by.profs.rowgame.utils.BOAT
 import by.profs.rowgame.utils.FAME
@@ -10,8 +12,12 @@ import by.profs.rowgame.utils.MONEY
 import by.profs.rowgame.utils.START_FAME
 import by.profs.rowgame.utils.START_MONEY_BALANCE
 import by.profs.rowgame.utils.UNDEFINED
+import by.profs.rowgame.utils.USER_PREF
 
-class PreferenceEditor(private val preferences: SharedPreferences) {
+class PreferenceEditor(context: Context) {
+    private val preferences: SharedPreferences =
+        context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
+
     fun getBalance(): Int {
         var balance = preferences.getInt(MONEY, UNDEFINED)
         if (balance == UNDEFINED) {
@@ -71,8 +77,4 @@ class PreferenceEditor(private val preferences: SharedPreferences) {
         preferences.getInt(FIRST_OAR, 0),
         preferences.getInt(FIRST_ROWER, 0)
     )
-
-    companion object {
-        const val lastDay = 365
-    }
 }

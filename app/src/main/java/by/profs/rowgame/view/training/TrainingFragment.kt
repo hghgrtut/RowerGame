@@ -1,11 +1,9 @@
 package by.profs.rowgame.view.training
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +21,6 @@ import by.profs.rowgame.utils.HelperFuns
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.PairViewAdapter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
@@ -51,10 +48,8 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
-        calendar = Calendar(sharedPreferences)
-        prefEditor = PreferenceEditor(sharedPreferences)
+        calendar = Calendar(context)
+        prefEditor = PreferenceEditor(context)
         LinearLayoutManager(context)
         showDay()
 

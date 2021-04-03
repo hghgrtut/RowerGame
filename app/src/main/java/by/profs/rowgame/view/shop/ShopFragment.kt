@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import by.profs.rowgame.databinding.FragmentShopBinding
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.SHOP
@@ -40,8 +38,7 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        prefEditor = PreferenceEditor(
-            requireContext().getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE))
+        prefEditor = PreferenceEditor(requireContext())
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())

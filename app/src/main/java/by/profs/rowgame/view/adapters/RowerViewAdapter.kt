@@ -19,7 +19,6 @@ import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.inventory.InventoryFragmentDirections
 import by.profs.rowgame.view.inventory.RowerDetailsFragment.Companion.FROM_LIST
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
@@ -46,7 +45,7 @@ class RowerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         fragment = parent.findFragment()
-        prefEditor = PreferenceEditor(context.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
+        prefEditor = PreferenceEditor(context)
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_rower, parent, false))
     }

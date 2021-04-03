@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,7 +19,6 @@ import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import java.net.UnknownHostException
 import kotlinx.coroutines.CoroutineScope
@@ -49,8 +47,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        prefEditor = PreferenceEditor(
-            context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE))
+        prefEditor = PreferenceEditor(context)
         dao = RowerRoomDatabase.getDatabase(context, CoroutineScope(Dispatchers.IO)).rowerDao()
         recruiter = Recruiter(prefEditor, dao)
         MainScope().launch { showRower() }

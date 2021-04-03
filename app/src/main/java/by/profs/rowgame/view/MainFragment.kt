@@ -1,11 +1,9 @@
 package by.profs.rowgame.view
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
@@ -16,7 +14,6 @@ import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.utils.Resetter
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -40,10 +37,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences: SharedPreferences =
-            requireContext().getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
-        calendar = Calendar(sharedPreferences)
-        prefEditor = PreferenceEditor(sharedPreferences)
+        calendar = Calendar(requireContext())
+        prefEditor = PreferenceEditor(requireContext())
 
         binding?.goToBoats?.setOnClickListener {
             MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_BOATS)

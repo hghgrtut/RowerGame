@@ -19,7 +19,6 @@ import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.PAIRING
@@ -47,8 +46,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         contex = requireContext()
-        prefEditor = PreferenceEditor(
-            contex.getSharedPreferences(USER_PREF, Context.MODE_PRIVATE))
+        prefEditor = PreferenceEditor(contex)
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)

@@ -1,12 +1,10 @@
 package by.profs.rowgame.view.competition
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +25,6 @@ import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
-import by.profs.rowgame.utils.USER_PREF
 import by.profs.rowgame.view.adapters.CompetitionViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
@@ -80,10 +77,8 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
-        prefEditor = PreferenceEditor(sharedPreferences)
-        calendar = Calendar(sharedPreferences)
+        prefEditor = PreferenceEditor(context)
+        calendar = Calendar(context)
 
         val day = calendar.getDayOfYear()
         if (day % raceDay != 0) {
