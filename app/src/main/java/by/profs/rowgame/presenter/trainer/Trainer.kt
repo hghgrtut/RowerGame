@@ -22,7 +22,9 @@ class Trainer(
 ) {
     suspend fun startTraining(mode: Int, combos: MutableList<CombinationSingleScull>, today: Int) {
         combos.forEach { combo ->
-            val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
+            val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId) } ?: return
+            val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId) } ?: return
+            val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId) } ?: return
             var random = generatePositiveIntOrNull(rowerUpChance)
             if (random < rowerCharacteristicsNumber) {
                 when (mode) {
@@ -43,7 +45,6 @@ class Trainer(
             }
             random = generatePositiveIntOrNull(maxDamage)
             if (random < acceptableDamage) {
-                val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! }
                 if (boat.broke(random)) boatDao.updateItem(boat)
                 else {
                     deleteCombo(combo)
@@ -52,7 +53,6 @@ class Trainer(
             }
             random = generatePositiveIntOrNull(maxDamage)
             if (random < acceptableDamage) {
-                val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! }
                 if (oar.broke(random)) oarDao.updateItem(oar)
                 else {
                     deleteCombo(combo)
