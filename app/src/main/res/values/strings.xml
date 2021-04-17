@@ -15,8 +15,7 @@
     <string name="about_rower">О гребце</string>
     <string name="boat_inventory">Мои лодки</string>
     <string name="boat_shop">Магазин лодок</string>
-    <string name="final_a">Финал А</string>
-    <string name="final_b">Финал В</string>
+    <string name="final_">Финал %1$c</string>
     <string name="oar_inventory">Мои вёсла</string>
     <string name="oar_shop">Магазин вёсел</string>
     <string name="choose_boat">Выберите лодку</string>

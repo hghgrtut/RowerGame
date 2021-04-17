@@ -20,6 +20,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val RACE_DAY = 5
+
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: MainFragmentBinding? = null
@@ -58,9 +60,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         binding?.goToExistingPairs?.setOnClickListener {
             MainFragmentDirections.actionMainFragmentToTrainingFragment()
                 .also { navController.navigate(it) } }
-        binding?.goToCompetitions?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToCompetitionFragment()
-                .also { navController.navigate(it) } }
 
         binding?.giveMoney?.setOnClickListener { MainScope().launch { resetMoney() } }
     }
@@ -69,6 +68,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onResume()
         val balance = prefEditor.getBalance()
         binding?.money?.text = this.getString(R.string.money_balance, balance)
+        binding?.goToCompetitions?.setOnClickListener {
+            // TODO: uncomment
+           // if (calendar.getDayOfYear() % RACE_DAY == 0)
+                MainFragmentDirections.actionMainFragmentToCompetitionFragment()
+                    .also { navController.navigate(it) }
+//            else MainFragmentDirections.actionMainFragmentToWrongDayErrorFragment()
+//                .also { navController.navigate(it) }
+                }
         showDay()
     }
 

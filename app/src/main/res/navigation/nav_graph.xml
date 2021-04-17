@@ -38,6 +38,9 @@
                 android:name="item"
                 android:defaultValue="1" />
         </action>
+        <action
+            android:id="@+id/action_mainFragment_to_wrongDayErrorFragment"
+            app:destination="@id/wrongDayErrorFragment" />
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
@@ -95,12 +98,12 @@
     <fragment
         android:id="@+id/competitionFragment"
         android:name="by.profs.rowgame.view.competition.CompetitionFragment"
-        android:label="CompetitionFragment"
+        android:label="@string/semifinal"
         tools:layout="@layout/fragment_competition" >
-        <action
-            android:id="@+id/action_competitionFragment_to_wrongDayErrorFragment"
-            app:destination="@id/wrongDayErrorFragment"
-            app:popUpTo="@id/mainFragment" />
+        <argument
+            android:name="type"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/pairingFragment"

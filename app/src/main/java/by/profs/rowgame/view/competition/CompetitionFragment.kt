@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
@@ -18,6 +18,7 @@ import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
 import by.profs.rowgame.presenter.competition.RaceCalculator
+import by.profs.rowgame.presenter.competition.WaterRaceCalculator
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
@@ -39,7 +40,9 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var calendar: Calendar
     private lateinit var prefEditor: PreferenceEditor
+    private lateinit var raceCalculator: RaceCalculator
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     private lateinit var boatDao: BoatDao
     private lateinit var oarDao: OarDao
     private lateinit var singleComboDao: SingleComboDao
@@ -70,6 +73,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().setTitle(R.string.semifinal)
         binding = FragmentCompetitionBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -78,15 +82,12 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         prefEditor = PreferenceEditor(context)
-        calendar = Calendar(context)
-
-        val day = calendar.getDayOfYear()
-        if (day % raceDay != 0) {
-            val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
-            CompetitionFragmentDirections.actionCompetitionFragmentToWrongDayErrorFragment()
-                .also { navController.navigate(it) }
-            return
+        val args by navArgs<CompetitionFragmentArgs>()
+        raceCalculator = when (args.type) {
+            else ->  WaterRaceCalculator
         }
+        calendar = Calendar(context)
+        val day = calendar.getDayOfYear()
         calendar.nextDay()
 
         competitionNum = day / raceDay
@@ -110,8 +111,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                     allRowers.add(rower)
                 }
             }
-
-            newSemifinal()
+            Race().setupRace()
         }
 
         binding?.buttonRace?.setOnClickListener { race.raceShort() }
@@ -127,11 +127,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         boats: List<Boat>,
         oars: List<Oar>,
         rowers: List<Rower>
-    ) {
-        rating = ArrayList(RaceCalculator.calculateRace(boats, oars, rowers, rating))
-        val excessGap: Int = rating.map { it.second }.minOrNull()!!
-        rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
-    }
+    ) { rating = ArrayList(raceCalculator.calculateRace(boats, oars, rowers, rating)) }
 
     private fun calculateSemifinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>) {
         var finalistA = 0
@@ -144,44 +140,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         finalBBoats.add(boats[finalistB])
         finalBOars.add(oars[finalistB])
         finalBRowers.add(rowers[finalistB])
-    }
-
-    private fun final(char: Char) {
-        MainScope().launch { when (char.toUpperCase()) {
-            'A' -> {
-                val viewAdapter = CompetitionViewAdapter(finalABoats, finalAOars, finalARowers)
-                recyclerView.apply { adapter = viewAdapter }
-                requireActivity().setTitle(R.string.final_a)
-            }
-            'B' -> {
-                val viewAdapter = CompetitionViewAdapter(finalBBoats, finalBOars, finalBRowers)
-                recyclerView.apply { adapter = viewAdapter }
-                requireActivity().setTitle(R.string.final_b)
-            }
-        } }
-    }
-
-    private fun newSemifinal() {
-        MainScope().launch { requireActivity().setTitle(R.string.semifinal) }
-        val to = from + raceSize
-        val free = to - allBoats.size
-        CoroutineScope(Dispatchers.Default).launch {
-            if (free > 0) {
-                allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
-                allOars.addAll(List(free) { Randomizer.getRandomOar() })
-                allRowers.addAll(List(free) { Randomizer.getRandomRower(
-                    minSkill = competitionNum, maxSkill = competitionNum * maxSkillCoef) })
-            }
-
-            raceBoats = allBoats.subList(from, to)
-            raceOars = allOars.subList(from, to)
-            raceRowers = allRowers.subList(from, to)
-
-            MainScope().launch {
-                val viewAdapter = CompetitionViewAdapter(raceBoats, raceOars, raceRowers)
-                recyclerView.apply { adapter = viewAdapter }
-            }
-        }
     }
 
     private fun showResults() {
@@ -223,26 +181,37 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     }
 
     inner class Race {
-        private fun setupRace() {
-            val title: String = requireActivity().title as String
-            when (title) {
+         fun setupRace() {
+            when (val title: String = requireActivity().title as String) {
                 getString(R.string.semifinal) -> {
                     val to = from + raceSize
+                    val free = to - allBoats.size
+                    if (free > 0) {
+                            allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
+                            allOars.addAll(List(free) { Randomizer.getRandomOar() })
+                            allRowers.addAll(List(free) { Randomizer.getRandomRower(
+                                    minSkill = competitionNum,
+                                    maxSkill = competitionNum * maxSkillCoef) })
+                    }
                     raceBoats = allBoats.subList(from, to)
                     raceOars = allOars.subList(from, to)
                     raceRowers = allRowers.subList(from, to)
                 }
-                getString(R.string.final_b) -> {
+                getString(R.string.final_, 'B') -> {
                     raceBoats = finalBBoats
                     raceOars = finalBOars
                     raceRowers = finalBRowers
                 }
-                getString(R.string.final_a) -> {
+                getString(R.string.final_, 'A') -> {
                     raceBoats = finalABoats
                     raceOars = finalAOars
                     raceRowers = finalARowers
                 }
-                else -> throw IllegalArgumentException("Title not recognized: $title")
+                else -> return
+            }
+            MainScope().launch {
+                val viewAdapter = CompetitionViewAdapter(raceBoats, raceOars, raceRowers)
+                recyclerView.apply { adapter = viewAdapter }
             }
         }
 
@@ -252,7 +221,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                     rating = ArrayList()
                     binding?.buttonRace?.visibility = View.GONE
                     binding?.buttonRaceFull?.visibility = View.GONE
-                    setupRace()
                     requireActivity().setTitle(R.string.phase_start)
                 }
                 HALF -> requireActivity().setTitle(R.string.phase_half)
@@ -265,6 +233,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                     phase = START
                     binding?.buttonRace?.visibility = View.VISIBLE
                     raceCommon()
+                    setupRace()
                     return
                 }
             }
@@ -272,15 +241,15 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             recyclerView.apply { adapter = StandingViewAdapter(
                 ArrayList(rating.sortedBy { it.second }), StandingViewAdapter.RACE) }
             if (phase == 0) rating = ArrayList()
-            phase += phaseLenght
+            phase += phaseLength
             if (phase <= FINISH) Handler().postDelayed({ raceFull() }, delay)
         }
 
         internal fun raceShort() {
             rating = ArrayList()
-            setupRace()
             calculateRace(raceBoats, raceOars, raceRowers)
             raceCommon()
+            setupRace()
         }
 
         private fun raceCommon() {
@@ -289,11 +258,13 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                 calculateSemifinal(raceBoats, raceOars, raceRowers)
                 showToastResults(rating.map { it.first })
                 from += raceSize
-                if (from <= totalRowers) newSemifinal() else final('B')
+                requireActivity().title =
+                    if (from > totalRowers) getString(R.string.final_, 'B')
+                    else getString(R.string.semifinal)
             } else if (finalists == null) {
                 finalists = rating
                 showToastResults(finalists!!.map { it.first })
-                final('A')
+                requireActivity().title = getString(R.string.final_, 'A')
             } else {
                 finalists!!.addAll(0, rating) // not-null check higher
                 showResults()
@@ -303,7 +274,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     }
 
     companion object {
-        private const val phaseLenght = 500
+        private const val phaseLength = 500
         private const val raceDay = 30
         const val raceSize = 6
         private const val totalRowers = 30 // 6 starts
@@ -315,10 +286,10 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         private const val FIFTH = 4
         private const val SIXTH = 5
         // Phases
-        private const val START = phaseLenght
-        private const val HALF = phaseLenght * 2
-        private const val ONE_AND_HALF = phaseLenght * 3
-        private const val FINISH = phaseLenght * 4
+        private const val START = phaseLength
+        private const val HALF = phaseLength * 2
+        private const val ONE_AND_HALF = phaseLength * 3
+        private const val FINISH = phaseLength * 4
 
         private const val maxSkillCoef = 4
         private const val delay = 650L
