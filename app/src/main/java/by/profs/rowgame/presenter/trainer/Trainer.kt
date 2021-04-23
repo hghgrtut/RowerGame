@@ -68,12 +68,12 @@ class Trainer(
 
     companion object {
         private const val acceptableDamage = 11
-        private const val injuryChance = 60 // resultChance = 1 : injuryChance
+        private const val injuryChance = 90 // resultChance = 1 : injuryChance
         private const val maxDamage = 365 // chance to damage = (acceptableDamage-1) : maxDamage
         private const val rowerCharacteristicsNumber = 3
         private const val rowerUpChance = 33 // resultChance = CharacteristicNumber : rowerUpChance
 
         private const val rangeSeekDays = 37
-        private const val minSeekDays = 14
+        private const val minSeekDays = 7
     }
 }
