@@ -16,7 +16,7 @@
         tools:context=".view.inventory.InventoryFragment"
         tools:listitem="@layout/item_pair"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/button_race"
+        app:layout_constraintBottom_toTopOf="@id/button_race_full"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/race"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/button_race_full"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,7 +10,7 @@ import by.profs.rowgame.utils.TABLE_BOAT
 
 @Entity(tableName = TABLE_BOAT)
 data class Boat(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_BOAT) val id: Int?,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_BOAT) override val id: Int?,
     @ColumnInfo(name = "type") val type: String,
     @ColumnInfo(name = "manufacturer") val manufacturer: String,
     @ColumnInfo(name = "body") val body: Int,

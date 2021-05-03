@@ -136,7 +136,6 @@ class PairViewAdapter(
     fun refreshCombos() {
         CoroutineScope(Dispatchers.IO).launch {
             combos.addAll(singleComboDao.getAllCombos())
-            notifyDataSetChanged()
         }
     }
 }

@@ -17,7 +17,6 @@ import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.database.RowerRoomDatabase
 import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
 import by.profs.rowgame.presenter.trainer.Trainer
-import by.profs.rowgame.utils.HelperFuns
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
@@ -83,7 +82,10 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private fun train(viewAdapter: PairViewAdapter, mode: Int) {
         scope.launch { trainer.startTraining(mode, viewAdapter.combos, calendar.getGlobalDay()) }
         calendar.nextDay()
-        if (calendar.getGlobalDay() == 1) HelperFuns.resetInjuries(rowerDao)
+        if (calendar.getGlobalDay() == 1)
+            rowerDao.getItems().forEach { rower ->
+                rower.injury = 0
+                rowerDao.updateItem(rower) }
         showDay()
         showToast(
             requireContext(), if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess

@@ -10,7 +10,7 @@
     <string name="take">Взять</string>
     <string name="money_balance">Money: %1$d</string>
     <string name="day">Сегодня: %1$d</string>
-    <string name="day_with_instruction">Сегодня: %1$d\nСоревнования каждый 30-ый день</string>
+    <string name="day_with_instruction">Сегодня: %1$d\nСоревнования каждый 30-ый день\n(Концепт - зимой, ОФП - 210, остальное - вода)</string>
     <!-- Activity titles -->
     <string name="about_rower">О гребце</string>
     <string name="boat_inventory">Мои лодки</string>
@@ -21,12 +21,18 @@
     <string name="choose_boat">Выберите лодку</string>
     <string name="choose_oar">Выберите весла</string>
     <string name="choose_rower">Выберите гребца</string>
+    <string name="concept">Концепт</string>
     <string name="no_internet">No Internet</string>
     <string name="not_today">Не сегодня</string>
+    <string name="OFP">ОФП</string>
     <string name="phase_start">500 м</string>
     <string name="phase_half">1000 м</string>
     <string name="phase_one_and_half">1500 м</string>
     <string name="phase_finish">2000 м</string>
+    <string name="phase_tyaga">Тяга лёжа</string>
+    <string name="phase_jumping">Напрыгивания</string>
+    <string name="phase_jump_series">Поточные прыжки</string>
+    <string name="phase_running">Бег</string>
     <string name="results">Результаты</string>
     <string name="rower_inventory">Мои спортсмены</string>
     <string name="semifinal">Полуфинал</string>
@@ -73,6 +79,7 @@
     <string name="fame_cost">Стоимость гребца: %1$d</string>
     <!-- For standing item -->
     <string name="standing_gap">%1$d м</string>
+    <string name="standing_score">%1$d очков</string>
 
     <!-- Toasts -->
     <string name="buy_sucess">Куплено</string>

@@ -1,11 +1,13 @@
 package by.profs.rowgame.presenter.trainer
 
 import by.profs.rowgame.data.combos.CombinationSingleScull
+import by.profs.rowgame.data.items.Damageable
+import by.profs.rowgame.data.items.util.Randomizer.generatePositiveIntOrNull
 import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.dao.MyDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
@@ -43,27 +45,24 @@ class Trainer(
                     rowerDao.deleteItem(rower.id!!)
                 }
             }
-            random = generatePositiveIntOrNull(maxDamage)
-            if (random < acceptableDamage) {
-                if (boat.broke(random)) boatDao.updateItem(boat)
-                else {
-                    deleteCombo(combo)
-                    boatDao.deleteItem(boat.id!!)
-                }
-            }
-            random = generatePositiveIntOrNull(maxDamage)
-            if (random < acceptableDamage) {
-                if (oar.broke(random)) oarDao.updateItem(oar)
-                else {
-                    deleteCombo(combo)
-                    oarDao.deleteItem(oar.id!!)
-                }
-            }
+            brokeItem(combo, boat, boatDao as MyDao<Damageable>)
+            brokeItem(combo, oar, oarDao as MyDao<Damageable>)
         }
     }
 
     private fun deleteCombo(combo: CombinationSingleScull) {
         CoroutineScope(Dispatchers.IO).launch { singleComboDao.deleteCombo(combo.combinationId!!) }
+    }
+
+    private fun brokeItem(combo: CombinationSingleScull, item: Damageable, dao: MyDao<Damageable>) {
+        val random = generatePositiveIntOrNull(maxDamage)
+        if (random < acceptableDamage) {
+            if (item.broke(random)) dao.updateItem(item)
+            else {
+                deleteCombo(combo)
+                dao.deleteItem(item.id!!)
+            }
+        }
     }
 
     companion object {

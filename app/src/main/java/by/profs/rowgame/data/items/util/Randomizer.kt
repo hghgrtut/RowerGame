@@ -3,12 +3,14 @@ package by.profs.rowgame.data.items.util
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 
 object Randomizer {
     // from 1 to max inclusive
     private fun getRandomInt(max: Int): Int = generatePositiveIntOrNull(max) + 1
     private fun getRandomFromList(list: List<*>) = list[generatePositiveIntOrNull(list.size)]
+
+    // return random_number%module
+    fun generatePositiveIntOrNull(module: Int = BIG): Int = (Math.random() * BIG).toInt() % module
 
     fun getRandomOar(): Oar {
         val manufacturers = Oar.getManufacturersList()
@@ -117,6 +119,8 @@ object Randomizer {
             else -> false
         }
     }
+
+    private const val BIG = 100000000
 
     private const val AGE_KID = 14
     private const val AGE_JUN = 16

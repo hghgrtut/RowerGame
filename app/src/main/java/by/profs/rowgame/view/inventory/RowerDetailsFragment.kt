@@ -75,7 +75,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
             binding?.weight?.text = this.getString(R.string.rower_weight, rower.weight)
 
             if (rower.endpointAbout != null) { showExtraInfo(rower.endpointAbout) }
-            if (rower.id == null || withContext(Dispatchers.IO) { dao.search(rower.id) } == null) {
+            if (withContext(Dispatchers.IO) { dao.searchByName(rower.name) } == null) {
                 setAsNew()
                 binding?.button?.setOnClickListener { recruit(rower) }
             } else {

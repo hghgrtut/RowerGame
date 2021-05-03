@@ -19,8 +19,8 @@
 
     <Button
         android:id="@+id/go_to_boats"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b1"
         android:text="@string/boats"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +29,8 @@
 
     <Button
         android:id="@+id/go_to_oars"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b2"
         android:text="@string/oars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,8 +38,8 @@
 
     <Button
         android:id="@+id/go_to_rowers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b3"
         android:text="@string/rowers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +47,8 @@
 
     <Button
         android:id="@+id/go_to_legends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b4"
         android:text="@string/legends"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +56,8 @@
 
     <Button
         android:id="@+id/go_to_new_pair"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b5"
         android:text="@string/new_pairs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,8 +65,8 @@
 
     <Button
         android:id="@+id/go_to_existing_pairs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b6"
         android:text="@string/trainings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,8 +74,8 @@
 
     <Button
         android:id="@+id/go_to_competitions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/mainMenuButton"
+        android:background="@color/b7"
         android:text="@string/competitions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

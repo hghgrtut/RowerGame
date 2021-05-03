@@ -28,7 +28,7 @@ data class Rower(
     @ColumnInfo(name = "injurability") val injurability: Double = 1.0
 ) {
     companion object {
-        private const val daysToDegradation = 15
+        private const val daysToDegradation = 10
 
         const val MALE = 1
         const val FEMALE = 2
