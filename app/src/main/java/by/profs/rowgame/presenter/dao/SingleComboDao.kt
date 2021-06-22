@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import by.profs.rowgame.data.combos.CombinationSingleScull
 import by.profs.rowgame.utils.ID_BOAT
-import by.profs.rowgame.utils.ID_COMBO
 import by.profs.rowgame.utils.ID_OAR
 import by.profs.rowgame.utils.ID_ROWER
 import by.profs.rowgame.utils.TABLE_COMBO_SINGLE
@@ -28,8 +27,9 @@ interface SingleComboDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertCombo(combo: CombinationSingleScull)
 
-    @Query("DELETE FROM $TABLE_COMBO_SINGLE WHERE $ID_COMBO = (:id)")
-    fun deleteCombo(id: Int)
+    // Delete combos where rower with given rowerId takes part
+    @Query("DELETE FROM $TABLE_COMBO_SINGLE WHERE $ID_ROWER = (:rowerId)")
+    fun deleteCombo(rowerId: Int)
 
     @Query("DELETE FROM $TABLE_COMBO_SINGLE")
     fun dropTable()

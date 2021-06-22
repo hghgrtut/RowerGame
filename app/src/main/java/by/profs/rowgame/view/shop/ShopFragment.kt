@@ -9,22 +9,28 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentShopBinding
 import by.profs.rowgame.presenter.database.BoatRoomDatabase
 import by.profs.rowgame.presenter.database.OarRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
+import by.profs.rowgame.utils.SHOP_SIZE
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.SHOP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ShopFragment : Fragment(R.layout.fragment_shop) {
     private val args by navArgs<ShopFragmentArgs>()
     private var binding: FragmentShopBinding? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var prefEditor: PreferenceEditor
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,19 +50,7 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        if (args.itemType == INTENT_OARS) {
-            val dao = OarRoomDatabase
-                .getDatabase(requireContext(), CoroutineScope(Dispatchers.IO)).oarDao()
-            val viewAdapter = OarViewAdapter(SHOP, prefEditor, dao)
-            recyclerView = binding!!.list.apply { adapter = viewAdapter }
-            requireActivity().setTitle(R.string.oar_shop)
-        } else {
-            val dao = BoatRoomDatabase
-                .getDatabase(requireContext(), CoroutineScope(Dispatchers.IO)).boatDao()
-            val viewAdapter = BoatViewAdapter(SHOP, prefEditor, dao)
-            recyclerView = binding!!.list.apply { adapter = viewAdapter }
-            requireActivity().setTitle(R.string.boat_shop)
-        }
+        MainScope().launch { if (args.itemType == INTENT_OARS) showOars() else showBoats() }
     }
 
     override fun onResume() {
@@ -67,5 +61,22 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private suspend fun showBoats() {
+        val dao = BoatRoomDatabase.getDatabase(requireContext(), scope).boatDao()
+        val randomBoats = withContext(Dispatchers.IO) {
+            ArrayList(List(SHOP_SIZE) { Randomizer.getRandomBoat() }) }
+        val viewAdapter = BoatViewAdapter(randomBoats, SHOP, prefEditor, dao)
+        recyclerView = binding!!.list.apply { adapter = viewAdapter }
+        requireActivity().setTitle(R.string.boat_shop)
+    }
+
+    private suspend fun showOars() {
+        val dao = OarRoomDatabase.getDatabase(requireContext(), scope).oarDao()
+        val oars = withContext(Dispatchers.IO) { List(SHOP_SIZE) { Randomizer.getRandomOar() } }
+        val viewAdapter = OarViewAdapter(oars, SHOP, prefEditor, dao)
+        recyclerView = binding!!.list.apply { adapter = viewAdapter }
+        requireActivity().setTitle(R.string.oar_shop)
     }
 }

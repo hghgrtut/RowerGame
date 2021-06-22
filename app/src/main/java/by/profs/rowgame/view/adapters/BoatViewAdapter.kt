@@ -14,35 +14,26 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
-import by.profs.rowgame.utils.SHOP_SIZE
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import by.profs.rowgame.view.utils.HelperFuns
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class BoatViewAdapter(
+    private val boats: ArrayList<Boat>,
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    private var dao: BoatDao,
-    private val singleComboDao: SingleComboDao? = null
+    dao: BoatDao
 ) : RecyclerView.Adapter<BoatViewAdapter.ViewHolder>(),
     MyViewAdapter<Boat> {
 
-    private val boats = mutableListOf<Boat>()
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val informator: BoatInformator = BoatInformator()
     private val trader: BoatTrader = BoatTrader(prefEditor, dao)
-
-    init { refreshDataSet() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -151,20 +142,6 @@ class BoatViewAdapter(
                 PairingFragmentDirections.actionPairingFragmentSelf(item = INTENT_ROWERS)
                     .also { navController.navigate(it) }
             }
-        }
-    }
-
-    override fun refreshDataSet() {
-        CoroutineScope(Dispatchers.IO).launch {
-            boats.addAll(when (type) {
-                INVENTORY -> dao.getItems()
-                SHOP -> List(SHOP_SIZE) { Randomizer.getRandomBoat() }
-                else -> {
-                    val boatIds = singleComboDao!!.getBoatIds()
-                    dao.getItems().filter { boat -> !boatIds.contains(boat.id) }
-                }
-            })
-            CoroutineScope(Dispatchers.Main).launch { notifyDataSetChanged() }
         }
     }
 }

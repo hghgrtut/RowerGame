@@ -14,33 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.preferences.PreferenceEditor
-import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.view.inventory.InventoryFragmentDirections
 import by.profs.rowgame.view.inventory.RowerDetailsFragment.Companion.FROM_LIST
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class RowerViewAdapter(
     private val target: Int,
-    private var dao: RowerDao,
-    private var navController: NavController? = null,
-    private var singleComboDao: SingleComboDao? = null
+    private val rowers: List<Rower>,
+    private var navController: NavController? = null
 ) : RecyclerView.Adapter<RowerViewAdapter.ViewHolder>() {
 
-    private lateinit var rowers: List<Rower>
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val imageLoader: ImageLoader = CoilImageLoader
     private lateinit var prefEditor: PreferenceEditor
-
-    init { refreshDataSet() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -87,15 +77,6 @@ class RowerViewAdapter(
         val power: TextView = view.findViewById(R.id.power)
         val technicality: TextView = view.findViewById(R.id.technicality)
         val weight: TextView = view.findViewById(R.id.weight)
-    }
-
-    private fun refreshDataSet() { CoroutineScope(Dispatchers.IO).launch {
-        rowers = withContext(Dispatchers.IO) { if (target == INVENTORY) { dao.getItems()
-            } else {
-                val rowerIds = singleComboDao!!.getRowerIds()
-                dao.getItems().filter { rower -> !rowerIds.contains(rower.id!!) }
-            } }
-        }
     }
 
     private fun showImage(view: ImageView, rower: Rower) {

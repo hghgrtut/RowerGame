@@ -1,7 +1,6 @@
 package by.profs.rowgame.view.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,8 @@ import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 class CompetitionViewAdapter(
     private val boats: List<Boat>,
     private val oars: List<Oar>,
-    private val rowers: List<Rower>
+    private val rowers: List<Rower>,
+    private val deleteRowerFun: ((Int?) -> Unit) ? = null
 ) : RecyclerView.Adapter<CompetitionViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -89,14 +89,17 @@ class CompetitionViewAdapter(
             })
 
         val info = oarInformator.getItemInfo(oar)
-        try {
-            holder.oarBlade.text = context.getString(R.string.blade, info[0])
-            holder.oarModel.text = context.getString(R.string.model, info[1])
-            holder.oarWeight.text = context.getString(R.string.weight, info[2])
-        } catch (e: KotlinNullPointerException) {
-            Log.e("incomp oar", oar.toString())
+        holder.oarBlade.text = context.getString(R.string.blade, info[0])
+        holder.oarModel.text = context.getString(R.string.model, info[1])
+        holder.oarWeight.text = context.getString(R.string.weight, info[2])
+
+        if (deleteRowerFun != null) {
+            holder.button.visibility = View.VISIBLE
+            holder.button.setOnClickListener {
+                deleteRowerFun.invoke(rower.id)
+                holder.itemView.visibility = View.GONE
+            }
         }
-        holder.button.visibility = View.GONE
     }
 
     override fun getItemCount(): Int = boats.size

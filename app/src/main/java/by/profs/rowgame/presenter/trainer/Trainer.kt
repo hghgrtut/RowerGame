@@ -7,20 +7,17 @@ import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.MyDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class Trainer(
     private val boatDao: BoatDao,
     private val oarDao: OarDao,
     private val rowerDao: RowerDao,
-    private val singleComboDao: SingleComboDao
+    private val deleteRowerFun: (Int?) -> Unit
 ) {
     suspend fun startTraining(mode: Int, combos: MutableList<CombinationSingleScull>, today: Int) {
         combos.forEach { combo ->
@@ -50,9 +47,7 @@ class Trainer(
         }
     }
 
-    private fun deleteCombo(combo: CombinationSingleScull) {
-        CoroutineScope(Dispatchers.IO).launch { singleComboDao.deleteCombo(combo.combinationId!!) }
-    }
+    private fun deleteCombo(combo: CombinationSingleScull) = deleteRowerFun(combo.rowerId)
 
     private fun brokeItem(combo: CombinationSingleScull, item: Damageable, dao: MyDao<Damageable>) {
         val random = generatePositiveIntOrNull(maxDamage)

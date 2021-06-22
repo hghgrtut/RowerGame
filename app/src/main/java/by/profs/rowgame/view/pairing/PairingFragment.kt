@@ -25,6 +25,9 @@ import by.profs.rowgame.view.adapters.PAIRING
 import by.profs.rowgame.view.adapters.RowerViewAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PairingFragment : Fragment(R.layout.fragment_pairing) {
     private val args by navArgs<PairingFragmentArgs>()
@@ -51,11 +54,11 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)
         }
-        when (args.item) { // intent type
+        MainScope().launch { when (args.item) { // intent type
             INTENT_BOATS -> choosingBoat()
             INTENT_OARS -> choosingOar()
             INTENT_ROWERS -> choosingRower()
-        }
+        } }
     }
 
     override fun onDestroyView() {
@@ -63,23 +66,32 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         binding = null
     }
 
-    private fun choosingBoat() {
+    private suspend fun choosingBoat() {
         val dao = BoatRoomDatabase.getDatabase(contex, scope).boatDao()
-        val viewAdapter = BoatViewAdapter(PAIRING, prefEditor, dao, getComboDao())
+        val boatIds = withContext(Dispatchers.IO) { getComboDao().getBoatIds() }
+        val freeBoats = withContext(Dispatchers.IO) {
+            ArrayList(dao.getItems().filter { boat -> !boatIds.contains(boat.id) }) }
+        val viewAdapter = BoatViewAdapter(freeBoats, PAIRING, prefEditor, dao)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_boat)
     }
 
-    private fun choosingRower(number: Int = 1) {
+    private suspend fun choosingRower() {
         val dao = RowerRoomDatabase.getDatabase(contex, scope).rowerDao()
-        val viewAdapter = RowerViewAdapter(PAIRING, dao, singleComboDao = getComboDao())
+        val rowerIds = withContext(Dispatchers.IO) { getComboDao().getRowerIds() }
+        val rowers = withContext(Dispatchers.IO) {
+            dao.getItems().filter { rower -> !rowerIds.contains(rower.id!!) } }
+        val viewAdapter = RowerViewAdapter(PAIRING, rowers)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_rower)
     }
 
-    private fun choosingOar(number: Int = 1) {
+    private suspend fun choosingOar() {
         val dao = OarRoomDatabase.getDatabase(contex, scope).oarDao()
-        val viewAdapter = OarViewAdapter(PAIRING, prefEditor, dao, getComboDao())
+        val oarIds = withContext(Dispatchers.IO) { getComboDao().getOarIds() }
+        val oars = withContext(Dispatchers.IO) {
+            dao.getItems().filter { oar -> !oarIds.contains(oar.id) } }
+        val viewAdapter = OarViewAdapter(oars, PAIRING, prefEditor, dao)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_oar)
     }
