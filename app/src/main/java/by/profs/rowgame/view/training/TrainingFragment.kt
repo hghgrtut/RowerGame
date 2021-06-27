@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.combos.CombinationSingleScull
-import by.profs.rowgame.data.items.Boat
-import by.profs.rowgame.data.items.Oar
-import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.databinding.FragmentTrainingBinding
 import by.profs.rowgame.presenter.dao.BoatDao
@@ -88,12 +85,8 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         binding?.day?.text = this.getString(R.string.day, calendar.getDayOfYear()) }
 
     private fun train(combos: MutableList<CombinationSingleScull>, mode: Int) {
-        scope.launch { trainer.startTraining(mode, combos, calendar.getGlobalDay()) }
+        scope.launch { trainer.startTraining(mode, combos) }
         calendar.nextDay()
-        if (calendar.getGlobalDay() == 1)
-            rowerDao.getItems().forEach { rower ->
-                rower.injury = 0
-                rowerDao.updateItem(rower) }
         showDay()
         showToast(
             requireContext(), if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess

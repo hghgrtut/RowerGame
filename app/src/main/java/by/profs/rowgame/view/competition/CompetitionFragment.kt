@@ -2,6 +2,7 @@ package by.profs.rowgame.view.competition
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private val args by navArgs<CompetitionFragmentArgs>()
     private var binding: FragmentCompetitionBinding? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var calendar: Calendar
-    private lateinit var prefEditor: PreferenceEditor
     private lateinit var raceCalculator: RaceCalculator
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -66,7 +65,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private var from = 0
     private var phase: Int = START
     private val race: Race = Race()
-    private var competitionNum = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,13 +83,9 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        prefEditor = PreferenceEditor(context)
         raceCalculator = RaceCalculator(args.type)
-        calendar = Calendar(context)
-        val day = calendar.getDayOfYear()
-        calendar.nextDay()
+        Calendar(context).nextDay()
 
-        competitionNum = day / raceDay
         boatDao = BoatRoomDatabase.getDatabase(context, scope).boatDao()
         oarDao = OarRoomDatabase.getDatabase(context, scope).oarDao()
         val rowerDao = RowerRoomDatabase.getDatabase(context, scope).rowerDao()
@@ -103,14 +97,11 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            val globalDay = calendar.getGlobalDay()
             singleComboDao.getAllCombos().forEach { combo ->
                 val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
-                if (rower.injury < globalDay) {
-                    allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
-                    allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
-                    allRowers.add(rower)
-                }
+                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
+                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
+                allRowers.add(rower)
             }
             Race().setupRace()
         }
@@ -170,6 +161,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
     private fun reward() {
         if (finalists == null) return
+        val prefEditor = PreferenceEditor(requireContext())
         CoroutineScope(Dispatchers.IO).launch {
             val myRowers = singleComboDao.getRowerIds()
             if (myRowers.contains(finalists!![FIRST].first.id)) {
@@ -184,7 +176,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     }
 
     private fun addRandomRowers(howMany: Int) {
-        val minSkill = 2 + Randomizer.generatePositiveIntOrNull(maxMinSkill)
+        val minSkill = 2 + (0..maxMinSkill).random()
         allRowers.addAll(List(howMany) { Randomizer.getRandomRower(
             minSkill = minSkill,
             maxSkill = minSkill * maxSkillCoef
@@ -258,7 +250,8 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             recyclerView.apply { adapter = StandingViewAdapter(sortedRating(),
                 if (args.type == OFP) StandingViewAdapter.SCORE else StandingViewAdapter.RACE)
             }
-            if (args.type == WATER && phase <= FINISH) Handler().postDelayed({ showRace() }, delay)
+            if (args.type == WATER && phase <= FINISH)
+                Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay)
         }
 
         private fun endRace() {
@@ -303,7 +296,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
     companion object {
         private const val phaseLength = 500
-        private const val raceDay = 30
         const val raceSize = 6
         private const val totalRowers = 30 // 6 starts
         private const val fameForWin = 4

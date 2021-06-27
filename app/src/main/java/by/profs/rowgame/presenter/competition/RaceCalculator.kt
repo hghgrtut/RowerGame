@@ -3,7 +3,6 @@ package by.profs.rowgame.presenter.competition
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.items.util.Randomizer.generatePositiveIntOrNull
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
@@ -16,7 +15,7 @@ class RaceCalculator(private val raceType: Int) {
         rowers: List<Rower>,
         rating: ArrayList<Pair<Rower, Int>>
     ): ArrayList<Pair<Rower, Int>> {
-        val distances = IntArray(rowers.size) { generatePositiveIntOrNull(maxGap[raceType]!!) }
+        val distances = IntArray(rowers.size) { (0..maxGap[raceType]!!).random() }
         distances.sort()
         if (raceType == OFP) distances.forEachIndexed { ind, it -> distances[ind] = MAX_SCORE - it }
         val chances: MutableList<Int> = MutableList(rowers.size) { pos ->
@@ -26,7 +25,7 @@ class RaceCalculator(private val raceType: Int) {
         var j = 0
         var total = chances.sum()
         while (total > 0) {
-            var rand = generatePositiveIntOrNull(total)
+            var rand = (0 until total).random()
             var i = -1
             while (rand >= 0) {
                 i++
