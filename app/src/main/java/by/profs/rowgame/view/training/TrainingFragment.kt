@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
@@ -24,6 +25,9 @@ import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.view.adapters.CompetitionViewAdapter
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,10 +92,17 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         scope.launch { trainer.startTraining(mode, combos) }
         calendar.nextDay()
         showDay()
-        showToast(
-            requireContext(), if (calendar.getDayOfYear() % DIM != 0) R.string.train_sucess
-            else R.string.time_to_race
-        )
+        val day = calendar.getDayOfYear()
+        if (day % DIM != 0) { showToast(requireContext(), R.string.train_sucess)
+        } else {
+            showToast(requireContext(), R.string.time_to_race)
+            TrainingFragmentDirections.actionTrainingFragmentToCompetitionFragment(
+                type = when (day) {
+                    OFP_DAY -> OFP
+                    in WATER_START..WATER_END -> WATER
+                    else -> CONCEPT
+            }).also { findNavController().navigate(it) }
+        }
     }
 
     private suspend fun refreshView() {
@@ -107,5 +118,10 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         binding?.buttonTrainTechnical?.setOnClickListener { train(combos, TRAIN_TECHNICALITY) }
     }
 
-    companion object { private const val DIM = 30 } // Days in month
+    companion object {
+        private const val DIM = 30 // Days in month
+        private const val OFP_DAY = 210
+        private const val WATER_START = 61
+        private const val WATER_END = 359
+    }
 }

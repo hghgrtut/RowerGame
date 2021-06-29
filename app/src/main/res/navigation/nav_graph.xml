@@ -28,9 +28,6 @@
             android:id="@+id/action_mainFragment_to_trainingFragment"
             app:destination="@id/trainingFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_competitionFragment"
-            app:destination="@id/competitionFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_pairingFragment"
             app:destination="@id/pairingFragment"
             app:popUpTo="@id/mainFragment">
@@ -38,9 +35,6 @@
                 android:name="item"
                 android:defaultValue="1" />
         </action>
-        <action
-            android:id="@+id/action_mainFragment_to_wrongDayErrorFragment"
-            app:destination="@id/wrongDayErrorFragment" />
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
@@ -94,7 +88,12 @@
         android:id="@+id/trainingFragment"
         android:name="by.profs.rowgame.view.training.TrainingFragment"
         android:label="@string/trainings"
-        tools:layout="@layout/fragment_training" />
+        tools:layout="@layout/fragment_training" >
+        <action
+            android:id="@+id/action_trainingFragment_to_competitionFragment"
+            app:destination="@id/competitionFragment"
+            app:popUpTo="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/competitionFragment"
         android:name="by.profs.rowgame.view.competition.CompetitionFragment"
@@ -104,6 +103,9 @@
             android:name="type"
             app:argType="integer"
             android:defaultValue="1" />
+        <action
+            android:id="@+id/action_competitionFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment" />
     </fragment>
     <fragment
         android:id="@+id/pairingFragment"
@@ -123,9 +125,4 @@
                 android:defaultValue="1" />
         </action>
     </fragment>
-    <fragment
-        android:id="@+id/wrongDayErrorFragment"
-        android:name="by.profs.rowgame.view.error.WrongDayErrorFragment"
-        android:label="@string/not_today"
-        tools:layout="@layout/error_wrong_day" />
 </navigation>

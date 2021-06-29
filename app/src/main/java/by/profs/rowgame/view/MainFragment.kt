@@ -14,19 +14,11 @@ import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.utils.Resetter
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-private const val OFP_DAY = 210
-private const val RACE_DAY = 30
-private const val WATER_START = 61
-private const val WATER_END = 359
 
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
@@ -74,17 +66,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         val day = Calendar(requireContext()).getDayOfYear()
         binding?.day?.text = this.getString(R.string.day_with_instruction, day)
         binding?.money?.text = this.getString(R.string.money_balance, balance)
-        binding?.goToCompetitions?.setOnClickListener {
-            if (day % RACE_DAY == 0)
-                MainFragmentDirections.actionMainFragmentToCompetitionFragment(type = when (day) {
-                    OFP_DAY -> OFP
-                    in WATER_START..WATER_END -> WATER
-                    else -> CONCEPT
-                }
-                ).also { navController.navigate(it) }
-            else MainFragmentDirections.actionMainFragmentToWrongDayErrorFragment()
-                .also { navController.navigate(it) }
-        }
     }
 
     override fun onDestroyView() {

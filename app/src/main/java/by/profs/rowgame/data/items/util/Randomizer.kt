@@ -109,7 +109,7 @@ object Randomizer {
         oar.weight == Oar.RECREATIONAL && (oar.blade == Oar.ELITE || oar.type == Oar.SWEEP)
 
     private fun notValid(manufacturer: String, body: Int): Boolean {
-        return when (manufacturer) {
+        return if (body < Boat.EXTRA_SMALL || body > Boat.UNIVERSAL) true else when (manufacturer) {
             Manufacturer.Nemiga.name -> body != Boat.LONG && body != Boat.MEDIUM_LONG
             Manufacturer.Hudson.name -> body == Boat.UNIVERSAL
             else -> false
