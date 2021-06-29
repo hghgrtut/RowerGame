@@ -32,8 +32,10 @@ class StandingViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (mode == RACE) {
-            holder.gap.text = context.getString(R.string.standing_gap, standing[position].second) }
+        if (mode != RESULTS) holder.gap.text = context.getString(
+            if (mode == RACE) R.string.standing_gap else R.string.standing_score,
+            standing[position].second
+        )
         val rower: Rower = standing[position].first
         holder.position.text = (1 + position).toString()
         holder.name.text = rower.name
@@ -45,5 +47,6 @@ class StandingViewAdapter(
     companion object {
         const val RACE = 0
         const val RESULTS = 1
+        const val SCORE = 2
     }
 }

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/name"
+        style="@style/rowerDetailsTitle"
+        android:visibility="visible"
+        tools:text="Александр Дорощенко" />
+
+    <TextView
+        android:id="@+id/height"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_height" />
+
+    <TextView
+        android:id="@+id/weight"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_weight" />
+
+    <TextView
+        android:id="@+id/age"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_age" />
+
+    <TextView
+        android:id="@+id/power"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_power" />
+
+    <TextView
+        android:id="@+id/endurance"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_endurance" />
+
+    <TextView
+        android:id="@+id/technicalit"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/rower_technicality" />
+
+    <ImageView
+        android:id="@+id/rower_pic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rower_big_picture_size"
+        tools:srcCompat="@drawable/placeholder_man" />
+
+    <TextView
+        android:id="@+id/achievements_title"
+        style="@style/rowerDetailsTitle"
+        android:text="@string/achievements"/>
+
+    <TextView
+        android:id="@+id/achievements"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="invisible"
+        tools:text=""/>
+
+    <TextView
+        android:id="@+id/about_title"
+        style="@style/rowerDetailsTitle"
+        android:text="@string/about"/>
+
+    <TextView
+        android:id="@+id/about"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="invisible"
+        tools:text="" />
+
+    <TextView
+        android:id="@+id/fame"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="right"
+        tools:text="@string/fame_balance" />
+
+    <TextView
+        android:id="@+id/cost"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:visibility="gone"
+        tools:text="@string/fame_cost" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding"
+        android:text="@string/fire_rower"
+        android:layout_gravity="center"/>
+</LinearLayout>

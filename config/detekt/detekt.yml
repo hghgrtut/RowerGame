@@ -1,3 +1,4 @@
+# changed
 build:
   maxIssues: 0
   excludeCorrectable: false
@@ -586,7 +587,7 @@ style:
     excludedFunctions: 'equals'
     excludeLabeled: false
     excludeReturnFromLambda: true
-    excludeGuardClauses: false
+    excludeGuardClauses: true
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:

@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.utils.ID_ROWER
+import by.profs.rowgame.utils.NAME_ROWER
 import by.profs.rowgame.utils.TABLE_ROWERS
 
 @Dao
@@ -25,4 +26,7 @@ interface RowerDao : MyDao<Rower> {
 
     @Update
     override fun updateItem(item: Rower)
+
+    @Query("SELECT * FROM $TABLE_ROWERS WHERE $NAME_ROWER LIKE :name LIMIT 1")
+    fun searchByName(name: String): Rower?
 }

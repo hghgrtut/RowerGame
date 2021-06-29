@@ -12,13 +12,14 @@ import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 
 object HelperFuns {
-    fun changeTheme(resources: Resources) {
+    fun changeTheme(resources: Resources): Boolean {
         when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES ->
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             Configuration.UI_MODE_NIGHT_NO ->
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+        return true
     }
 
     fun showToast(context: Context, resId: Int) =

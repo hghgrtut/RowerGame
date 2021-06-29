@@ -40,4 +40,14 @@ class RowerTest : TestCase() {
         Assert.assertEquals(technics, rower.technics)
         Assert.assertEquals(endurance, rower.endurance)
     }
+
+    @Test
+    fun testHurt() {
+        val injury = 4
+        rower.hurt(injury)
+        Assert.assertEquals(endurance - injury, rower.endurance)
+        Assert.assertEquals(power - injury, rower.power)
+        Assert.assertEquals(technics - injury, rower.technics)
+        Assert.assertFalse(rower.hurt(rower.endurance + 1))
+    }
 }

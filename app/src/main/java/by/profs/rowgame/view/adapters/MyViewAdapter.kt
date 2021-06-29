@@ -23,6 +23,4 @@ interface MyViewAdapter<T> {
     }
 
     fun displayItem(holder: ViewHolder, item: T)
-
-    fun refreshDataSet()
 }

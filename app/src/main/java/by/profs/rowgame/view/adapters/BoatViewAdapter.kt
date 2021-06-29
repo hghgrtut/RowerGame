@@ -6,41 +6,38 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
 import by.profs.rowgame.presenter.informators.BoatInformator
-import by.profs.rowgame.presenter.navigation.PairingNavigation
+import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
-import by.profs.rowgame.utils.SHOP_SIZE
+import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import by.profs.rowgame.view.utils.HelperFuns
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class BoatViewAdapter(
+    private val boats: ArrayList<Boat>,
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    private var dao: BoatDao,
-    private val singleComboDao: SingleComboDao? = null
+    dao: BoatDao
 ) : RecyclerView.Adapter<BoatViewAdapter.ViewHolder>(),
     MyViewAdapter<Boat> {
 
-    private val boats = mutableListOf<Boat>()
     private lateinit var context: Context
+    private lateinit var fragment: Fragment
     private val informator: BoatInformator = BoatInformator()
     private val trader: BoatTrader = BoatTrader(prefEditor, dao)
 
-    init { refreshDataSet() }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
+        fragment = parent.findFragment()
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_boat, parent, false)
         )
@@ -141,22 +138,10 @@ class BoatViewAdapter(
             }
             PAIRING -> {
                 prefEditor.occupyBoat(boat.id!!)
-                PairingNavigation(context).goToPairingRower()
+                val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController(fragment) }
+                PairingFragmentDirections.actionPairingFragmentSelf(item = INTENT_ROWERS)
+                    .also { navController.navigate(it) }
             }
-        }
-    }
-
-    override fun refreshDataSet() {
-        CoroutineScope(Dispatchers.IO).launch {
-            boats.addAll(when (type) {
-                INVENTORY -> dao.getItems()
-                SHOP -> List(SHOP_SIZE) { Randomizer.getRandomBoat() }
-                else -> {
-                    val boatIds = singleComboDao!!.getBoatIds()
-                    dao.getItems().filter { boat -> !boatIds.contains(boat.id) }
-                }
-            })
-            notifyDataSetChanged()
         }
     }
 }

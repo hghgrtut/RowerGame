@@ -10,7 +10,7 @@ import by.profs.rowgame.utils.TABLE_OAR
 
 @Entity(tableName = TABLE_OAR)
 data class Oar(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_OAR) val id: Int?,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_OAR) override val id: Int?,
     @ColumnInfo(name = "manufacturer") val manufacturer: String,
     @ColumnInfo(name = "weight") val weight: Int,
     @ColumnInfo(name = "blade") val blade: Int,

@@ -3,12 +3,9 @@ package by.profs.rowgame.data.items.util
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 
 object Randomizer {
-    // from 1 to max inclusive
-    private fun getRandomInt(max: Int): Int = generatePositiveIntOrNull(max) + 1
-    private fun getRandomFromList(list: List<*>) = list[generatePositiveIntOrNull(list.size)]
+    private fun getRandomFromList(list: List<*>) = list[(0..list.lastIndex).random()]
 
     fun getRandomOar(): Oar {
         val manufacturers = Oar.getManufacturersList()
@@ -16,9 +13,9 @@ object Randomizer {
         do {
             oar = Oar(null,
                 getRandomFromList(manufacturers) as String,
-                getRandomInt(Oar.ELITE),
-                getRandomInt(Oar.ELITE),
-                Oar.SCULL // getRandomInt(Oar.SWEEP)
+                (1..Oar.ELITE).random(),
+                (1..Oar.ELITE).random(),
+                Oar.SCULL
             )
         } while (notValid(oar))
         return oar
@@ -29,16 +26,14 @@ object Randomizer {
         val manufacturer = getRandomFromList(Boat.getManufacturersList()) as String
         val premiumBoatList =
             listOf(Manufacturer.Empacher.name, Manufacturer.Filippi.name)
-        var body: Int
-        do {
-            body = getRandomInt(Boat.UNIVERSAL)
-        } while (notValid(manufacturer, body))
+        var body = -1
+        while (notValid(manufacturer, body)) body = (1..Boat.UNIVERSAL).random()
         val weight =
             when {
                 body == Boat.UNIVERSAL -> Boat.RECREATIONAL
                 manufacturer == Manufacturer.Nemiga.name -> Boat.SPORTIVE
                 premiumBoatList.contains(manufacturer) -> Boat.ELITE
-                else -> getRandomInt(2) + 1
+                else -> (Boat.SPORTIVE..Boat.ELITE).random()
             }
         val wing = getRandomWing(manufacturer)
         return Boat(null, type, manufacturer, body, weight, wing)
@@ -47,24 +42,19 @@ object Randomizer {
     // Default values for random arriving
     fun getRandomRower(minAge: Int = 10, maxAge: Int = 20, minSkill: Int = 1, maxSkill: Int = 8):
             Rower {
-        val fem = Rower.FEMALE
-        // Logic is to increase percentage of mans
-        val gender = if (getRandomInt(THREE) == 1) fem else Rower.MALE
-        val name = "${getRandomFromList(commonSurnames)}${
-            if (gender == fem) "a ${getRandomFromList(namesFemale)}"
-            else " ${getRandomFromList(namesMale)}"
-        }"
-        val age = getRandomInt(maxAge - minAge) + minAge - 1
+        val gender = Rower.MALE
+        val name = "${getRandomFromList(commonSurnames)} ${getRandomFromList(namesMale)}"
+        val age = (minAge..maxAge).random()
         val height = getRandomHeight(age, gender)
-        val weight = when { // Random deviation + minimal weight for this height
-            height < HEIGHT_152 -> getRandomInt(RW_DIAP) + WEIGHT_152
-            height < HEIGHT_158 -> getRandomInt(RW_DIAP) + WEIGHT_158
-            height < HEIGHT_164 -> getRandomInt(RW_DIAP) + WEIGHT_164
-            height < HEIGHT_170 -> getRandomInt(RW_DIAP) + WEIGHT_170
-            height < HEIGHT_176 -> getRandomInt(RW_DIAP) + WEIGHT_176
-            height < HEIGHT_182 -> getRandomInt(RW_DIAP) + WEIGHT_182
-            height < HEIGHT_190 -> getRandomInt(RW_DIAP) + WEIGHT_190
-            else -> getRandomInt(RW_DIAP * 2) + WEIGHT_200
+        val weight = when { // Minimal weight for this height + random deviation
+            height < HEIGHT_152 -> (WEIGHT_152..WEIGHT_152 + RW_DIAP).random()
+            height < HEIGHT_158 -> (WEIGHT_158..WEIGHT_158 + RW_DIAP).random()
+            height < HEIGHT_164 -> (WEIGHT_164..WEIGHT_164 + RW_DIAP).random()
+            height < HEIGHT_170 -> (WEIGHT_170..WEIGHT_170 + RW_DIAP).random()
+            height < HEIGHT_176 -> (WEIGHT_176..WEIGHT_176 + RW_DIAP).random()
+            height < HEIGHT_182 -> (WEIGHT_182..WEIGHT_182 + RW_DIAP).random()
+            height < HEIGHT_190 -> (WEIGHT_190..WEIGHT_190 + RW_DIAP).random()
+            else -> (WEIGHT_200..WEIGHT_200 + RW_DIAP * 2).random()
         }
         return Rower(
             id = null,
@@ -73,24 +63,32 @@ object Randomizer {
             age,
             height,
             weight,
-            getRandomInt(maxSkill - minSkill) + minSkill - 1,
-            getRandomInt(maxSkill - minSkill) + minSkill - 1,
-            getRandomInt(maxSkill - minSkill) + minSkill - 1
+            (minSkill..maxSkill).random(),
+            (minSkill..maxSkill).random(),
+            (minSkill..maxSkill).random()
         )
     }
 
     private fun getRandomHeight(age: Int, gender: Int): Int =
         if (gender == Rower.FEMALE) {
             when {
-                age < AGE_KID -> getRandomInt(HEIGHT_WOMAN_KID_DEVIATION) + HEIGHT_WOMAN_KID_MINIMAL
-                age < AGE_JUN -> getRandomInt(HEIGHT_WOMAN_JUN_DEVIATION) + HEIGHT_WOMAN_JUN_MINIMAL
-                else -> getRandomInt(HEIGHT_WOMAN_DEVIATION) + HEIGHT_WOMAN_MINIMAL
+                age < AGE_KID ->
+                    (HEIGHT_WOMAN_KID_MINIMAL..HEIGHT_WOMAN_KID_MINIMAL + HEIGHT_WOMAN_KID_DEVIAT)
+                        .random()
+                age < AGE_JUN ->
+                    (HEIGHT_WOMAN_JUN_MINIMAL..HEIGHT_WOMAN_JUN_MINIMAL + HEIGHT_WOMAN_JUN_DEVIAT)
+                        .random()
+                else -> (HEIGHT_WOMAN_MINIMAL..HEIGHT_WOMAN_MINIMAL + HEIGHT_WOMAN_DEVIAT).random()
             }
         } else {
             when {
-                age < AGE_KID -> getRandomInt(HEIGHT_MAN_KID_DEVIATION) + HEIGHT_MAN_KID_MINIMAL
-                age < AGE_JUN -> getRandomInt(HEIGHT_MAN_JUN_DEVIATION) + HEIGHT_MAN_JUN_MINIMAL
-                else -> getRandomInt(HEIGHT_MAN_DEVIATION) + HEIGHT_MAN_MINIMAL
+                age < AGE_KID ->
+                    (HEIGHT_MAN_KID_MINIMAL..HEIGHT_MAN_KID_MINIMAL + HEIGHT_MAN_KID_DEVIAT)
+                        .random()
+                age < AGE_JUN ->
+                    (HEIGHT_MAN_JUN_MINIMAL..HEIGHT_MAN_JUN_MINIMAL + HEIGHT_MAN_JUN_DEVIAT)
+                        .random()
+                else -> (HEIGHT_MAN_MINIMAL..HEIGHT_MAN_MINIMAL + HEIGHT_MAN_DEVIAT).random()
             }
         }
 
@@ -111,7 +109,7 @@ object Randomizer {
         oar.weight == Oar.RECREATIONAL && (oar.blade == Oar.ELITE || oar.type == Oar.SWEEP)
 
     private fun notValid(manufacturer: String, body: Int): Boolean {
-        return when (manufacturer) {
+        return if (body < Boat.EXTRA_SMALL || body > Boat.UNIVERSAL) true else when (manufacturer) {
             Manufacturer.Nemiga.name -> body != Boat.LONG && body != Boat.MEDIUM_LONG
             Manufacturer.Hudson.name -> body == Boat.UNIVERSAL
             else -> false
@@ -120,19 +118,18 @@ object Randomizer {
 
     private const val AGE_KID = 14
     private const val AGE_JUN = 16
-    private const val HEIGHT_WOMAN_KID_DEVIATION = 62
-    private const val HEIGHT_WOMAN_JUN_DEVIATION = 47
-    private const val HEIGHT_WOMAN_DEVIATION = 54
-    private const val HEIGHT_MAN_KID_DEVIATION = 66
-    private const val HEIGHT_MAN_JUN_DEVIATION = 52
-    private const val HEIGHT_MAN_DEVIATION = 56
+    private const val HEIGHT_WOMAN_KID_DEVIAT = 62
+    private const val HEIGHT_WOMAN_JUN_DEVIAT = 47
+    private const val HEIGHT_WOMAN_DEVIAT = 54
+    private const val HEIGHT_MAN_KID_DEVIAT = 66
+    private const val HEIGHT_MAN_JUN_DEVIAT = 52
+    private const val HEIGHT_MAN_DEVIAT = 56
     private const val HEIGHT_WOMAN_KID_MINIMAL = 123
     private const val HEIGHT_WOMAN_JUN_MINIMAL = 147
     private const val HEIGHT_WOMAN_MINIMAL = 150
     private const val HEIGHT_MAN_KID_MINIMAL = 116
     private const val HEIGHT_MAN_JUN_MINIMAL = 147
     private const val HEIGHT_MAN_MINIMAL = 160
-    private const val THREE = 3
     // Rower weights
     private const val RW_DIAP = 16
     private const val HEIGHT_152 = 152

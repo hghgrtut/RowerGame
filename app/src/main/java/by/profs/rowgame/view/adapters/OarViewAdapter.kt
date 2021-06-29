@@ -1,19 +1,19 @@
 package by.profs.rowgame.view.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.SingleComboDao
@@ -21,31 +21,30 @@ import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
 import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
-import by.profs.rowgame.utils.SHOP_SIZE
-import by.profs.rowgame.view.MainActivity
+import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class OarViewAdapter(
+    private val oars: List<Oar>,
     private val type: Int,
     private val prefEditor: PreferenceEditor,
     private var dao: OarDao,
     private val singleComboDao: SingleComboDao? = null
 ) : RecyclerView.Adapter<OarViewAdapter.ViewHolder>(), MyViewAdapter<Oar> {
 
-    private lateinit var oars: List<Oar>
     private lateinit var context: Context
+    private lateinit var fragment: Fragment
     private val informator: OarInformator = OarInformator()
     private val trader: OarTrader = OarTrader(prefEditor, dao)
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    init { refreshDataSet() }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
+        fragment = parent.findFragment()
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_oar, parent, false))
     }
@@ -109,23 +108,11 @@ class OarViewAdapter(
                 scope.launch {
                     SingleComboRoomDatabase.getDatabase(context, scope)
                         .singleComboDao()
-                        .insertCombo(prefEditor.getCombo()
-                ) }
-                ContextCompat.startActivity(
-                    context, Intent(context, MainActivity::class.java), null)
-            }
-        }
-    }
-
-    override fun refreshDataSet() {
-        CoroutineScope(Dispatchers.IO).launch {
-            oars = withContext(Dispatchers.IO) { when (type) {
-                INVENTORY -> dao.getItems()
-                SHOP -> List(SHOP_SIZE) { Randomizer.getRandomOar() }
-                else -> {
-                    val oarIds = singleComboDao!!.getOarIds()
-                    dao.getItems().filter { oar -> !oarIds.contains(oar.id) }
-                } }
+                        .insertCombo(prefEditor.getCombo())
+                    val navController by lazy(LazyThreadSafetyMode.NONE) {
+                        NavHostFragment.findNavController(fragment) }
+                    MainScope().launch { PairingFragmentDirections.actionPairingFragmentSelf()
+                        .also { navController.navigate(it) } } }
             }
         }
     }

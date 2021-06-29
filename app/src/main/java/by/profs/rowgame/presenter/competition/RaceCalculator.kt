@@ -3,11 +3,11 @@ package by.profs.rowgame.presenter.competition
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.utils.NumberGenerator
-import by.profs.rowgame.view.CompetitionActivity
-import kotlin.math.abs
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
+import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
 
-object RaceCalculator {
+class RaceCalculator(private val raceType: Int) {
 
     fun calculateRace(
         boats: List<Boat>,
@@ -15,19 +15,17 @@ object RaceCalculator {
         rowers: List<Rower>,
         rating: ArrayList<Pair<Rower, Int>>
     ): ArrayList<Pair<Rower, Int>> {
-
-        if (rating.isEmpty()) for (i in rowers.indices) rating.add(Pair(rowers[i], 0))
-        val distances = IntArray(CompetitionActivity.raceSize) {
-            NumberGenerator.generatePositiveIntOrNull(MAX_GAP)
-        }
-        val chances: MutableList<Int> = MutableList(CompetitionActivity.raceSize) { pos ->
-            calculatePower(boats[pos], oars[pos], rowers[pos])
-        }
+        val distances = IntArray(rowers.size) { (0..maxGap[raceType]!!).random() }
         distances.sort()
+        if (raceType == OFP) distances.forEachIndexed { ind, it -> distances[ind] = MAX_SCORE - it }
+        val chances: MutableList<Int> = MutableList(rowers.size) { pos ->
+            if (raceType == WATER) calculatePower(boats[pos], oars[pos], rowers[pos])
+            else calculatePower(rower = rowers[pos])
+        }
         var j = 0
         var total = chances.sum()
         while (total > 0) {
-            var rand = NumberGenerator.generatePositiveIntOrNull(total)
+            var rand = (0 until total).random()
             var i = -1
             while (rand >= 0) {
                 i++
@@ -38,41 +36,54 @@ object RaceCalculator {
             chances[i] = 0
             j++
         }
+        val excessGap: Int = if (raceType != OFP) rating.map { it.second }.minOrNull()!!
+            else distances.maxOrNull()!! - MAX_SCORE
+        rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
         return rating
     }
 
-    private fun calculatePower(boat: Boat, oar: Oar, rower: Rower): Int {
-        val rowerPenalty = abs(rower.power - rower.technics).coerceAtLeast(
-            abs(rower.power - rower.endurance).coerceAtLeast(
-                abs(rower.technics - rower.endurance))
-        )
-        var power = rower.power + rower.technics + rower.endurance - rowerPenalty +
-                (boat.weight + boat.wing + oar.blade + oar.weight) * BOAT_OAR_COEF
-        if (minIdealWeight[boat.body]!! <= rower.weight &&
-            rower.weight <= maxIdealWeight[boat.body]!!) power = (power * IDEAL_WEIGHT_COEF).toInt()
+    private fun calculatePower(boat: Boat? = null, oar: Oar? = null, rower: Rower): Int {
+        var power: Int = 0
+        when (raceType) {
+            WATER -> {
+                power = (rower.technics * KEY_SKILL_COEF).toInt() + rower.endurance + rower.power +
+                        (boat!!.weight + boat.wing + oar!!.blade + oar.weight) * BOAT_OAR_COEF
+                if (minIdealWeight[boat.body]!! <= rower.weight &&
+                    rower.weight <= maxIdealWeight[boat.body]!!
+                ) power = (power * IDEAL_WEIGHT_COEF).toInt()
+            }
+            CONCEPT -> power = (rower.endurance * KEY_SKILL_COEF).toInt() + rower.power +
+                    (rower.technics / KEY_SKILL_COEF).toInt()
+            OFP -> power = (rower.power * KEY_SKILL_COEF).toInt() + rower.endurance +
+                    (rower.technics / KEY_SKILL_COEF).toInt()
+        }
         return power
     }
 
-    private const val BOAT_OAR_COEF = 10
-    private const val IDEAL_WEIGHT_COEF = 1.25
-    private const val MAX_GAP = 15 // max increase in distance between leader and last boat on 500 m
+    companion object {
+        private const val BOAT_OAR_COEF = 10
+        private const val IDEAL_WEIGHT_COEF = 1.25
+        private const val KEY_SKILL_COEF = 1.5
+        private const val MAX_SCORE = 100
 
-    private val minIdealWeight: HashMap<Int, Int> = hashMapOf(
-        Boat.UNIVERSAL to FOR_UNIVERSAL_MIN,
-        Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MIN,
-        Boat.SMALL to FOR_SMALL_MIN,
-        Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MIN,
-        Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MIN,
-        Boat.LONG to FOR_LONG_MIN,
-        Boat.EXTRA_LONG to FOR_EXTRA_LONG_MIN
-    )
-    private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(
-        Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,
-        Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MAX,
-        Boat.SMALL to FOR_SMALL_MAX,
-        Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MAX,
-        Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MAX,
-        Boat.LONG to FOR_LONG_MAX,
-        Boat.EXTRA_LONG to FOR_EXTRA_LONG_MAX
-    )
+        private val minIdealWeight: HashMap<Int, Int> = hashMapOf(
+            Boat.UNIVERSAL to FOR_UNIVERSAL_MIN,
+            Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MIN,
+            Boat.SMALL to FOR_SMALL_MIN,
+            Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MIN,
+            Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MIN,
+            Boat.LONG to FOR_LONG_MIN,
+            Boat.EXTRA_LONG to FOR_EXTRA_LONG_MIN
+        )
+        private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(
+            Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,
+            Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MAX,
+            Boat.SMALL to FOR_SMALL_MAX,
+            Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MAX,
+            Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MAX,
+            Boat.LONG to FOR_LONG_MAX,
+            Boat.EXTRA_LONG to FOR_EXTRA_LONG_MAX
+        )
+        private val maxGap: HashMap<Int, Int> = hashMapOf(CONCEPT to 40, OFP to 57, WATER to 15)
+    }
 }

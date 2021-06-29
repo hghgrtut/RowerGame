@@ -1,29 +1,29 @@
 package by.profs.rowgame.presenter.trainer
 
 import by.profs.rowgame.data.combos.CombinationSingleScull
+import by.profs.rowgame.data.items.Damageable
 import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.dao.MyDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.utils.NumberGenerator.generatePositiveIntOrNull
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class Trainer(
     private val boatDao: BoatDao,
     private val oarDao: OarDao,
     private val rowerDao: RowerDao,
-    private val singleComboDao: SingleComboDao
+    private val deleteRowerFun: (Int?) -> Unit
 ) {
-    suspend fun startTraining(mode: Int, combos: MutableList<CombinationSingleScull>, today: Int) {
+    suspend fun startTraining(mode: Int, combos: MutableList<CombinationSingleScull>) {
         combos.forEach { combo ->
-            val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
-            var random = generatePositiveIntOrNull(rowerUpChance)
+            val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId) } ?: return
+            val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId) } ?: return
+            val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId) } ?: return
+            var random = (1..rowerUpChance).random()
             if (random < rowerCharacteristicsNumber) {
                 when (mode) {
                     TRAIN_ENDURANCE -> rower.upEndurance()
@@ -32,48 +32,38 @@ class Trainer(
                 }
                 rowerDao.updateItem(rower)
             }
-            random = generatePositiveIntOrNull((injuryChance / rower.injurability).toInt())
-            if (random == 0) {
-                val seekDays = minSeekDays + generatePositiveIntOrNull(rangeSeekDays)
-                if (rower.hurt(seekDays, today)) rowerDao.updateItem(rower)
+            random = (1..injuryChance).random()
+            if (random == 1) {
+                if (rower.hurt((1..maxInjury).random())) rowerDao.updateItem(rower)
                 else {
                     deleteCombo(combo)
                     rowerDao.deleteItem(rower.id!!)
                 }
             }
-            random = generatePositiveIntOrNull(maxDamage)
-            if (random < acceptableDamage) {
-                val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! }
-                if (boat.broke(random)) boatDao.updateItem(boat)
-                else {
-                    deleteCombo(combo)
-                    boatDao.deleteItem(boat.id!!)
-                }
-            }
-            random = generatePositiveIntOrNull(maxDamage)
-            if (random < acceptableDamage) {
-                val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! }
-                if (oar.broke(random)) oarDao.updateItem(oar)
-                else {
-                    deleteCombo(combo)
-                    oarDao.deleteItem(oar.id!!)
-                }
+            brokeItem(combo, boat, boatDao as MyDao<Damageable>)
+            brokeItem(combo, oar, oarDao as MyDao<Damageable>)
+        }
+    }
+
+    private fun deleteCombo(combo: CombinationSingleScull) = deleteRowerFun(combo.rowerId)
+
+    private fun brokeItem(combo: CombinationSingleScull, item: Damageable, dao: MyDao<Damageable>) {
+        val random = (1..maxDamage).random()
+        if (random < acceptableDamage) {
+            if (item.broke(random)) dao.updateItem(item)
+            else {
+                deleteCombo(combo)
+                dao.deleteItem(item.id!!)
             }
         }
     }
 
-    private fun deleteCombo(combo: CombinationSingleScull) {
-        CoroutineScope(Dispatchers.IO).launch { singleComboDao.deleteCombo(combo.combinationId!!) }
-    }
-
     companion object {
         private const val acceptableDamage = 11
-        private const val injuryChance = 60 // resultChance = 1 : injuryChance
+        private const val injuryChance = 90 // resultChance = 1 : injuryChance
+        private const val maxInjury = 4 // resultChance = 1 : injuryChance
         private const val maxDamage = 365 // chance to damage = (acceptableDamage-1) : maxDamage
         private const val rowerCharacteristicsNumber = 3
         private const val rowerUpChance = 33 // resultChance = CharacteristicNumber : rowerUpChance
-
-        private const val rangeSeekDays = 37
-        private const val minSeekDays = 14
     }
 }
