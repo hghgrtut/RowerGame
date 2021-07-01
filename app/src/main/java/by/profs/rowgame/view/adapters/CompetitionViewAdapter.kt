@@ -78,7 +78,7 @@ class CompetitionViewAdapter(
             else -> context.getString(R.string.rigger_backwing)
         })
         holder.boatWeight.text = context.getString(
-            R.string.weight,
+            R.string.item_weight,
             when (boat.type) {
                 BoatTypes.SingleScull.name -> when (boat.weight) {
                     Boat.ELITE -> "14"
@@ -91,7 +91,7 @@ class CompetitionViewAdapter(
         val info = oarInformator.getItemInfo(oar)
         holder.oarBlade.text = context.getString(R.string.blade, info[0])
         holder.oarModel.text = context.getString(R.string.model, info[1])
-        holder.oarWeight.text = context.getString(R.string.weight, info[2])
+        holder.oarWeight.text = context.getString(R.string.item_weight, info[2])
 
         if (deleteRowerFun != null) {
             holder.button.visibility = View.VISIBLE

@@ -98,7 +98,7 @@
         android:id="@+id/weight_boat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/weight"
+        tools:text="@string/item_weight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rigger" />
 
@@ -125,7 +125,7 @@
         android:id="@+id/weight_oar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/weight"
+        tools:text="@string/item_weight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blade" />
 

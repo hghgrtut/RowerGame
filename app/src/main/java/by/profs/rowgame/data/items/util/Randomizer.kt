@@ -13,8 +13,8 @@ object Randomizer {
         do {
             oar = Oar(null,
                 getRandomFromList(manufacturers) as String,
-                (1..Oar.ELITE).random(),
-                (1..Oar.ELITE).random(),
+                (Oar.RECREATIONAL..Oar.ELITE).random(),
+                (Oar.RECREATIONAL..Oar.ELITE).random(),
                 Oar.SCULL
             )
         } while (notValid(oar))
@@ -40,7 +40,7 @@ object Randomizer {
     }
 
     // Default values for random arriving
-    fun getRandomRower(minAge: Int = 10, maxAge: Int = 20, minSkill: Int = 1, maxSkill: Int = 8):
+    fun getRandomRower(minAge: Int = 14, maxAge: Int = 20, minSkill: Int = 1, maxSkill: Int = 8):
             Rower {
         val gender = Rower.MALE
         val name = "${getRandomFromList(commonSurnames)} ${getRandomFromList(namesMale)}"
@@ -72,23 +72,15 @@ object Randomizer {
     private fun getRandomHeight(age: Int, gender: Int): Int =
         if (gender == Rower.FEMALE) {
             when {
-                age < AGE_KID ->
-                    (HEIGHT_WOMAN_KID_MINIMAL..HEIGHT_WOMAN_KID_MINIMAL + HEIGHT_WOMAN_KID_DEVIAT)
-                        .random()
-                age < AGE_JUN ->
-                    (HEIGHT_WOMAN_JUN_MINIMAL..HEIGHT_WOMAN_JUN_MINIMAL + HEIGHT_WOMAN_JUN_DEVIAT)
-                        .random()
-                else -> (HEIGHT_WOMAN_MINIMAL..HEIGHT_WOMAN_MINIMAL + HEIGHT_WOMAN_DEVIAT).random()
+                age < Ages.Kid.age -> (HEIGHT_WOMAN_KID_MINIMAL..HEIGHT_WOMAN_KID_MAXIMAL).random()
+                age < Ages.Jun.age -> (HEIGHT_WOMAN_JUN_MINIMAL..HEIGHT_WOMAN_JUN_MAXIMAL).random()
+                else -> (HEIGHT_WOMAN_MINIMAL..HEIGHT_WOMAN_MAXIMAL).random()
             }
         } else {
             when {
-                age < AGE_KID ->
-                    (HEIGHT_MAN_KID_MINIMAL..HEIGHT_MAN_KID_MINIMAL + HEIGHT_MAN_KID_DEVIAT)
-                        .random()
-                age < AGE_JUN ->
-                    (HEIGHT_MAN_JUN_MINIMAL..HEIGHT_MAN_JUN_MINIMAL + HEIGHT_MAN_JUN_DEVIAT)
-                        .random()
-                else -> (HEIGHT_MAN_MINIMAL..HEIGHT_MAN_MINIMAL + HEIGHT_MAN_DEVIAT).random()
+                age < Ages.Kid.age -> (HEIGHT_MAN_KID_MINIMAL..HEIGHT_MAN_KID_MAXIMAL).random()
+                age < Ages.Jun.age -> (HEIGHT_MAN_JUN_MINIMAL..HEIGHT_MAN_JUN_MAXIMAL).random()
+                else -> (HEIGHT_MAN_MINIMAL..HEIGHT_MAN_MAXIMAL).random()
             }
         }
 
@@ -96,9 +88,7 @@ object Randomizer {
         val wings = when (manufacturer) {
             Manufacturer.Nemiga.name -> listOf(Boat.ALUMINIUM_WING)
             Manufacturer.Hudson.name -> listOf(Boat.ALUMINIUM_WING, Boat.BACKWING)
-            Manufacturer.Empacher.name ->
-                listOf(Boat.ALUMINIUM_WING, Boat.CARBON_WING, Boat.BACKWING)
-            Manufacturer.Peisheng.name ->
+            Manufacturer.Empacher.name, Manufacturer.Peisheng.name ->
                 listOf(Boat.ALUMINIUM_WING, Boat.CARBON_WING, Boat.BACKWING)
             else -> listOf(Boat.CLASSIC_STAY, Boat.ALUMINIUM_WING, Boat.CARBON_WING, Boat.BACKWING)
         }
@@ -116,14 +106,12 @@ object Randomizer {
         }
     }
 
-    private const val AGE_KID = 14
-    private const val AGE_JUN = 16
-    private const val HEIGHT_WOMAN_KID_DEVIAT = 62
-    private const val HEIGHT_WOMAN_JUN_DEVIAT = 47
-    private const val HEIGHT_WOMAN_DEVIAT = 54
-    private const val HEIGHT_MAN_KID_DEVIAT = 66
-    private const val HEIGHT_MAN_JUN_DEVIAT = 52
-    private const val HEIGHT_MAN_DEVIAT = 56
+    private const val HEIGHT_WOMAN_KID_MAXIMAL = 185
+    private const val HEIGHT_WOMAN_JUN_MAXIMAL = 194
+    private const val HEIGHT_WOMAN_MAXIMAL = 204
+    private const val HEIGHT_MAN_KID_MAXIMAL = 182
+    private const val HEIGHT_MAN_JUN_MAXIMAL = 199
+    private const val HEIGHT_MAN_MAXIMAL = 216
     private const val HEIGHT_WOMAN_KID_MINIMAL = 123
     private const val HEIGHT_WOMAN_JUN_MINIMAL = 147
     private const val HEIGHT_WOMAN_MINIMAL = 150

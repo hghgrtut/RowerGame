@@ -65,6 +65,13 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
                 FROM_LIST -> dao.search(args.rowerId)!!
                 else -> Randomizer.getRandomRower()
             } }
+            if (args.source != FROM_LIST) {
+                binding?.buttonNewLegend?.visibility = View.VISIBLE
+                binding?.buttonNewLegend?.setOnClickListener {
+                    navController.navigate(R.id.action_rowerDetailsFragment_to_newLegendFragment)
+                }
+            }
+
             showImage(binding!!.rowerPic, rower)
             binding?.age?.text = this.getString(R.string.rower_age, rower.age)
             binding?.endurance?.text = this.getString(R.string.rower_endurance, rower.endurance)
@@ -74,13 +81,11 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
             binding?.power?.text = this.getString(R.string.rower_power, rower.power)
             binding?.weight?.text = this.getString(R.string.rower_weight, rower.weight)
 
-            if (rower.endpointAbout != null) { showExtraInfo(rower.endpointAbout) }
+            if (rower.about != null) { showExtraInfo(rower.about) }
             if (withContext(Dispatchers.IO) { dao.searchByName(rower.name) } == null) {
-                setAsNew()
-                binding?.button?.setOnClickListener { recruit(rower) }
+                setAsNew(rower)
             } else {
-                setAsExisting()
-                binding?.button?.setOnClickListener { fire(rower) }
+                setAsExisting(rower)
             }
             if (rower.cost > 0) {
                 binding?.cost?.text = this.getString(R.string.fame_cost, rower.cost)
@@ -109,43 +114,42 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
 
     private fun showImage(view: ImageView, rower: Rower) {
         val imageLoader: ImageLoader = CoilImageLoader
-        if (rower.photo != null) { imageLoader.loadImageFromNetwork(view, rower.photo)
+        if (rower.thumb != null) { imageLoader.loadImageFromNetwork(view, rower.thumb)
         } else { view.setImageResource(
             if (rower.gender == Rower.MALE) { R.drawable.placeholder_man
             } else { R.drawable.placeholder_woman })
         }
     }
 
-    private fun setAsExisting() {
+    private fun setAsExisting(rower: Rower) {
+        showFame()
         binding?.button?.text = this.getString(R.string.fire_rower)
-        binding?.fame?.visibility = View.GONE
+        binding?.button?.setOnClickListener { fire(rower) }
     }
 
-    private fun setAsNew() {
+    private fun setAsNew(rower: Rower) {
+        showFame()
         binding?.button?.text = this.getString(R.string.recruit)
-        binding?.fame?.text = this.getString(R.string.fame_balance, prefEditor.getFame())
-        binding?.fame?.visibility = View.VISIBLE
+        binding?.button?.setOnClickListener { recruit(rower) }
     }
 
     private fun recruit(rower: Rower) {
         if (recruiter.buy(rower)) {
-            showToast(
-                requireContext(), if (rower.gender == Rower.MALE) R.string.recruit_success_male
-                else R.string.recruit_success_female
-            )
-            setAsExisting()
+            showToast(requireContext(), R.string.recruit_success)
+            setAsExisting(rower)
         } else {
             showToast(requireContext(), R.string.recruit_fail)
         }
-        binding?.button?.setOnClickListener { fire(rower) }
     }
 
     private fun fire(rower: Rower) {
         recruiter.sell(rower)
-        setAsNew()
-        binding?.button?.setOnClickListener { recruit(rower) }
+        setAsNew(rower)
         showToast(requireContext(), R.string.fired)
     }
+
+    private fun showFame() {
+        binding?.fame?.text = this.getString(R.string.fame_balance, prefEditor.getFame()) }
 
     companion object {
         const val FROM_EVENT = 1

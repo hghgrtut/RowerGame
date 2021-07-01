@@ -90,7 +90,7 @@ class BoatViewAdapter(
     }
 
     private fun showWeight(view: TextView, boat: Boat) {
-        view.text = context.getString(R.string.weight,
+        view.text = context.getString(R.string.item_weight,
             when (boat.type) {
                 BoatTypes.SingleScull.name -> when (boat.weight) {
                     Boat.ELITE -> "14"

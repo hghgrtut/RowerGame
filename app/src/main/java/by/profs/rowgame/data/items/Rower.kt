@@ -21,11 +21,9 @@ data class Rower(
     @ColumnInfo(name = "technics") var technics: Int,
     @ColumnInfo(name = "endurance") var endurance: Int,
     @ColumnInfo(name = "thumb") val thumb: String? = null,
-    @ColumnInfo(name = "photo") val photo: String? = null,
-    @ColumnInfo(name = "endpointAbout") val endpointAbout: String? = null,
+    @ColumnInfo(name = "about") val about: String? = null,
     @ColumnInfo(name = "cost") val cost: Int = 0,
-    @ColumnInfo(name = "injury") var injury: Int = 0, // remove if not necessary
-    @ColumnInfo(name = "injurability") val injurability: Double = 1.0 // remove if not necessary
+    @ColumnInfo(name = "isMine") var isMine: Boolean = true
 ) {
     companion object {
         const val MALE = 1

@@ -88,7 +88,7 @@ class OarViewAdapter(
             holder.bladeImage.setImageResource(bladeImages[info[0]]!!)
             holder.blade.text = context.getString(R.string.blade, info[0])
             holder.model.text = context.getString(R.string.model, info[1])
-            holder.weight.text = context.getString(R.string.weight, info[2])
+            holder.weight.text = context.getString(R.string.item_weight, info[2])
         } catch (e: KotlinNullPointerException) {
             Log.e("incomp oar", oar.toString())
         }

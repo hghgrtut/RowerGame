@@ -78,6 +78,9 @@
             android:id="@+id/action_rowerDetailsFragment_to_netErrorFragment"
             app:destination="@id/netErrorFragment"
             app:popUpTo="@id/mainFragment" />
+        <action
+            android:id="@+id/action_rowerDetailsFragment_to_newLegendFragment"
+            app:destination="@id/newLegendFragment" />
     </fragment>
     <fragment
         android:id="@+id/netErrorFragment"
@@ -123,6 +126,19 @@
             <argument
                 android:name="item"
                 android:defaultValue="1" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/newLegendFragment"
+        android:name="by.profs.rowgame.view.shop.NewLegendFragment"
+        android:label="@string/make_new_legend"
+        tools:layout="@layout/fragment_new_legend" >
+        <action
+            android:id="@+id/action_newLegendFragment_to_inventoryFragment"
+            app:destination="@id/inventoryFragment" >
+            <argument
+                android:name="itemType"
+                android:defaultValue="3" />
         </action>
     </fragment>
 </navigation>
