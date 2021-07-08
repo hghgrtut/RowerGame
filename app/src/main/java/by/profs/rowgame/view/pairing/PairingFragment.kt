@@ -1,6 +1,5 @@
 package by.profs.rowgame.view.pairing
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentPairingBinding
-import by.profs.rowgame.presenter.database.BoatRoomDatabase
-import by.profs.rowgame.presenter.database.OarRoomDatabase
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
-import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -23,7 +19,6 @@ import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.PAIRING
 import by.profs.rowgame.view.adapters.RowerViewAdapter
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -32,10 +27,9 @@ import kotlinx.coroutines.withContext
 class PairingFragment : Fragment(R.layout.fragment_pairing) {
     private val args by navArgs<PairingFragmentArgs>()
     private var binding: FragmentPairingBinding? = null
-    private lateinit var contex: Context
+    private lateinit var database: MyRoomDatabase
     private lateinit var recyclerView: RecyclerView
     private lateinit var prefEditor: PreferenceEditor
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,12 +42,12 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contex = requireContext()
-        prefEditor = PreferenceEditor(contex)
+        prefEditor = PreferenceEditor(requireContext())
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)
         }
+        database = MyRoomDatabase.getDatabase(requireContext())
         MainScope().launch { when (args.item) { // intent type
             INTENT_BOATS -> choosingBoat()
             INTENT_OARS -> choosingOar()
@@ -67,7 +61,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingBoat() {
-        val dao = BoatRoomDatabase.getDatabase(contex, scope).boatDao()
+        val dao = database.boatDao()
         val boatIds = withContext(Dispatchers.IO) { getComboDao().getBoatIds() }
         val freeBoats = withContext(Dispatchers.IO) {
             ArrayList(dao.getItems().filter { boat -> !boatIds.contains(boat.id) }) }
@@ -77,7 +71,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingRower() {
-        val dao = RowerRoomDatabase.getDatabase(contex, scope).rowerDao()
+        val dao = database.rowerDao()
         val rowerIds = withContext(Dispatchers.IO) { getComboDao().getRowerIds() }
         val rowers = withContext(Dispatchers.IO) {
             dao.getItems().filter { rower -> !rowerIds.contains(rower.id!!) } }
@@ -87,14 +81,14 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingOar() {
-        val dao = OarRoomDatabase.getDatabase(contex, scope).oarDao()
+        val dao = database.oarDao()
         val oarIds = withContext(Dispatchers.IO) { getComboDao().getOarIds() }
         val oars = withContext(Dispatchers.IO) {
             dao.getItems().filter { oar -> !oarIds.contains(oar.id) } }
-        val viewAdapter = OarViewAdapter(oars, PAIRING, prefEditor, dao)
+        val viewAdapter = OarViewAdapter(oars, PAIRING, prefEditor, database)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_oar)
     }
 
-    private fun getComboDao() = SingleComboRoomDatabase.getDatabase(contex, scope).singleComboDao()
+    private fun getComboDao() = database.comboDao()
 }

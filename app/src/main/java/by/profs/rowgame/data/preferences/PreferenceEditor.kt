@@ -3,7 +3,7 @@ package by.profs.rowgame.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
-import by.profs.rowgame.data.combos.CombinationSingleScull
+import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.utils.BOAT
 import by.profs.rowgame.utils.FAME
 import by.profs.rowgame.utils.FIRST_OAR
@@ -71,7 +71,7 @@ class PreferenceEditor(context: Context) {
         }
     }
 
-    fun getCombo() = CombinationSingleScull(
+    fun getCombo() = Combo(
         null,
         preferences.getInt(BOAT, 0),
         preferences.getInt(FIRST_OAR, 0),

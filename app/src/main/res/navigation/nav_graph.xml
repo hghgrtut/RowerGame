@@ -108,7 +108,8 @@
             android:defaultValue="1" />
         <action
             android:id="@+id/action_competitionFragment_to_trainingFragment"
-            app:destination="@id/trainingFragment" />
+            app:destination="@id/trainingFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/pairingFragment"

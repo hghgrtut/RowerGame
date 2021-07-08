@@ -38,26 +38,34 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onViewCreated(view, savedInstanceState)
         prefEditor = PreferenceEditor(requireContext())
 
-        binding?.goToBoats?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_BOATS)
-                .also { navController.navigate(it) } }
-        binding?.goToOars?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_OARS)
-                .also { navController.navigate(it) } }
-        binding?.goToRowers?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_ROWERS)
-                .also { navController.navigate(it) } }
-        binding?.goToLegends?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToRowerDetailsFragment()
-                .also { navController.navigate(it) } }
-        binding?.goToNewPair?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToPairingFragment()
-                .also { navController.navigate(it) } }
-        binding?.goToExistingPairs?.setOnClickListener {
-            MainFragmentDirections.actionMainFragmentToTrainingFragment()
-                .also { navController.navigate(it) } }
+        binding?.run {
+            goToBoats.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_BOATS)
+                    .also { navController.navigate(it) }
+            }
+            goToOars.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_OARS)
+                    .also { navController.navigate(it) }
+            }
+            goToRowers.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_ROWERS)
+                    .also { navController.navigate(it) }
+            }
+            goToLegends.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToRowerDetailsFragment()
+                    .also { navController.navigate(it) }
+            }
+            goToNewPair.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToPairingFragment()
+                    .also { navController.navigate(it) }
+            }
+            goToExistingPairs.setOnClickListener {
+                MainFragmentDirections.actionMainFragmentToTrainingFragment()
+                    .also { navController.navigate(it) }
+            }
 
-        binding?.giveMoney?.setOnClickListener { MainScope().launch { resetMoney() } }
+            giveMoney.setOnClickListener { MainScope().launch { resetMoney() } }
+        }
     }
 
     override fun onResume() {

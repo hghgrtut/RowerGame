@@ -40,6 +40,7 @@
     <!-- For buttons in activities -->
     <string name="boats">Лодки</string>
     <string name="change_theme">Сменить тему</string>
+    <string name="claim_reward">Забрать награду</string>
     <string name="detach_pair">Detach</string>
     <string name="fire_rower">Уволить</string>
     <string name="give_money">Money</string>

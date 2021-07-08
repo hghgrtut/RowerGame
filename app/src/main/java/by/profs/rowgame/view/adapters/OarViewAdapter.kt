@@ -15,9 +15,7 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.preferences.PreferenceEditor
-import by.profs.rowgame.presenter.dao.OarDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
@@ -32,14 +30,13 @@ class OarViewAdapter(
     private val oars: List<Oar>,
     private val type: Int,
     private val prefEditor: PreferenceEditor,
-    private var dao: OarDao,
-    private val singleComboDao: SingleComboDao? = null
+    private val database: MyRoomDatabase
 ) : RecyclerView.Adapter<OarViewAdapter.ViewHolder>(), MyViewAdapter<Oar> {
 
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val informator: OarInformator = OarInformator()
-    private val trader: OarTrader = OarTrader(prefEditor, dao)
+    private val trader: OarTrader = OarTrader(prefEditor, database.oarDao())
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -106,9 +103,7 @@ class OarViewAdapter(
             PAIRING -> {
                 prefEditor.occupyOar(oar.id!!)
                 scope.launch {
-                    SingleComboRoomDatabase.getDatabase(context, scope)
-                        .singleComboDao()
-                        .insertCombo(prefEditor.getCombo())
+                    database.comboDao().insertCombo(prefEditor.getCombo())
                     val navController by lazy(LazyThreadSafetyMode.NONE) {
                         NavHostFragment.findNavController(fragment) }
                     MainScope().launch { PairingFragmentDirections.actionPairingFragmentSelf()

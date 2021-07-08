@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Locations_continental">
+        <item>Крушвице, POL</item>
+        <item>Варезе, ITA</item>
+        <item>Сабаудиа, ITA</item>
+        <item>Хазевинкел, BEL</item>
+        <item>Мюнхен, GER</item>
+        <item>Дуйсбург, GER</item>
+        <item>Ростов на Дону, RUS</item>
+        <item>Минск, BLR</item>
+    </string-array>
+
+    <string-array name="locations_world">
+        <item>Шанхай, CHN</item>
+        <item>Рашице, CZE</item>
+        <item>Белград, SRB</item>
+        <item>Сэйнт-Катрин, CAN</item>
+        <item>Варезе, ITA</item>
+        <item>Плодив, BUL</item>
+    </string-array>
+</resources>

@@ -15,13 +15,12 @@ import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentRowerDetailsBinding
 import by.profs.rowgame.presenter.api.RetrofitApiImplementation
 import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import java.net.UnknownHostException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -48,7 +47,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         prefEditor = PreferenceEditor(context)
-        dao = RowerRoomDatabase.getDatabase(context, CoroutineScope(Dispatchers.IO)).rowerDao()
+        dao = MyRoomDatabase.getDatabase(context).rowerDao()
         recruiter = Recruiter(prefEditor, dao)
         MainScope().launch { showRower() }
     }

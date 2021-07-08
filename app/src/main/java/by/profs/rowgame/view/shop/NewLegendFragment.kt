@@ -9,13 +9,12 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.navigateUp
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Ages
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentNewLegendBinding
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
@@ -25,8 +24,6 @@ import by.profs.rowgame.view.utils.getIntOrZero
 import by.profs.rowgame.view.utils.hasText
 import by.profs.rowgame.view.utils.setError
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     private var _binding: FragmentNewLegendBinding? = null
@@ -124,6 +121,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             else invalidate(it, R.string.error_value_expected)
         }
 
+        binding.create.isEnabled = isValid
         return isValid
     }
 
@@ -132,8 +130,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         val fame = prefEditor.getFame()
         if (fame < cost) showToast(requireContext(), R.string.recruit_fail)
         else {
-            val dao = RowerRoomDatabase
-                .getDatabase(requireContext(), CoroutineScope(Dispatchers.IO)).rowerDao()
+            val dao = MyRoomDatabase.getDatabase(requireContext()).rowerDao()
             binding.run {
                 val link = editPhotoLink.editText?.text.toString()
                 Recruiter(prefEditor, dao).buy(Rower(

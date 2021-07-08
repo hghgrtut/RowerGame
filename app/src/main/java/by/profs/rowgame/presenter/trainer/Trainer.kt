@@ -1,24 +1,24 @@
 package by.profs.rowgame.presenter.trainer
 
-import by.profs.rowgame.data.combos.CombinationSingleScull
+import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Damageable
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.MyDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class Trainer(
-    private val boatDao: BoatDao,
-    private val oarDao: OarDao,
-    private val rowerDao: RowerDao,
-    private val deleteRowerFun: (Int?) -> Unit
-) {
-    suspend fun startTraining(mode: Int, combos: MutableList<CombinationSingleScull>) {
+class Trainer(database: MyRoomDatabase, private val deleteRowerFun: (Int?) -> Unit) {
+    private val boatDao: BoatDao = database.boatDao()
+    private val oarDao: OarDao = database.oarDao()
+    private val rowerDao: RowerDao = database.rowerDao()
+
+    suspend fun startTraining(mode: Int, combos: MutableList<Combo>) {
         combos.forEach { combo ->
             val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId) } ?: return
             val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId) } ?: return
@@ -45,9 +45,9 @@ class Trainer(
         }
     }
 
-    private fun deleteCombo(combo: CombinationSingleScull) = deleteRowerFun(combo.rowerId)
+    private fun deleteCombo(combo: Combo) = deleteRowerFun(combo.rowerId)
 
-    private fun brokeItem(combo: CombinationSingleScull, item: Damageable, dao: MyDao<Damageable>) {
+    private fun brokeItem(combo: Combo, item: Damageable, dao: MyDao<Damageable>) {
         val random = (1..maxDamage).random()
         if (random < acceptableDamage) {
             if (item.broke(random)) dao.updateItem(item)

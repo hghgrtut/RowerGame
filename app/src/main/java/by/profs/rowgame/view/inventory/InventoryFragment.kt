@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentInventoryBinding
-import by.profs.rowgame.presenter.database.BoatRoomDatabase
-import by.profs.rowgame.presenter.database.OarRoomDatabase
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -22,7 +20,6 @@ import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.INVENTORY
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.RowerViewAdapter
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -32,7 +29,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private val args by navArgs<InventoryFragmentArgs>()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentInventoryBinding? = null
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var database: MyRoomDatabase
     private lateinit var recyclerView: RecyclerView
     private lateinit var prefEditor: PreferenceEditor
 
@@ -58,6 +55,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         super.onResume()
         binding?.money?.text = this.getString(R.string.money_balance, prefEditor.getBalance())
 
+        database = MyRoomDatabase.getDatabase(requireContext())
         MainScope().launch { when (args.itemType) { // intent type
                 INTENT_OARS -> showOars()
                 INTENT_BOATS -> showBoats()
@@ -72,7 +70,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private suspend fun showBoats() {
-        val dao = BoatRoomDatabase.getDatabase(requireContext(), scope).boatDao()
+        val dao = database.boatDao()
         val myBoats = withContext(Dispatchers.IO) { ArrayList(dao.getItems()) }
         val viewAdapter = BoatViewAdapter(myBoats, INVENTORY, prefEditor, dao)
         recyclerView.apply { adapter = viewAdapter }
@@ -84,9 +82,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private suspend fun showOars() {
-        val dao = OarRoomDatabase.getDatabase(requireContext(), scope).oarDao()
-        val oars = withContext(Dispatchers.IO) { dao.getItems() }
-        val viewAdapter = OarViewAdapter(oars, INVENTORY, prefEditor, dao)
+        val oars = withContext(Dispatchers.IO) { database.oarDao().getItems() }
+        val viewAdapter = OarViewAdapter(oars, INVENTORY, prefEditor, database)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.oar_inventory)
         binding?.fab?.setOnClickListener {
@@ -96,7 +93,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private suspend fun showRowers() {
-        val dao = RowerRoomDatabase.getDatabase(requireContext(), scope).rowerDao()
+        val dao = database.rowerDao()
         val rowers = withContext(Dispatchers.IO) { dao.getItems() }
         val viewAdapter = RowerViewAdapter(INVENTORY, rowers, navController)
         recyclerView.apply { adapter = viewAdapter }

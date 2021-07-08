@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,12 +22,9 @@ import by.profs.rowgame.databinding.FragmentCompetitionBinding
 import by.profs.rowgame.presenter.competition.RaceCalculator
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.database.BoatRoomDatabase
-import by.profs.rowgame.presenter.database.OarRoomDatabase
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
-import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
-import by.profs.rowgame.view.adapters.CompetitionViewAdapter
+import by.profs.rowgame.presenter.dao.ComboDao
+import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +38,10 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private var binding: FragmentCompetitionBinding? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var raceCalculator: RaceCalculator
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
+    private lateinit var comboDao: ComboDao
     private lateinit var boatDao: BoatDao
     private lateinit var oarDao: OarDao
-    private lateinit var singleComboDao: SingleComboDao
 
     private val allBoats = mutableListOf<Boat>()
     private val allOars = mutableListOf<Oar>()
@@ -86,10 +83,11 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         raceCalculator = RaceCalculator(args.type)
         Calendar(context).nextDay()
 
-        boatDao = BoatRoomDatabase.getDatabase(context, scope).boatDao()
-        oarDao = OarRoomDatabase.getDatabase(context, scope).oarDao()
-        val rowerDao = RowerRoomDatabase.getDatabase(context, scope).rowerDao()
-        singleComboDao = SingleComboRoomDatabase.getDatabase(context, scope).singleComboDao()
+        val database = MyRoomDatabase.getDatabase(context)
+        boatDao = database.boatDao()
+        oarDao = database.oarDao()
+        val rowerDao = database.rowerDao()
+        comboDao = database.comboDao()
 
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
@@ -97,7 +95,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            singleComboDao.getAllCombos().forEach { combo ->
+            comboDao.getAllCombos().forEach { combo ->
                 val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
                 allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
                 allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
@@ -141,9 +139,15 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         recyclerView.apply {
             adapter = StandingViewAdapter(finalists!!, StandingViewAdapter.RESULTS) }
         requireActivity().setTitle(R.string.results)
-        binding?.buttonRace?.visibility = View.GONE
-        binding?.buttonRaceFull?.visibility = View.GONE
         reward()
+        binding?.run {
+            buttonRace.visibility = View.GONE
+            buttonRaceFull.visibility = View.GONE
+            buttonReward.visibility = View.VISIBLE
+            buttonReward.setOnClickListener {
+                findNavController().navigate(R.id.action_competitionFragment_to_trainingFragment)
+            }
+        }
     }
 
     private fun showToastResults(rowers: List<Rower>) {
@@ -163,7 +167,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         if (finalists == null) return
         val prefEditor = PreferenceEditor(requireContext())
         CoroutineScope(Dispatchers.IO).launch {
-            val myRowers = singleComboDao.getRowerIds()
+            val myRowers = comboDao.getRowerIds()
             if (myRowers.contains(finalists!![FIRST].first.id)) {
                 boatDao.insert(Randomizer.getRandomBoat())
                 prefEditor.setFame(prefEditor.getFame() + fameForWin)
@@ -217,7 +221,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                 }
                 raceRowers.forEach { rower -> rating.add(Pair(rower, 0)) }
                 MainScope().launch {
-                    val viewAdapter = CompetitionViewAdapter(raceBoats, raceOars, raceRowers)
+                    val viewAdapter = ComboViewAdapter(raceBoats, raceOars, raceRowers)
                     recyclerView.apply { adapter = viewAdapter }
                 }
             } else {

@@ -9,22 +9,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.combos.CombinationSingleScull
+import by.profs.rowgame.data.combos.Combo
+import by.profs.rowgame.data.items.Boat
+import by.profs.rowgame.data.items.Oar
+import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.databinding.FragmentTrainingBinding
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.dao.SingleComboDao
-import by.profs.rowgame.presenter.database.BoatRoomDatabase
-import by.profs.rowgame.presenter.database.OarRoomDatabase
-import by.profs.rowgame.presenter.database.RowerRoomDatabase
-import by.profs.rowgame.presenter.database.SingleComboRoomDatabase
+import by.profs.rowgame.presenter.dao.ComboDao
+import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.trainer.Trainer
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
-import by.profs.rowgame.view.adapters.CompetitionViewAdapter
+import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
@@ -42,7 +42,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private lateinit var boatDao: BoatDao
     private lateinit var oarDao: OarDao
     private lateinit var rowerDao: RowerDao
-    private lateinit var singleComboDao: SingleComboDao
+    private lateinit var singleComboDao: ComboDao
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var trainer: Trainer
 
@@ -67,12 +67,13 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         calendar = Calendar(context)
         showDay()
 
-        boatDao = BoatRoomDatabase.getDatabase(context, scope).boatDao()
-        oarDao = OarRoomDatabase.getDatabase(context, scope).oarDao()
-        rowerDao = RowerRoomDatabase.getDatabase(context, scope).rowerDao()
-        singleComboDao = SingleComboRoomDatabase.getDatabase(context, scope).singleComboDao()
+        val database = MyRoomDatabase.getDatabase(context)
+        boatDao = database.boatDao()
+        oarDao = database.oarDao()
+        rowerDao = database.rowerDao()
+        singleComboDao = database.comboDao()
 
-        trainer = Trainer(boatDao, oarDao, rowerDao, deleteComboFun)
+        trainer = Trainer(database, deleteComboFun)
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -88,7 +89,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private fun showDay() {
         binding?.day?.text = this.getString(R.string.day, calendar.getDayOfYear()) }
 
-    private fun train(combos: MutableList<CombinationSingleScull>, mode: Int) {
+    private fun train(combos: MutableList<Combo>, mode: Int) {
         scope.launch { trainer.startTraining(mode, combos) }
         calendar.nextDay()
         showDay()
@@ -106,16 +107,24 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     }
 
     private suspend fun refreshView() {
-        val boats = withContext(Dispatchers.IO) { boatDao.getItems() }
         val combos = withContext(Dispatchers.IO) { singleComboDao.getAllCombos().toMutableList() }
-        val oars = withContext(Dispatchers.IO) { oarDao.getItems() }
-        val rowers = withContext(Dispatchers.IO) { rowerDao.getItems() }
-        val viewAdapter = CompetitionViewAdapter(boats, oars, rowers, deleteComboFun)
+        val boats = ArrayList<Boat>()
+        val oars = ArrayList<Oar>()
+        val rowers = ArrayList<Rower>()
+        combos.forEach {
+            boats.add(withContext(Dispatchers.IO) { boatDao.search(it.boatId)!! })
+            oars.add(withContext(Dispatchers.IO) { oarDao.search(it.oarId)!! })
+            rowers.add(withContext(Dispatchers.IO) { rowerDao.search(it.rowerId)!! })
+        }
+        val viewAdapter =
+            ComboViewAdapter(boats.toList(), oars.toList(), rowers.toList(), deleteComboFun)
         recyclerView = binding!!.list.apply { adapter = viewAdapter }
 
-        binding?.buttonTrainEndurance?.setOnClickListener { train(combos, TRAIN_ENDURANCE) }
-        binding?.buttonTrainPower?.setOnClickListener { train(combos, TRAIN_POWER) }
-        binding?.buttonTrainTechnical?.setOnClickListener { train(combos, TRAIN_TECHNICALITY) }
+        binding?.run {
+            buttonTrainEndurance.setOnClickListener { train(combos, TRAIN_ENDURANCE) }
+            buttonTrainPower.setOnClickListener { train(combos, TRAIN_POWER) }
+            buttonTrainTechnical.setOnClickListener { train(combos, TRAIN_TECHNICALITY) }
+        }
     }
 
     companion object {
