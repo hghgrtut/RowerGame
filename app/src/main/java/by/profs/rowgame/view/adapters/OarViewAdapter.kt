@@ -70,8 +70,6 @@ class OarViewAdapter(
         holder.cost.text = context.getString(R.string.cost, trader.calculateCost(item))
         holder.damage.text = context.getString(R.string.damage, item.damage)
         holder.manufacturer.text = context.getString(R.string.manufacturer, item.manufacturer)
-        holder.type.text =
-            context.getString(if (item.type == Oar.SCULL) R.string.scull else R.string.sweep)
         holder.button.text = context.getString(when (type) {
             INVENTORY -> R.string.sell
             PAIRING -> R.string.take

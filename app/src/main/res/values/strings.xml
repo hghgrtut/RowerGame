@@ -129,4 +129,5 @@
     <string name="power">Мощь</string>
     <string name="technicality">Техничность</string>
     <string name="weight">Вес</string>
+    <string name="boat_type">Тип лодки: 1x</string>
 </resources>

@@ -46,8 +46,10 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         binding.fame.text = this.getString(R.string.fame_balance, prefEditor.getFame())
         _characteristics =
             arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
-        showCurrentCost()
-        binding.create.setOnClickListener { if (validate()) recruit(prefEditor) }
+        binding.create.setOnClickListener {
+            if (validate()) recruit(prefEditor)
+            else showToast(requireContext(), R.string.recruit_fail)
+        }
 
         val linkWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { return }
@@ -66,6 +68,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             override fun afterTextChanged(p0: Editable?) { showCurrentCost() }
         }
         binding.editPhotoLink.editText?.addTextChangedListener(linkWatcher)
+        binding.editAge.editText?.addTextChangedListener(characteristicsWatcher)
         characteristics.forEach { it.editText?.addTextChangedListener(characteristicsWatcher) }
     }
 
@@ -86,7 +89,6 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     }
 
     private fun getCurrentCost(): Int {
-        validate()
         val coef = getAgeCoefficient() ?: YOUTH_COEF
         return (characteristics.sumOf { it.getIntOrZero() } * coef).toInt()
     }
@@ -121,7 +123,6 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             else invalidate(it, R.string.error_value_expected)
         }
 
-        binding.create.isEnabled = isValid
         return isValid
     }
 

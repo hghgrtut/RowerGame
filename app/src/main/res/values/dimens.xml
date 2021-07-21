@@ -8,7 +8,7 @@
 
     <dimen name="boat_item_height">156dp</dimen>
     <dimen name="result_item_height">80dp</dimen>
-    <dimen name="oar_item_height">115dp</dimen>
+    <dimen name="oar_item_height">130dp</dimen>
     <dimen name="pair_item_height">320dp</dimen>
     <dimen name="rower_item_height">163dp</dimen>
 
