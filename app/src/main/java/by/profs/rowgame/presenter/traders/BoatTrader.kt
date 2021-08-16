@@ -2,15 +2,15 @@ package by.profs.rowgame.presenter.traders
 
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.utils.IDEAL
+import by.profs.rowgame.view.activity.InfoBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BoatTrader(private val prefEditor: PreferenceEditor, private val dao: BoatDao) :
-    Trader<Boat>(prefEditor, dao) {
+class BoatTrader(private val infoBar: InfoBar, private val dao: BoatDao) :
+    Trader<Boat>(infoBar, dao) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun calculateCost(item: Boat): Int {
@@ -20,7 +20,7 @@ class BoatTrader(private val prefEditor: PreferenceEditor, private val dao: Boat
     }
 
     override fun sell(item: Boat) {
-        prefEditor.setBalance(prefEditor.getBalance() + calculateCost(item))
+        infoBar.setMoney(infoBar.getMoney() + calculateCost(item))
         scope.launch { dao.deleteItem(item.id!!) }
     }
 

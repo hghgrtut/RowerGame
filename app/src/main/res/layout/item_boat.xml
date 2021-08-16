@@ -21,8 +21,8 @@
         android:layout_width="@dimen/boat_type_image_size"
         android:layout_height="@dimen/boat_type_image_size"
         android:contentDescription="@string/cont_descr_boat_type_image"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
         tools:src="@drawable/boat_single_scull" />
 
     <ImageView
@@ -122,8 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buyOar"
-        app:layout_constraintStart_toEndOf="@+id/damage"
+        app:layout_constraintEnd_toStartOf="@+id/wing_image"
         tools:text="@string/cost" />
 
     <Button
@@ -132,6 +131,6 @@
         android:layout_height="wrap_content"
         android:text="@string/buy"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/wing_image" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

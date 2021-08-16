@@ -8,9 +8,11 @@
     <string name="scull">П</string>
     <string name="sweep">Р</string>
     <string name="take">Взять</string>
-    <string name="money_balance">Money: %1$d</string>
+    <!-- Toolbar -->
     <string name="day">Сегодня: %1$d</string>
-    <string name="day_with_instruction">Сегодня: %1$d\nСоревнования каждый 30-ый день\n(Концепт - зимой, ОФП - 210, остальное - вода)</string>
+    <string name="fame_balance">Ваша слава: %1$d.</string>
+    <string name="money_balance">Money: %1$d</string>
+
     <!-- Activity titles -->
     <string name="about_rower">О гребце</string>
     <string name="boat_inventory">Мои лодки</string>
@@ -77,7 +79,6 @@
     <string name="rower_power">Мощь: %1$d</string>
     <string name="rower_technicality">Техничность: %1$d</string>
     <string name="rower_weight">Вес: %1$d кг</string>
-    <string name="fame_balance">Ваша слава: %1$d.</string>
     <string name="fame_cost">Стоимость гребца: %1$d славы</string>
     <!-- For standing item -->
     <string name="standing_gap">%1$d м</string>

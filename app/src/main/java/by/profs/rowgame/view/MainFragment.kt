@@ -7,13 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
-import by.profs.rowgame.data.preferences.Calendar
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.MainFragmentBinding
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
-import by.profs.rowgame.presenter.utils.Resetter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -23,7 +20,6 @@ import kotlinx.coroutines.withContext
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: MainFragmentBinding? = null
-    private lateinit var prefEditor: PreferenceEditor
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,19 +32,18 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefEditor = PreferenceEditor(requireContext())
 
         binding?.run {
             goToBoats.setOnClickListener {
-                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_BOATS)
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(INTENT_BOATS)
                     .also { navController.navigate(it) }
             }
             goToOars.setOnClickListener {
-                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_OARS)
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(INTENT_OARS)
                     .also { navController.navigate(it) }
             }
             goToRowers.setOnClickListener {
-                MainFragmentDirections.actionMainFragmentToInventoryFragment(itemType = INTENT_ROWERS)
+                MainFragmentDirections.actionMainFragmentToInventoryFragment(INTENT_ROWERS)
                     .also { navController.navigate(it) }
             }
             goToLegends.setOnClickListener {
@@ -68,14 +63,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val balance = prefEditor.getBalance()
-        val day = Calendar(requireContext()).getDayOfYear()
-        binding?.day?.text = this.getString(R.string.day_with_instruction, day)
-        binding?.money?.text = this.getString(R.string.money_balance, balance)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
@@ -83,8 +70,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     private suspend fun resetMoney() {
         val context = requireContext()
-        val flag = withContext(Dispatchers.IO) { Resetter.giveInitMoney(prefEditor, context) }
+        val flag = withContext(Dispatchers.IO) { true }
         showToast(context, if (flag) R.string.money_reseted else R.string.money_not_reseted)
-        onResume()
     }
 }

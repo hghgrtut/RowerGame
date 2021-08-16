@@ -16,14 +16,14 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
-import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
 import by.profs.rowgame.presenter.competition.RaceCalculator
 import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.ComboDao
+import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
 import by.profs.rowgame.view.utils.HelperFuns.showToast
@@ -81,7 +81,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         raceCalculator = RaceCalculator(args.type)
-        Calendar(context).nextDay()
+        (requireActivity() as ActivityWithInfoBar).infoBar.nextAndShowDay()
 
         val database = MyRoomDatabase.getDatabase(context)
         boatDao = database.boatDao()

@@ -13,17 +13,18 @@ import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.databinding.FragmentTrainingBinding
 import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.dao.ComboDao
 import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.presenter.dao.ComboDao
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.trainer.Trainer
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
@@ -37,7 +38,8 @@ import kotlinx.coroutines.withContext
 
 class TrainingFragment : Fragment(R.layout.fragment_training) {
     private var binding: FragmentTrainingBinding? = null
-    private lateinit var calendar: Calendar
+    private var _infoBar: InfoBar? = null
+    private val infoBar: InfoBar get() = requireNotNull(_infoBar)
     private lateinit var recyclerView: RecyclerView
     private lateinit var boatDao: BoatDao
     private lateinit var oarDao: OarDao
@@ -58,14 +60,14 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTrainingBinding.inflate(inflater, container, false)
+        _infoBar = (requireActivity() as ActivityWithInfoBar).infoBar
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        calendar = Calendar(context)
-        showDay()
+        infoBar.showDay()
 
         val database = MyRoomDatabase.getDatabase(context)
         boatDao = database.boatDao()
@@ -86,14 +88,11 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         binding = null
     }
 
-    private fun showDay() {
-        binding?.day?.text = this.getString(R.string.day, calendar.getDayOfYear()) }
-
     private fun train(combos: MutableList<Combo>, mode: Int) {
         scope.launch { trainer.startTraining(mode, combos) }
-        calendar.nextDay()
-        showDay()
-        val day = calendar.getDayOfYear()
+        infoBar.nextAndShowDay()
+        infoBar.showDay()
+        val day = infoBar.getDay()
         if (day % DIM != 0) { showToast(requireContext(), R.string.train_sucess)
         } else {
             showToast(requireContext(), R.string.time_to_race)

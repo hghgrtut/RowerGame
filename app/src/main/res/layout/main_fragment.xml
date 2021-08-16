@@ -5,26 +5,19 @@
     android:id="@+id/main_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
-
-    <TextView
-        android:id="@+id/money"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/centralizeable_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Money: 1200" />
+    tools:context=".view.activity.MainActivity">
 
     <Button
         android:id="@+id/go_to_boats"
         style="@style/mainMenuButton"
         android:background="@color/b1"
         android:text="@string/boats"
+        app:layout_constraintBottom_toTopOf="@+id/go_to_oars"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/money" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
 
     <Button
@@ -32,7 +25,9 @@
         style="@style/mainMenuButton"
         android:background="@color/b2"
         android:text="@string/oars"
+        app:layout_constraintBottom_toTopOf="@+id/go_to_rowers"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go_to_boats" />
 
@@ -41,7 +36,9 @@
         style="@style/mainMenuButton"
         android:background="@color/b3"
         android:text="@string/rowers"
+        app:layout_constraintBottom_toTopOf="@+id/go_to_legends"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go_to_oars" />
 
@@ -50,7 +47,9 @@
         style="@style/mainMenuButton"
         android:background="@color/b4"
         android:text="@string/legends"
+        app:layout_constraintBottom_toTopOf="@+id/go_to_new_pair"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go_to_rowers" />
 
@@ -59,7 +58,9 @@
         style="@style/mainMenuButton"
         android:background="@color/b5"
         android:text="@string/new_pairs"
+        app:layout_constraintBottom_toTopOf="@+id/go_to_existing_pairs"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go_to_legends" />
 
@@ -68,17 +69,11 @@
         style="@style/mainMenuButton"
         android:background="@color/b6"
         android:text="@string/trainings"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go_to_new_pair" />
-
-    <TextView
-        android:id="@+id/day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/day_with_instruction" />
 
     <Button
         android:id="@+id/give_money"

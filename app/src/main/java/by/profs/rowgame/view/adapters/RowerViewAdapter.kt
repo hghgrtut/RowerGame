@@ -13,7 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.preferences.PreferenceEditor
+import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
@@ -30,12 +30,10 @@ class RowerViewAdapter(
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val imageLoader: ImageLoader = CoilImageLoader
-    private lateinit var prefEditor: PreferenceEditor
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         fragment = parent.findFragment()
-        prefEditor = PreferenceEditor(context)
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_rower, parent, false))
     }
@@ -56,7 +54,7 @@ class RowerViewAdapter(
                     .actionInventoryFragmentToRowerDetailsFragment(FROM_LIST, rower.id!!)
                     .also { navController!!.navigate(it) }
             } else {
-                prefEditor.occupyRower(rower.id!!)
+                PairingPreferences(context).occupyRower(rower.id!!)
                 val navController by lazy(LazyThreadSafetyMode.NONE) {
                     NavHostFragment.findNavController(fragment) }
                 PairingFragmentDirections.actionPairingFragmentSelf(INTENT_OARS)

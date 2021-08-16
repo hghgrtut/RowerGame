@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentRowerDetailsBinding
 import by.profs.rowgame.presenter.api.RetrofitApiImplementation
 import by.profs.rowgame.presenter.dao.RowerDao
@@ -19,18 +18,18 @@ import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.utils.HelperFuns.showToast
-import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 
 class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     private val args by navArgs<RowerDetailsFragmentArgs>()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentRowerDetailsBinding? = null
-    private lateinit var prefEditor: PreferenceEditor
     private lateinit var dao: RowerDao
     private lateinit var recruiter: Recruiter
 
@@ -46,9 +45,8 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
-        prefEditor = PreferenceEditor(context)
         dao = MyRoomDatabase.getDatabase(context).rowerDao()
-        recruiter = Recruiter(prefEditor, dao)
+        recruiter = Recruiter((requireActivity() as ActivityWithInfoBar).infoBar, dao)
         MainScope().launch { showRower() }
     }
 
@@ -121,13 +119,11 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     }
 
     private fun setAsExisting(rower: Rower) {
-        showFame()
         binding?.button?.text = this.getString(R.string.fire_rower)
         binding?.button?.setOnClickListener { fire(rower) }
     }
 
     private fun setAsNew(rower: Rower) {
-        showFame()
         binding?.button?.text = this.getString(R.string.recruit)
         binding?.button?.setOnClickListener { recruit(rower) }
     }
@@ -146,9 +142,6 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
         setAsNew(rower)
         showToast(requireContext(), R.string.fired)
     }
-
-    private fun showFame() {
-        binding?.fame?.text = this.getString(R.string.fame_balance, prefEditor.getFame()) }
 
     companion object {
         const val FROM_EVENT = 1

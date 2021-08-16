@@ -9,12 +9,13 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentPairingBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.PAIRING
@@ -29,7 +30,8 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     private var binding: FragmentPairingBinding? = null
     private lateinit var database: MyRoomDatabase
     private lateinit var recyclerView: RecyclerView
-    private lateinit var prefEditor: PreferenceEditor
+    private var _infoBar: InfoBar? = null
+    private val infoBar: InfoBar get() = requireNotNull(_infoBar)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,12 +39,12 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPairingBinding.inflate(inflater, container, false)
+        _infoBar = (requireActivity() as ActivityWithInfoBar).infoBar
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefEditor = PreferenceEditor(requireContext())
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)
@@ -65,7 +67,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         val boatIds = withContext(Dispatchers.IO) { getComboDao().getBoatIds() }
         val freeBoats = withContext(Dispatchers.IO) {
             ArrayList(dao.getItems().filter { boat -> !boatIds.contains(boat.id) }) }
-        val viewAdapter = BoatViewAdapter(freeBoats, PAIRING, prefEditor, dao)
+        val viewAdapter = BoatViewAdapter(freeBoats, PAIRING, infoBar, dao)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_boat)
     }
@@ -85,7 +87,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         val oarIds = withContext(Dispatchers.IO) { getComboDao().getOarIds() }
         val oars = withContext(Dispatchers.IO) {
             dao.getItems().filter { oar -> !oarIds.contains(oar.id) } }
-        val viewAdapter = OarViewAdapter(oars, PAIRING, prefEditor, database)
+        val viewAdapter = OarViewAdapter(oars, PAIRING, infoBar, database)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.choose_oar)
     }

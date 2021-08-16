@@ -12,12 +12,13 @@ import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Ages
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentNewLegendBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import by.profs.rowgame.view.utils.clearError
 import by.profs.rowgame.view.utils.getIntOrZero
@@ -42,12 +43,11 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val prefEditor = PreferenceEditor(requireContext())
-        binding.fame.text = this.getString(R.string.fame_balance, prefEditor.getFame())
+        showCurrentCost()
         _characteristics =
             arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
         binding.create.setOnClickListener {
-            if (validate()) recruit(prefEditor)
+            if (validate()) recruit()
             else showToast(requireContext(), R.string.recruit_fail)
         }
 
@@ -81,7 +81,6 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         val age = binding.editAge.getIntOrZero()
         return when {
             age <= Ages.TooYoung.age -> null
-            // age <= Ages.Kid.age -> 2.2
             age <= Ages.Jun.age -> JUN_COEF
             age <= Ages.Youth.age -> YOUTH_COEF
             else -> MASTERS_COEF
@@ -126,15 +125,16 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         return isValid
     }
 
-    private fun recruit(prefEditor: PreferenceEditor) {
+    private fun recruit() {
+        val infoBar: InfoBar = (requireActivity() as ActivityWithInfoBar).infoBar
         val cost = getCurrentCost()
-        val fame = prefEditor.getFame()
+        val fame = infoBar.getFame()
         if (fame < cost) showToast(requireContext(), R.string.recruit_fail)
         else {
             val dao = MyRoomDatabase.getDatabase(requireContext()).rowerDao()
             binding.run {
                 val link = editPhotoLink.editText?.text.toString()
-                Recruiter(prefEditor, dao).buy(Rower(
+                Recruiter(infoBar, dao).buy(Rower(
                     id = null,
                     name = editName.editText?.text.toString(),
                     gender = if (editGender.checkedRadioButtonId == R.id.gender_male) Rower.MALE
@@ -146,8 +146,9 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
                     technics = editTechnicality.getIntOrZero(),
                     endurance = editEndurance.getIntOrZero(),
                     thumb = if (link == "") null else link,
-                    about = editAbout.editText?.text.toString())) }
-            prefEditor.setFame(fame - cost)
+                    about = editAbout.editText?.text.toString(),
+                    cost = cost
+                )) }
             showToast(requireContext(), R.string.recruit_success)
             findNavController().navigate(R.id.action_newLegendFragment_to_inventoryFragment)
         }

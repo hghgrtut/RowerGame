@@ -10,12 +10,13 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.FragmentInventoryBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
+import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.INVENTORY
 import by.profs.rowgame.view.adapters.OarViewAdapter
@@ -31,7 +32,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private var binding: FragmentInventoryBinding? = null
     private lateinit var database: MyRoomDatabase
     private lateinit var recyclerView: RecyclerView
-    private lateinit var prefEditor: PreferenceEditor
+    private var _infoBar: InfoBar? = null
+    private val infoBar: InfoBar get() = requireNotNull(_infoBar)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,12 +41,12 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentInventoryBinding.inflate(inflater, container, false)
+        _infoBar = (requireActivity() as ActivityWithInfoBar).infoBar
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefEditor = PreferenceEditor(requireContext())
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             this.layoutManager = LinearLayoutManager(context)
@@ -53,8 +55,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     override fun onResume() {
         super.onResume()
-        binding?.money?.text = this.getString(R.string.money_balance, prefEditor.getBalance())
-
         database = MyRoomDatabase.getDatabase(requireContext())
         MainScope().launch { when (args.itemType) { // intent type
                 INTENT_OARS -> showOars()
@@ -72,7 +72,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private suspend fun showBoats() {
         val dao = database.boatDao()
         val myBoats = withContext(Dispatchers.IO) { ArrayList(dao.getItems()) }
-        val viewAdapter = BoatViewAdapter(myBoats, INVENTORY, prefEditor, dao)
+        val viewAdapter = BoatViewAdapter(myBoats, INVENTORY, infoBar, dao)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.boat_inventory)
         binding?.fab?.setOnClickListener {
@@ -83,7 +83,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private suspend fun showOars() {
         val oars = withContext(Dispatchers.IO) { database.oarDao().getItems() }
-        val viewAdapter = OarViewAdapter(oars, INVENTORY, prefEditor, database)
+        val viewAdapter = OarViewAdapter(oars, INVENTORY, infoBar, database)
         recyclerView.apply { adapter = viewAdapter }
         requireActivity().setTitle(R.string.oar_inventory)
         binding?.fab?.setOnClickListener {

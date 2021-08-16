@@ -1,23 +1,24 @@
 package by.profs.rowgame.presenter.traders
 
-import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.presenter.dao.MyDao
+import by.profs.rowgame.view.activity.InfoBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class Trader<T> (private val prefEditor: PreferenceEditor, private val dao: MyDao<T>) {
+abstract class Trader<T> (private val infoBar: InfoBar, private val dao: MyDao<T>) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     abstract fun calculateCost(item: T): Int
 
+    // !! Also withdraw money/fame (no need to do it manually) !!
     // Returns true if buying successfully else false
     open fun buy(item: T): Boolean {
-        val balance = prefEditor.getBalance()
+        val balance = infoBar.getMoney()
         val cost = calculateCost(item)
         return if (calculateCost(item) <= balance) {
             scope.launch { dao.insert(item) }
-            prefEditor.setBalance(balance - cost)
+            infoBar.setMoney(balance - cost)
             true
         } else false
     }

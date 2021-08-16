@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.preferences.PreferenceEditor
+import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
@@ -29,14 +30,14 @@ import kotlinx.coroutines.launch
 class OarViewAdapter(
     private val oars: List<Oar>,
     private val type: Int,
-    private val prefEditor: PreferenceEditor,
+    infoBar: InfoBar,
     private val database: MyRoomDatabase
 ) : RecyclerView.Adapter<OarViewAdapter.ViewHolder>(), MyViewAdapter<Oar> {
 
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val informator: OarInformator = OarInformator()
-    private val trader: OarTrader = OarTrader(prefEditor, database.oarDao())
+    private val trader: OarTrader = OarTrader(infoBar, database.oarDao())
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -99,9 +100,10 @@ class OarViewAdapter(
             SHOP -> { showToast(context,
                 if (trader.buy(oar)) R.string.buy_sucess else R.string.check_balance) }
             PAIRING -> {
-                prefEditor.occupyOar(oar.id!!)
+                val pairingPreferences = PairingPreferences(context)
+                pairingPreferences.occupyOar(oar.id!!)
                 scope.launch {
-                    database.comboDao().insertCombo(prefEditor.getCombo())
+                    database.comboDao().insertCombo(pairingPreferences.getCombo())
                     val navController by lazy(LazyThreadSafetyMode.NONE) {
                         NavHostFragment.findNavController(fragment) }
                     MainScope().launch { PairingFragmentDirections.actionPairingFragmentSelf()

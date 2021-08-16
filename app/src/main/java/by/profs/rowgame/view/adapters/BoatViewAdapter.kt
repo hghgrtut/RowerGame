@@ -14,18 +14,19 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.preferences.PreferenceEditor
+import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.dao.BoatDao
 import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
+import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
 import by.profs.rowgame.view.utils.HelperFuns
 
 class BoatViewAdapter(
     private val boats: ArrayList<Boat>,
     private val type: Int,
-    private val prefEditor: PreferenceEditor,
+    infoBar: InfoBar,
     dao: BoatDao
 ) : RecyclerView.Adapter<BoatViewAdapter.ViewHolder>(),
     MyViewAdapter<Boat> {
@@ -33,7 +34,7 @@ class BoatViewAdapter(
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val informator: BoatInformator = BoatInformator()
-    private val trader: BoatTrader = BoatTrader(prefEditor, dao)
+    private val trader: BoatTrader = BoatTrader(infoBar, dao)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -137,7 +138,7 @@ class BoatViewAdapter(
                     context, if (trader.buy(boat)) R.string.buy_sucess else R.string.check_balance)
             }
             PAIRING -> {
-                prefEditor.occupyBoat(boat.id!!)
+                PairingPreferences(context).occupyBoat(boat.id!!)
                 val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController(fragment) }
                 PairingFragmentDirections.actionPairingFragmentSelf(item = INTENT_ROWERS)
                     .also { navController.navigate(it) }

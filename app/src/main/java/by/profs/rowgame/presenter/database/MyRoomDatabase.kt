@@ -15,7 +15,10 @@ import by.profs.rowgame.presenter.dao.OarDao
 import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.utils.TABLE_ROWERS
 
-@Database(entities = [Boat::class, Combo::class, Competition::class, Oar::class, Rower::class], version = 5)
+@Database(
+    entities = [Boat::class, Combo::class, Competition::class, Oar::class, Rower::class],
+    version = 5
+)
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun boatDao(): BoatDao
     abstract fun comboDao(): ComboDao
