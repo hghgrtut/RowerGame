@@ -14,8 +14,8 @@ import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
+import by.profs.rowgame.presenter.imageloader.loadThumb
 import by.profs.rowgame.presenter.informators.OarInformator
-import by.profs.rowgame.view.utils.HelperFuns.loadThumb
 
 class ComboViewAdapter(
     private val boats: List<Boat>,
@@ -57,7 +57,7 @@ class ComboViewAdapter(
         val boat = boats[position]
         val oar = oars[position]
         val rower = rowers[position]
-        loadThumb(rower, holder.rowerPic)
+        holder.rowerPic.loadThumb(rower)
 
         holder.boatTypePic.setImageResource(R.drawable.boat_single_scull)
         holder.boatManufacturePic.setImageResource(

@@ -19,11 +19,11 @@ import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.InfoBar
-import by.profs.rowgame.view.utils.HelperFuns.showToast
-import by.profs.rowgame.view.utils.clearError
-import by.profs.rowgame.view.utils.getIntOrZero
-import by.profs.rowgame.view.utils.hasText
-import by.profs.rowgame.view.utils.setError
+import by.profs.rowgame.view.extensions.showToast
+import by.profs.rowgame.view.extensions.clearError
+import by.profs.rowgame.view.extensions.getIntOrZero
+import by.profs.rowgame.view.extensions.hasText
+import by.profs.rowgame.view.extensions.setError
 import com.google.android.material.textfield.TextInputLayout
 
 class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
@@ -48,7 +48,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
         binding.create.setOnClickListener {
             if (validate()) recruit()
-            else showToast(requireContext(), R.string.recruit_fail)
+            else requireContext().showToast(R.string.recruit_fail)
         }
 
         val linkWatcher = object : TextWatcher {
@@ -129,7 +129,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         val infoBar: InfoBar = (requireActivity() as ActivityWithInfoBar).infoBar
         val cost = getCurrentCost()
         val fame = infoBar.getFame()
-        if (fame < cost) showToast(requireContext(), R.string.recruit_fail)
+        if (fame < cost) requireContext().showToast(R.string.recruit_fail)
         else {
             val dao = MyRoomDatabase.getDatabase(requireContext()).rowerDao()
             binding.run {
@@ -149,7 +149,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
                     about = editAbout.editText?.text.toString(),
                     cost = cost
                 )) }
-            showToast(requireContext(), R.string.recruit_success)
+            requireContext().showToast(R.string.recruit_success)
             findNavController().navigate(R.id.action_newLegendFragment_to_inventoryFragment)
         }
     }

@@ -20,8 +20,8 @@ import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
 import by.profs.rowgame.view.activity.InfoBar
+import by.profs.rowgame.view.extensions.showToast
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
-import by.profs.rowgame.view.utils.HelperFuns
 
 class BoatViewAdapter(
     private val boats: ArrayList<Boat>,
@@ -131,12 +131,10 @@ class BoatViewAdapter(
             INVENTORY -> {
                 trader.sell(boat)
                 itemView.visibility = View.GONE
-                HelperFuns.showToast(context, R.string.sell_sucess)
+                context.showToast(R.string.sell_sucess)
             }
-            SHOP -> {
-                HelperFuns.showToast(
-                    context, if (trader.buy(boat)) R.string.buy_sucess else R.string.check_balance)
-            }
+            SHOP -> context.showToast(
+                if (trader.buy(boat)) R.string.buy_sucess else R.string.check_balance)
             PAIRING -> {
                 PairingPreferences(context).occupyBoat(boat.id!!)
                 val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController(fragment) }

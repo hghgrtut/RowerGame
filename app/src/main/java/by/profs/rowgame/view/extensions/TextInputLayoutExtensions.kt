@@ -1,4 +1,4 @@
-package by.profs.rowgame.view.utils
+package by.profs.rowgame.view.extensions
 
 import androidx.annotation.StringRes
 import com.google.android.material.textfield.TextInputLayout

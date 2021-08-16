@@ -26,7 +26,7 @@ import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
-import by.profs.rowgame.view.utils.HelperFuns.showToast
+import by.profs.rowgame.view.extensions.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -152,7 +152,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
     private fun showToastResults(rowers: List<Rower>) {
         val context = requireContext()
-        showToast(context, context.getString(
+        context.showToast(context.getString(
             R.string.race_results_list,
             rowers[FIRST].name,
             rowers[SECOND].name,

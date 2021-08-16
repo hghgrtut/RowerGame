@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.view.utils.HelperFuns.loadThumb
+import by.profs.rowgame.presenter.imageloader.loadThumb
 
 class StandingViewAdapter(
     private val standing: ArrayList<Pair<Rower, Int>>,
@@ -39,7 +39,7 @@ class StandingViewAdapter(
         val rower: Rower = standing[position].first
         holder.position.text = (1 + position).toString()
         holder.name.text = rower.name
-        loadThumb(rower, holder.rowerPic)
+        holder.rowerPic.loadThumb(rower)
     }
 
     override fun getItemCount(): Int = standing.size

@@ -19,7 +19,7 @@ import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
-import by.profs.rowgame.view.utils.HelperFuns.showToast
+import by.profs.rowgame.view.extensions.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -130,17 +130,17 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
 
     private fun recruit(rower: Rower) {
         if (recruiter.buy(rower)) {
-            showToast(requireContext(), R.string.recruit_success)
+            requireContext().showToast(R.string.recruit_success)
             setAsExisting(rower)
         } else {
-            showToast(requireContext(), R.string.recruit_fail)
+            requireContext().showToast(R.string.recruit_fail)
         }
     }
 
     private fun fire(rower: Rower) {
         recruiter.sell(rower)
         setAsNew(rower)
-        showToast(requireContext(), R.string.fired)
+        requireContext().showToast(R.string.fired)
     }
 
     companion object {

@@ -29,7 +29,7 @@ import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
 import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
-import by.profs.rowgame.view.utils.HelperFuns.showToast
+import by.profs.rowgame.view.extensions.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -93,9 +93,9 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         infoBar.nextAndShowDay()
         infoBar.showDay()
         val day = infoBar.getDay()
-        if (day % DIM != 0) { showToast(requireContext(), R.string.train_sucess)
+        if (day % DIM != 0) { requireContext().showToast(R.string.train_sucess)
         } else {
-            showToast(requireContext(), R.string.time_to_race)
+            requireContext().showToast(R.string.time_to_race)
             TrainingFragmentDirections.actionTrainingFragmentToCompetitionFragment(
                 type = when (day) {
                     OFP_DAY -> OFP

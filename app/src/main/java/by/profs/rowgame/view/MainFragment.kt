@@ -11,7 +11,7 @@ import by.profs.rowgame.databinding.MainFragmentBinding
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
-import by.profs.rowgame.view.utils.HelperFuns.showToast
+import by.profs.rowgame.view.extensions.showToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -69,8 +69,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private suspend fun resetMoney() {
-        val context = requireContext()
         val flag = withContext(Dispatchers.IO) { true }
-        showToast(context, if (flag) R.string.money_reseted else R.string.money_not_reseted)
+        requireActivity().showToast(if (flag) R.string.money_reseted else R.string.money_not_reseted)
     }
 }

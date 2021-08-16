@@ -1,8 +1,11 @@
 package by.profs.rowgame.view.activity
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -10,7 +13,6 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.PreferenceEditor
 import by.profs.rowgame.databinding.ActivityMainBinding
-import by.profs.rowgame.view.utils.HelperFuns.changeTheme
 
 class MainActivity : ActivityWithInfoBar() {
     private val navController by lazy(LazyThreadSafetyMode.NONE) {
@@ -74,8 +76,26 @@ class MainActivity : ActivityWithInfoBar() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.changeTheme -> changeTheme(resources)
+            R.id.changeTheme -> {
+                when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_YES ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    Configuration.UI_MODE_NIGHT_NO ->
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) }
+                true }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    companion object {
+        private fun changeTheme(resources: Resources): Boolean {
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES ->
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                Configuration.UI_MODE_NIGHT_NO ->
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            return true
         }
     }
 }

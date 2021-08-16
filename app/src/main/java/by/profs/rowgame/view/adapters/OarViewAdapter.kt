@@ -20,8 +20,8 @@ import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
 import by.profs.rowgame.view.activity.InfoBar
+import by.profs.rowgame.view.extensions.showToast
 import by.profs.rowgame.view.pairing.PairingFragmentDirections
-import by.profs.rowgame.view.utils.HelperFuns.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -95,10 +95,10 @@ class OarViewAdapter(
             INVENTORY -> {
                 trader.sell(oar)
                 itemView.visibility = View.GONE
-                showToast(context, R.string.sell_sucess)
+                context.showToast(R.string.sell_sucess)
             }
-            SHOP -> { showToast(context,
-                if (trader.buy(oar)) R.string.buy_sucess else R.string.check_balance) }
+            SHOP -> context.showToast(
+                if (trader.buy(oar)) R.string.buy_sucess else R.string.check_balance)
             PAIRING -> {
                 val pairingPreferences = PairingPreferences(context)
                 pairingPreferences.occupyOar(oar.id!!)
