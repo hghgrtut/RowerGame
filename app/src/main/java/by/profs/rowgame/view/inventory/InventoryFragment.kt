@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.databinding.FragmentInventoryBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
@@ -30,7 +31,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private val args by navArgs<InventoryFragmentArgs>()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentInventoryBinding? = null
-    private lateinit var database: MyRoomDatabase
+    private val database: MyRoomDatabase = ServiceLocator.locate()
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
@@ -55,7 +56,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     override fun onResume() {
         super.onResume()
-        database = MyRoomDatabase.getDatabase(requireContext())
         MainScope().launch { when (args.itemType) { // intent type
                 INTENT_OARS -> showOars()
                 INTENT_BOATS -> showBoats()

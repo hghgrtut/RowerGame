@@ -9,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentShopBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
@@ -27,7 +28,7 @@ import kotlinx.coroutines.withContext
 class ShopFragment : Fragment(R.layout.fragment_shop) {
     private val args by navArgs<ShopFragmentArgs>()
     private var binding: FragmentShopBinding? = null
-    private lateinit var database: MyRoomDatabase
+    private val database: MyRoomDatabase = ServiceLocator.locate()
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
@@ -40,7 +41,6 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        database = MyRoomDatabase.getDatabase(requireContext())
         MainScope().launch { if (args.itemType == INTENT_OARS) showOars() else showBoats() }
     }
 

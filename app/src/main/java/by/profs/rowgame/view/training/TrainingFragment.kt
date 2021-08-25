@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
@@ -69,7 +70,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         val context = requireContext()
         infoBar.showDay()
 
-        val database = MyRoomDatabase.getDatabase(context)
+        val database: MyRoomDatabase = ServiceLocator.locate()
         boatDao = database.boatDao()
         oarDao = database.oarDao()
         rowerDao = database.rowerDao()

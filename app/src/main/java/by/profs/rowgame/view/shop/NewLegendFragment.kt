@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Ages
 import by.profs.rowgame.databinding.FragmentNewLegendBinding
@@ -131,7 +132,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         val fame = infoBar.getFame()
         if (fame < cost) requireContext().showToast(R.string.recruit_fail)
         else {
-            val dao = MyRoomDatabase.getDatabase(requireContext()).rowerDao()
+            val dao = ServiceLocator.get(MyRoomDatabase::class).rowerDao()
             binding.run {
                 val link = editPhotoLink.editText?.text.toString()
                 Recruiter(infoBar, dao).buy(Rower(

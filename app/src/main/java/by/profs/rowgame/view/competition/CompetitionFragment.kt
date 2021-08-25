@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
@@ -83,7 +84,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         raceCalculator = RaceCalculator(args.type)
         (requireActivity() as ActivityWithInfoBar).infoBar.nextAndShowDay()
 
-        val database = MyRoomDatabase.getDatabase(context)
+        val database: MyRoomDatabase = ServiceLocator.locate()
         boatDao = database.boatDao()
         oarDao = database.oarDao()
         val rowerDao = database.rowerDao()
