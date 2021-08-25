@@ -8,12 +8,20 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@drawable/logo_app"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@style/AppTheme">
+        <receiver
+            android:name=".reminder.ReminderReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="by.profs.rowgame.action.train"/>
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".view.activity.MainActivity">
             <intent-filter>

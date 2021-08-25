@@ -20,11 +20,11 @@ import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.extensions.showToast
+import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
 
 class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     private val args by navArgs<RowerDetailsFragmentArgs>()

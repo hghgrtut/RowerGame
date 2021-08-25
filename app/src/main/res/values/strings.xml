@@ -25,7 +25,6 @@
     <string name="choose_rower">Выберите гребца</string>
     <string name="concept">Концепт</string>
     <string name="no_internet">No Internet</string>
-    <string name="not_today">Не сегодня</string>
     <string name="OFP">ОФП</string>
     <string name="phase_start">500 м</string>
     <string name="phase_half">1000 м</string>
@@ -43,9 +42,9 @@
     <string name="boats">Лодки</string>
     <string name="change_theme">Сменить тему</string>
     <string name="claim_reward">Забрать награду</string>
+    <string name="daily">Ежедневка</string>
     <string name="detach_pair">Detach</string>
     <string name="fire_rower">Уволить</string>
-    <string name="give_money">Money</string>
     <string name="legends">Легенды</string>
     <string name="new_legend">Свой перс!</string>
     <string name="new_pairs">Рассадить</string>
@@ -88,10 +87,10 @@
     <string name="buy_sucess">Куплено</string>
     <string name="competitions">Соревнования</string>
     <string name="check_balance">Недостаточно денег!</string>
+    <string name="daily_collected">Бонус: %1$d денег и %2$d славы</string>
+    <string name="daily_already_collected">Ежедневный бонус уже собран</string>
     <string name="error">Ошибка!</string>
     <string name="fired">Выгнан!</string>
-    <string name="money_not_reseted">Деньги не сброшены, т.к. у вас их достаточно либо есть вёсла или лодка</string>
-    <string name="money_reseted">Деньги сброшены</string>
     <string name="recruit_fail">Недостаточно славы!</string>
     <string name="recruit_success">Добавлен(а)!</string>
     <string name="sell_sucess">Продано</string>
@@ -131,4 +130,6 @@
     <string name="technicality">Техничность</string>
     <string name="weight">Вес</string>
     <string name="boat_type">Тип лодки: 1x</string>
+
+    <string name="train_reminder">Напоминание о тренировке</string>
 </resources>

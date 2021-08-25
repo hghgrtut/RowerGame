@@ -16,7 +16,7 @@ class OarTrader(private val infoBar: InfoBar, private val dao: OarDao) :
         Oar.BASIC_COST * item.weight * item.blade * (IDEAL - item.damage) / IDEAL
 
     override fun sell(item: Oar) {
-        infoBar.setMoney(infoBar.getMoney() + calculateCost(item))
+        infoBar.changeMoney(calculateCost(item))
         scope.launch { dao.deleteItem(item.id!!) }
     }
 }

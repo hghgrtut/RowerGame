@@ -40,13 +40,13 @@ class MainActivity : ActivityWithInfoBar() {
             showDay()
         }
 
-        override fun setFame(fame: Int) {
-            prefEditor.setFame(fame)
+        override fun changeFame(amount: Int) {
+            prefEditor.setFame(getFame() + amount)
             showFame()
         }
 
-        override fun setMoney(money: Int) {
-            prefEditor.setMoney(money)
+        override fun changeMoney(amount: Int) {
+            prefEditor.setMoney(getMoney() + amount)
             showMoney()
         }
 
@@ -76,13 +76,7 @@ class MainActivity : ActivityWithInfoBar() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.changeTheme -> {
-                when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                    Configuration.UI_MODE_NIGHT_YES ->
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    Configuration.UI_MODE_NIGHT_NO ->
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) }
-                true }
+            R.id.changeTheme -> changeTheme(resources)
             else -> super.onOptionsItemSelected(item)
         }
     }

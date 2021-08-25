@@ -14,11 +14,8 @@ class Recruiter(private val infoBar: InfoBar, private val dao: RowerDao) :
     override fun calculateCost(item: Rower): Int = item.cost
 
     override fun buy(item: Rower): Boolean {
-        val cost = item.cost
-        if (cost > 0) {
-            val fame = infoBar.getFame()
-            if (fame >= cost) infoBar.setFame(fame - cost) else return false
-        }
+        if (infoBar.getFame() < item.cost) return false
+        infoBar.changeFame(- item.cost)
         scope.launch { dao.insert(item) }
         return true
     }

@@ -18,7 +18,7 @@ abstract class Trader<T> (private val infoBar: InfoBar, private val dao: MyDao<T
         val cost = calculateCost(item)
         return if (calculateCost(item) <= balance) {
             scope.launch { dao.insert(item) }
-            infoBar.setMoney(balance - cost)
+            infoBar.changeMoney(- cost)
             true
         } else false
     }

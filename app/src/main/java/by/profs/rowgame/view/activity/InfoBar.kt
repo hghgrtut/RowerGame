@@ -15,9 +15,9 @@ interface InfoBar {
 
     fun nextAndShowDay()
 
-    fun setFame(fame: Int)
+    fun changeFame(amount: Int)
 
-    fun setMoney(money: Int)
+    fun changeMoney(amount: Int)
 
     fun getDay(): Int
 

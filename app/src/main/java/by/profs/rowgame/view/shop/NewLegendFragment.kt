@@ -19,11 +19,11 @@ import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.InfoBar
-import by.profs.rowgame.view.extensions.showToast
 import by.profs.rowgame.view.extensions.clearError
 import by.profs.rowgame.view.extensions.getIntOrZero
 import by.profs.rowgame.view.extensions.hasText
 import by.profs.rowgame.view.extensions.setError
+import by.profs.rowgame.view.extensions.showToast
 import com.google.android.material.textfield.TextInputLayout
 
 class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {

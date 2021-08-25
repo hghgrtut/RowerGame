@@ -20,7 +20,7 @@ class BoatTrader(private val infoBar: InfoBar, private val dao: BoatDao) :
     }
 
     override fun sell(item: Boat) {
-        infoBar.setMoney(infoBar.getMoney() + calculateCost(item))
+        infoBar.changeMoney(calculateCost(item))
         scope.launch { dao.deleteItem(item.id!!) }
     }
 
