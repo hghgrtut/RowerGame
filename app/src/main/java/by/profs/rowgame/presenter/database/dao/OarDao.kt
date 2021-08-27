@@ -1,13 +1,13 @@
-package by.profs.rowgame.presenter.dao
+package by.profs.rowgame.presenter.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import by.profs.rowgame.data.consts.ID_OAR
+import by.profs.rowgame.data.consts.TABLE_OAR
 import by.profs.rowgame.data.items.Oar
-import by.profs.rowgame.utils.ID_OAR
-import by.profs.rowgame.utils.TABLE_OAR
 
 @Dao
 interface OarDao : MyDao<Oar> {

@@ -15,7 +15,7 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.preferences.PairingPreferences
-import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader

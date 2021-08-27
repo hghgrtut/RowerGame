@@ -13,8 +13,8 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentRowerDetailsBinding
 import by.profs.rowgame.presenter.api.RetrofitApiImplementation
-import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter

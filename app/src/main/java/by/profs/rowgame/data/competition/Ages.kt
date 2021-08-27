@@ -1,4 +1,4 @@
-package by.profs.rowgame.data.items.util
+package by.profs.rowgame.data.competition
 // age represents maximal age included in this category
 enum class Ages(val age: Int, val skillCoef: Double) {
     TooYoung(TY, TY_C),
@@ -12,7 +12,7 @@ private const val TY = 9
 private const val KID = 16
 private const val JUN = 18
 private const val YOUTH = 23
-private const val ADULT = 36
+private const val ADULT = 360
 private const val TY_C = 0.0
 private const val KID_C = 0.5
 private const val JUN_C = 0.7

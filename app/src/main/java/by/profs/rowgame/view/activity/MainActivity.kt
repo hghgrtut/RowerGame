@@ -57,6 +57,8 @@ class MainActivity : ActivityWithInfoBar() {
         override fun getMoney(): Int = prefEditor.getMoney()
     }
 
+    override fun setSubtitle(string: String) = binding.toolbar.setSubtitle(string)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)

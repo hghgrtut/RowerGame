@@ -1,10 +1,15 @@
 package by.profs.rowgame.data.competition
 
-enum class CompetitionLevel(val rowerSkill: IntRange) {
-    Region(REG_MIN..REG_MAX),
-    Republic(REP_MIN..REP_MAX),
-    Continental(CON_MIN..CON_MAX),
-    World(WOR_MIN..WOR_MAX) }
+enum class CompetitionLevel(val minRowerSkill: Int, val maxRowerSkill: Int) {
+    Region(REG_MIN, REG_MAX),
+    Republic(REP_MIN, REP_MAX),
+    Continental(CON_MIN, CON_MAX),
+    World(WOR_MIN, WOR_MAX);
+
+    companion object {
+        fun Int.isRegional(): Boolean = this == Region.ordinal
+    }
+}
 
 private const val REG_MIN = 2
 private const val REG_MAX = 8

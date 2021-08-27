@@ -8,7 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.text.format.DateUtils
+import android.text.format.DateUtils.DAY_IN_MILLIS
 import androidx.core.app.NotificationCompat
 import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
@@ -45,8 +45,8 @@ class ReminderReceiver : BroadcastReceiver() {
             (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).setExact(
                 AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() -
-                        (System.currentTimeMillis() % DateUtils.DAY_IN_MILLIS) +
-                        DateUtils.DAY_IN_MILLIS +
+                        (System.currentTimeMillis() % DAY_IN_MILLIS) +
+                        DAY_IN_MILLIS +
                         Calendar(context.applicationContext).getTrainingTime(),
                 PendingIntent.getBroadcast(context,
                     NOTIFICATION_TRAINING_REQUEST,

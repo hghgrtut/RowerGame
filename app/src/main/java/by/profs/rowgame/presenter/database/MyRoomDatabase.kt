@@ -6,22 +6,26 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.competition.Competition
+import by.profs.rowgame.data.competition.License
+import by.profs.rowgame.data.consts.TABLE_ROWERS
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.ComboDao
-import by.profs.rowgame.presenter.dao.OarDao
-import by.profs.rowgame.presenter.dao.RowerDao
-import by.profs.rowgame.utils.TABLE_ROWERS
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.database.dao.CompetitionDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 
 @Database(
-    entities = [Boat::class, Combo::class, Competition::class, Oar::class, Rower::class],
-    version = 5
+    entities =
+        [Boat::class, Combo::class, Competition::class, License::class, Oar::class, Rower::class],
+    version = 6
 )
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun boatDao(): BoatDao
     abstract fun comboDao(): ComboDao
+    abstract fun competitionDao(): CompetitionDao
     abstract fun rowerDao(): RowerDao
     abstract fun oarDao(): OarDao
 
@@ -32,7 +36,8 @@ abstract class MyRoomDatabase : RoomDatabase() {
         fun getDatabase(context: Context): MyRoomDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext, MyRoomDatabase::class.java, TABLE_ROWERS)
+                    context.applicationContext, MyRoomDatabase::class.java, TABLE_ROWERS
+                )
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

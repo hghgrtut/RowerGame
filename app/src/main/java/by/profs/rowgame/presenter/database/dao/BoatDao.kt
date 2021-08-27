@@ -1,12 +1,12 @@
-package by.profs.rowgame.presenter.dao
+package by.profs.rowgame.presenter.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import by.profs.rowgame.data.consts.TABLE_BOAT
 import by.profs.rowgame.data.items.Boat
-import by.profs.rowgame.utils.TABLE_BOAT
 
 @Dao
 interface BoatDao : MyDao<Boat> {

@@ -86,6 +86,7 @@
     <!-- Toasts -->
     <string name="buy_sucess">Куплено</string>
     <string name="competitions">Соревнования</string>
+    <string name="competition_reward">Получено за соревнования: %1$d</string>
     <string name="check_balance">Недостаточно денег!</string>
     <string name="daily_collected">Бонус: %1$d денег и %2$d славы</string>
     <string name="daily_already_collected">Ежедневный бонус уже собран</string>
@@ -99,6 +100,7 @@
     <string name="train_sucess">Тренировка прошла</string>
     <!-- Images content descriptions -->
     <string name="cont_descr_boat_type_image">Изображение типа лодки</string>
+    <string name="cont_descr_competition_type">Иллюстрация соревнования</string>
     <string name="cont_descr_logo">Логотип</string>
     <string name="cont_descr_rower_photo">Превью гребца</string>
     <string name="cont_descr_wing">Изображение отвода</string>
@@ -130,6 +132,9 @@
     <string name="technicality">Техничность</string>
     <string name="weight">Вес</string>
     <string name="boat_type">Тип лодки: 1x</string>
+
+    <!-- PreCompetition -->
+    <string name="my_participants">Наши участники:</string>
 
     <string name="train_reminder">Напоминание о тренировке</string>
 </resources>

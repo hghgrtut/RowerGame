@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="Locations_continental">
+    <string-array name="competition_level">
+        <item>Первенство области</item>
+        <item>Первенство Республики Беларусь</item>
+        <item>Чемпионат Европы</item>
+        <item>Чемпионат Мира</item>
+    </string-array>
+
+    <string-array name="competition_types">
+        <item>по гребле академической</item>
+        <item>, концепт</item>
+        <item>, общая физическая подгоотовка</item>
+    </string-array>
+
+    <string-array name="locations_continental">
         <item>Крушвице, POL</item>
         <item>Варезе, ITA</item>
         <item>Сабаудиа, ITA</item>
@@ -9,6 +22,12 @@
         <item>Дуйсбург, GER</item>
         <item>Ростов на Дону, RUS</item>
         <item>Минск, BLR</item>
+    </string-array>
+
+    <string-array name="locations_republic">
+        <item>Минск, BLR</item>
+        <item>Заславль, BLR</item>
+        <item>Брест, BLR</item>
     </string-array>
 
     <string-array name="locations_world">

@@ -3,10 +3,10 @@ package by.profs.rowgame.data.items
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import by.profs.rowgame.data.consts.ID_OAR
+import by.profs.rowgame.data.consts.TABLE_OAR
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.utils.IDEAL
-import by.profs.rowgame.utils.ID_OAR
-import by.profs.rowgame.utils.TABLE_OAR
 
 @Entity(tableName = TABLE_OAR)
 data class Oar(

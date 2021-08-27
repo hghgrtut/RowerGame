@@ -93,19 +93,14 @@
         android:label="@string/trainings"
         tools:layout="@layout/fragment_training" >
         <action
-            android:id="@+id/action_trainingFragment_to_competitionFragment"
-            app:destination="@id/competitionFragment"
-            app:popUpTo="@id/mainFragment" />
+            android:id="@+id/action_trainingFragment_to_preCompetitionFragment"
+            app:destination="@id/preCompetitionFragment" />
     </fragment>
     <fragment
         android:id="@+id/competitionFragment"
         android:name="by.profs.rowgame.view.competition.CompetitionFragment"
         android:label="@string/semifinal"
         tools:layout="@layout/fragment_competition" >
-        <argument
-            android:name="type"
-            app:argType="integer"
-            android:defaultValue="1" />
         <action
             android:id="@+id/action_competitionFragment_to_trainingFragment"
             app:destination="@id/trainingFragment"
@@ -141,5 +136,15 @@
                 android:name="itemType"
                 android:defaultValue="3" />
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/preCompetitionFragment"
+        android:name="by.profs.rowgame.view.competition.PreCompetitionFragment"
+        android:label="@string/competitions"
+        tools:layout="@layout/fragment_pre_competition">
+        <action
+            android:id="@+id/action_preCompetitionFragment_to_competitionFragment"
+            app:destination="@id/competitionFragment"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
 </navigation>

@@ -1,4 +1,4 @@
-package by.profs.rowgame.presenter.dao
+package by.profs.rowgame.presenter.database.dao
 
 interface MyDao<T> {
     fun getItems(): List<T>

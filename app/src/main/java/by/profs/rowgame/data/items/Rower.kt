@@ -3,9 +3,10 @@ package by.profs.rowgame.data.items
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import by.profs.rowgame.utils.ID_ROWER
-import by.profs.rowgame.utils.NAME_ROWER
-import by.profs.rowgame.utils.TABLE_ROWERS
+import by.profs.rowgame.data.consts.COL_ROWER_AGE
+import by.profs.rowgame.data.consts.ID_ROWER
+import by.profs.rowgame.data.consts.NAME_ROWER
+import by.profs.rowgame.data.consts.TABLE_ROWERS
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -14,7 +15,7 @@ data class Rower(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_ROWER) val id: Int?,
     @ColumnInfo(name = NAME_ROWER) val name: String,
     @ColumnInfo(name = "gender") val gender: Int,
-    @ColumnInfo(name = "age") val age: Int,
+    @ColumnInfo(name = COL_ROWER_AGE) val age: Int,
     @ColumnInfo(name = "height") val height: Int,
     @ColumnInfo(name = "weight") val weight: Int,
     @ColumnInfo(name = "power") var power: Int,

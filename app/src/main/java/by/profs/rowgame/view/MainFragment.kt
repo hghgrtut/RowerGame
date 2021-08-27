@@ -14,6 +14,7 @@ import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.reminder.ReminderReceiver
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.extensions.showToast
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
@@ -31,6 +32,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as ActivityWithInfoBar).setSubtitle("")
         binding?.run {
             goToBoats.setOnClickListener {
                 MainFragmentDirections.actionMainFragmentToInventoryFragment(INTENT_BOATS)
@@ -79,7 +81,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         calendar.setLastDailyDay(currentDate)
         ReminderReceiver.setNotification(context)
-        val infobar = (requireActivity() as ActivityWithInfoBar).infoBar
+        val infobar = requireActivity().infobar()
         infobar.changeFame(bonusFame)
         infobar.changeMoney(bonusMoney)
         context.showToast(R.string.daily_collected, bonusMoney, bonusFame)

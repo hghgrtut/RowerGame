@@ -30,6 +30,7 @@
         android:layout_width="@dimen/boat_wing_picture_size"
         android:layout_height="wrap_content"
         android:contentDescription="@string/cont_descr_wing"
+        android:layout_marginEnd="@dimen/small_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/logo"
         app:layout_constraintTop_toTopOf="parent"

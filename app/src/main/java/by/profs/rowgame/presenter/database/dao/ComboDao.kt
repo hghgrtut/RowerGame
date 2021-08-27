@@ -1,19 +1,25 @@
-package by.profs.rowgame.presenter.dao
+package by.profs.rowgame.presenter.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import by.profs.rowgame.data.combos.Combo
-import by.profs.rowgame.utils.ID_BOAT
-import by.profs.rowgame.utils.ID_OAR
-import by.profs.rowgame.utils.ID_ROWER
-import by.profs.rowgame.utils.TABLE_COMBO_SINGLE
+import by.profs.rowgame.data.consts.COL_ROWER_AGE
+import by.profs.rowgame.data.consts.ID_BOAT
+import by.profs.rowgame.data.consts.ID_OAR
+import by.profs.rowgame.data.consts.ID_ROWER
+import by.profs.rowgame.data.consts.TABLE_COMBO_SINGLE
+import by.profs.rowgame.data.consts.TABLE_ROWERS
 
 @Dao
 interface ComboDao {
     @Query("SELECT * FROM $TABLE_COMBO_SINGLE")
     fun getAllCombos(): List<Combo>
+
+    @Query("SELECT * FROM $TABLE_COMBO_SINGLE WHERE $ID_ROWER IN (" +
+            "SELECT $ID_ROWER FROM $TABLE_ROWERS WHERE $COL_ROWER_AGE <= (:maxAge))")
+    fun getCombosToAge(maxAge: Int): List<Combo>
 
     @Query("SELECT $ID_BOAT FROM $TABLE_COMBO_SINGLE")
     fun getBoatIds(): List<Int>

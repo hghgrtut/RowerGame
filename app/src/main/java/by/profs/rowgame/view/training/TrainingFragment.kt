@@ -10,16 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
-import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.databinding.FragmentTrainingBinding
-import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.ComboDao
-import by.profs.rowgame.presenter.dao.OarDao
-import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.presenter.trainer.Trainer
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
@@ -27,9 +24,6 @@ import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.CONCEPT
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.OFP
-import by.profs.rowgame.view.competition.CompetitionFragment.Companion.WATER
 import by.profs.rowgame.view.extensions.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,15 +33,12 @@ import kotlinx.coroutines.withContext
 
 class TrainingFragment : Fragment(R.layout.fragment_training) {
     private var binding: FragmentTrainingBinding? = null
+    private lateinit var competitionDays: IntArray
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
     private lateinit var recyclerView: RecyclerView
-    private lateinit var boatDao: BoatDao
-    private lateinit var oarDao: OarDao
-    private lateinit var rowerDao: RowerDao
     private lateinit var singleComboDao: ComboDao
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var trainer: Trainer
 
     private val deleteComboFun: (Int?) -> Unit = {
         scope.launch {
@@ -70,13 +61,6 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         val context = requireContext()
         infoBar.showDay()
 
-        val database: MyRoomDatabase = ServiceLocator.locate()
-        boatDao = database.boatDao()
-        oarDao = database.oarDao()
-        rowerDao = database.rowerDao()
-        singleComboDao = database.comboDao()
-
-        trainer = Trainer(database, deleteComboFun)
         recyclerView = binding!!.list.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -89,28 +73,34 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         binding = null
     }
 
-    private fun train(combos: MutableList<Combo>, mode: Int) {
-        scope.launch { trainer.startTraining(mode, combos) }
+    private fun nextDay() {
         infoBar.nextAndShowDay()
         infoBar.showDay()
         val day = infoBar.getDay()
-        if (day % DIM != 0) { requireContext().showToast(R.string.train_sucess)
-        } else {
+        if (competitionDays.contains(day)) {
+            if (competitionDays.last() == day) {
+                scope.launch { ServiceLocator.get(CompetitionDao::class).deleteLicences() } }
             requireContext().showToast(R.string.time_to_race)
-            TrainingFragmentDirections.actionTrainingFragmentToCompetitionFragment(
-                type = when (day) {
-                    OFP_DAY -> OFP
-                    in WATER_START..WATER_END -> WATER
-                    else -> CONCEPT
-            }).also { findNavController().navigate(it) }
-        }
+            TrainingFragmentDirections.actionTrainingFragmentToPreCompetitionFragment().also {
+                findNavController().navigate(it) }
+        } else { requireContext().showToast(R.string.train_sucess) }
     }
 
     private suspend fun refreshView() {
+        val database: MyRoomDatabase = ServiceLocator.locate()
+        val boatDao = database.boatDao()
+        val oarDao = database.oarDao()
+        val rowerDao = database.rowerDao()
+        singleComboDao = database.comboDao()
+
+        competitionDays = withContext(Dispatchers.IO) {
+            ServiceLocator.get(CompetitionDao::class).getCompetitionDays() }
+
         val combos = withContext(Dispatchers.IO) { singleComboDao.getAllCombos().toMutableList() }
         val boats = ArrayList<Boat>()
         val oars = ArrayList<Oar>()
         val rowers = ArrayList<Rower>()
+
         combos.forEach {
             boats.add(withContext(Dispatchers.IO) { boatDao.search(it.boatId)!! })
             oars.add(withContext(Dispatchers.IO) { oarDao.search(it.oarId)!! })
@@ -120,17 +110,18 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
             ComboViewAdapter(boats.toList(), oars.toList(), rowers.toList(), deleteComboFun)
         recyclerView = binding!!.list.apply { adapter = viewAdapter }
 
-        binding?.run {
-            buttonTrainEndurance.setOnClickListener { train(combos, TRAIN_ENDURANCE) }
-            buttonTrainPower.setOnClickListener { train(combos, TRAIN_POWER) }
-            buttonTrainTechnical.setOnClickListener { train(combos, TRAIN_TECHNICALITY) }
-        }
-    }
+        val trainer = Trainer(database, deleteComboFun)
 
-    companion object {
-        private const val DIM = 30 // Days in month
-        private const val OFP_DAY = 210
-        private const val WATER_START = 61
-        private const val WATER_END = 359
+        binding?.run {
+            buttonTrainEndurance.setOnClickListener {
+                scope.launch { trainer.startTraining(TRAIN_ENDURANCE, combos) }
+                nextDay() }
+            buttonTrainPower.setOnClickListener {
+                scope.launch { trainer.startTraining(TRAIN_POWER, combos) }
+                nextDay() }
+            buttonTrainTechnical.setOnClickListener {
+                scope.launch { trainer.startTraining(TRAIN_TECHNICALITY, combos) }
+                nextDay() }
+        }
     }
 }

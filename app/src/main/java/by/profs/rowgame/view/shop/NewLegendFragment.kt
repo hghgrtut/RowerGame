@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
+import by.profs.rowgame.data.competition.Ages
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.items.util.Ages
 import by.profs.rowgame.databinding.FragmentNewLegendBinding
 import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
@@ -32,6 +32,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     private val binding: FragmentNewLegendBinding get() = requireNotNull(_binding)
     private var _characteristics: Array<TextInputLayout>? = null
     private val characteristics: Array<TextInputLayout> get() = requireNotNull(_characteristics)
+    private lateinit var editableFields: Array<TextInputLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +45,15 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showCurrentCost()
+
+        editableFields = arrayOf(binding.editAbout, binding.editAge, binding.editEndurance,
+            binding.editHeight, binding.editName, binding.editPhotoLink, binding.editPower,
+            binding.editTechnicality, binding.editWeight)
+        savedInstanceState?.restoreState()
+
         _characteristics =
             arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
+        showCurrentCost()
         binding.create.setOnClickListener {
             if (validate()) recruit()
             else requireContext().showToast(R.string.recruit_fail)
@@ -76,6 +83,25 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        editableFields.forEachIndexed { index, field ->
+            val text = field.editText?.text
+            if (field.editText?.text != null) outState.putString(index.toString(), text.toString())
+        }
+        if (binding.editGender.checkedRadioButtonId == R.id.gender_female) {
+            outState.putBoolean(WOMAN, true) }
+    }
+
+    private fun Bundle.restoreState() {
+        editableFields.forEachIndexed { index, field ->
+            val key = index.toString()
+            val text = this.getString(key)
+            if (text != null) field.editText?.setText(text)
+        }
+        if (this.getBoolean(WOMAN)) binding.editGender.check(R.id.gender_female)
     }
 
     private fun getAgeCoefficient(): Double? {
@@ -164,5 +190,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         private const val JUN_COEF = 1.8
         private const val YOUTH_COEF = 1.4
         private const val MASTERS_COEF = 1.0
+
+        private const val WOMAN = "woman"
     }
 }

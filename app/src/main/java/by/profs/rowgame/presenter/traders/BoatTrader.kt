@@ -2,7 +2,7 @@ package by.profs.rowgame.presenter.traders
 
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.utils.IDEAL
 import by.profs.rowgame.view.activity.InfoBar
 import kotlinx.coroutines.CoroutineScope

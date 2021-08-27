@@ -1,5 +1,6 @@
 package by.profs.rowgame.data.items.util
 
+import by.profs.rowgame.data.competition.Ages
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower

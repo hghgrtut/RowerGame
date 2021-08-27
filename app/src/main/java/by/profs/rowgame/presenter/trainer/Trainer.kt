@@ -2,11 +2,11 @@ package by.profs.rowgame.presenter.trainer
 
 import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Damageable
-import by.profs.rowgame.presenter.dao.BoatDao
-import by.profs.rowgame.presenter.dao.MyDao
-import by.profs.rowgame.presenter.dao.OarDao
-import by.profs.rowgame.presenter.dao.RowerDao
 import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.MyDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
@@ -64,6 +64,6 @@ class Trainer(database: MyRoomDatabase, private val deleteRowerFun: (Int?) -> Un
         private const val maxInjury = 4 // resultChance = 1 : injuryChance
         private const val maxDamage = 365 // chance to damage = (acceptableDamage-1) : maxDamage
         private const val rowerCharacteristicsNumber = 3
-        private const val rowerUpChance = 33 // resultChance = CharacteristicNumber : rowerUpChance
+        private const val rowerUpChance = 22 // resultChance = CharacteristicNumber : rowerUpChance
     }
 }

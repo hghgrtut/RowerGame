@@ -3,12 +3,9 @@ package by.profs.rowgame.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
-import by.profs.rowgame.utils.FAME
-import by.profs.rowgame.utils.MONEY
 import by.profs.rowgame.utils.START_FAME
 import by.profs.rowgame.utils.START_MONEY_BALANCE
 import by.profs.rowgame.utils.UNDEFINED
-import by.profs.rowgame.utils.USER_PREF
 
 class PreferenceEditor(context: Context) {
     private val preferences: SharedPreferences =

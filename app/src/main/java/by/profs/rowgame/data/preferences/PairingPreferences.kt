@@ -4,10 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import by.profs.rowgame.data.combos.Combo
-import by.profs.rowgame.utils.BOAT
-import by.profs.rowgame.utils.FIRST_OAR
-import by.profs.rowgame.utils.FIRST_ROWER
-import by.profs.rowgame.utils.USER_PREF
 
 class PairingPreferences(context: Context) {
     private val preferences: SharedPreferences =

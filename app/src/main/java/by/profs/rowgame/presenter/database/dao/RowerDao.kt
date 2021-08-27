@@ -1,14 +1,14 @@
-package by.profs.rowgame.presenter.dao
+package by.profs.rowgame.presenter.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import by.profs.rowgame.data.consts.ID_ROWER
+import by.profs.rowgame.data.consts.NAME_ROWER
+import by.profs.rowgame.data.consts.TABLE_ROWERS
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.utils.ID_ROWER
-import by.profs.rowgame.utils.NAME_ROWER
-import by.profs.rowgame.utils.TABLE_ROWERS
 
 @Dao
 interface RowerDao : MyDao<Rower> {

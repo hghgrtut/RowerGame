@@ -5,10 +5,6 @@ import android.content.SharedPreferences
 import android.text.format.DateUtils.DAY_IN_MILLIS
 import android.text.format.DateUtils.HOUR_IN_MILLIS
 import androidx.appcompat.app.AppCompatActivity
-import by.profs.rowgame.utils.DAY
-import by.profs.rowgame.utils.LAST_DAILY
-import by.profs.rowgame.utils.TRAINING_TIME
-import by.profs.rowgame.utils.USER_PREF
 
 class Calendar(context: Context) {
     private val preferences: SharedPreferences =

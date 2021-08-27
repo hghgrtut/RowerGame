@@ -1,4 +1,4 @@
-package by.profs.rowgame.utils
+package by.profs.rowgame.data.preferences
 
 const val BOAT = "boat"
 const val DAY = "day"
