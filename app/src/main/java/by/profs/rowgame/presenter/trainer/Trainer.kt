@@ -60,7 +60,7 @@ class Trainer(database: MyRoomDatabase, private val deleteRowerFun: (Int?) -> Un
 
     companion object {
         private const val acceptableDamage = 11
-        private const val injuryChance = 90 // resultChance = 1 : injuryChance
+        private const val injuryChance = 99 // resultChance = 1 : injuryChance
         private const val maxInjury = 4 // resultChance = 1 : injuryChance
         private const val maxDamage = 365 // chance to damage = (acceptableDamage-1) : maxDamage
         private const val rowerCharacteristicsNumber = 3

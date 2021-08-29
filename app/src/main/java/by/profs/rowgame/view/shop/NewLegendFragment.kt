@@ -18,13 +18,12 @@ import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
-import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.InfoBar
+import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.extensions.clearError
 import by.profs.rowgame.view.extensions.getIntOrZero
 import by.profs.rowgame.view.extensions.hasText
 import by.profs.rowgame.view.extensions.setError
-import by.profs.rowgame.view.extensions.showToast
 import com.google.android.material.textfield.TextInputLayout
 
 class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
@@ -54,10 +53,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         _characteristics =
             arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
         showCurrentCost()
-        binding.create.setOnClickListener {
-            if (validate()) recruit()
-            else requireContext().showToast(R.string.recruit_fail)
-        }
+        binding.create.setOnClickListener { if (validate()) recruit() }
 
         val linkWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { return }
@@ -107,7 +103,7 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     private fun getAgeCoefficient(): Double? {
         val age = binding.editAge.getIntOrZero()
         return when {
-            age <= Ages.TooYoung.age -> null
+            age <= Ages.TooYoung.age || age > Ages.Adult.age -> null
             age <= Ages.Jun.age -> JUN_COEF
             age <= Ages.Youth.age -> YOUTH_COEF
             else -> MASTERS_COEF
@@ -153,31 +149,27 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     }
 
     private fun recruit() {
-        val infoBar: InfoBar = (requireActivity() as ActivityWithInfoBar).infoBar
+        val infoBar: InfoBar = requireActivity().infobar()
         val cost = getCurrentCost()
-        val fame = infoBar.getFame()
-        if (fame < cost) requireContext().showToast(R.string.recruit_fail)
-        else {
-            val dao = ServiceLocator.get(MyRoomDatabase::class).rowerDao()
-            binding.run {
-                val link = editPhotoLink.editText?.text.toString()
-                Recruiter(infoBar, dao).buy(Rower(
-                    id = null,
-                    name = editName.editText?.text.toString(),
-                    gender = if (editGender.checkedRadioButtonId == R.id.gender_male) Rower.MALE
-                    else Rower.FEMALE,
-                    age = editAge.getIntOrZero(),
-                    height = editHeight.getIntOrZero(),
-                    weight = editWeight.getIntOrZero(),
-                    power = editPower.getIntOrZero(),
-                    technics = editTechnicality.getIntOrZero(),
-                    endurance = editEndurance.getIntOrZero(),
-                    thumb = if (link == "") null else link,
-                    about = editAbout.editText?.text.toString(),
-                    cost = cost
-                )) }
-            requireContext().showToast(R.string.recruit_success)
-            findNavController().navigate(R.id.action_newLegendFragment_to_inventoryFragment)
+
+        val dao = ServiceLocator.get(MyRoomDatabase::class).rowerDao()
+        binding.run {
+            val link = editPhotoLink.editText?.text.toString()
+            if (Recruiter(infoBar, dao).buy(Rower(
+                id = null,
+                name = editName.editText?.text.toString(),
+                gender = if (editGender.checkedRadioButtonId == R.id.gender_male) Rower.MALE
+                else Rower.FEMALE,
+                age = editAge.getIntOrZero(),
+                height = editHeight.getIntOrZero(),
+                weight = editWeight.getIntOrZero(),
+                power = editPower.getIntOrZero(),
+                technics = editTechnicality.getIntOrZero(),
+                endurance = editEndurance.getIntOrZero(),
+                thumb = if (link == "") null else link,
+                about = editAbout.editText?.text.toString(),
+                cost = cost
+            ))) { findNavController().navigate(R.id.action_newLegendFragment_to_inventoryFragment) }
         }
     }
 

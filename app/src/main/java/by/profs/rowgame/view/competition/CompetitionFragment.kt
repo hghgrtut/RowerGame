@@ -49,7 +49,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var raceCalculator: RaceCalculator
 
-    private lateinit var comboDao: ComboDao
+    private val comboDao: ComboDao = ServiceLocator.locate()
     private lateinit var boatDao: BoatDao
     private lateinit var oarDao: OarDao
 
@@ -106,7 +106,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             boatDao = database.boatDao()
             oarDao = database.oarDao()
             val rowerDao = database.rowerDao()
-            comboDao = database.comboDao()
 
             recyclerView = binding!!.list.apply {
                 setHasFixedSize(true)
@@ -173,19 +172,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         }
     }
 
-    private fun showToastResults(rowers: List<Rower>) {
-        val context = requireContext()
-        context.showToast(context.getString(
-            R.string.race_results_list,
-            rowers[FIRST].name,
-            rowers[SECOND].name,
-            rowers[THIRD].name,
-            rowers[FOURTH].name,
-            rowers[FIFTH].name,
-            rowers[SIXTH].name
-        ))
-    }
-
     private fun reward() {
         if (finalists == null) return
         val infobar = requireActivity().infobar()
@@ -193,7 +179,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             val myRowers = comboDao.getRowerIds()
             if (myRowers.contains(finalists!![FIRST].first.id)) {
                 boatDao.insert(Randomizer.getRandomBoat())
-                infobar.changeFame(fameForWin)
+                MainScope().launch { infobar.changeFame(fameForWin) }
             }
             if (myRowers.contains(finalists!![SECOND].first.id))
                 oarDao.insert(Randomizer.getRandomOar())
@@ -214,7 +200,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             }
             if (totalPrize > 0) {
                 requireContext().showToast(R.string.competition_reward, totalPrize)
-                infobar.changeMoney(totalPrize)
+                MainScope().launch { infobar.changeMoney(totalPrize) }
             }
         }
     }
@@ -308,7 +294,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             if (competition.type.isWaterCompetition()) {
                 if (from <= totalRowers) {
                     calculateSemifinal(raceBoats, raceOars, raceRowers)
-                    showToastResults(rating.map { it.first })
                     from += raceSize
                     requireActivity().title =
                         if (from > totalRowers) getString(R.string.final_, 'B')
@@ -316,7 +301,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                     setupRace()
                 } else if (finalists == null) {
                     finalists = ArrayList(rating)
-                    showToastResults(rating.map { it.first })
                     requireActivity().title = getString(R.string.final_, 'A')
                     setupRace()
                 } else {

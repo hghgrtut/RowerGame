@@ -37,12 +37,12 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
     private lateinit var recyclerView: RecyclerView
-    private lateinit var singleComboDao: ComboDao
+    private lateinit var comboDao: ComboDao
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val deleteComboFun: (Int?) -> Unit = {
         scope.launch {
-            singleComboDao.deleteCombo(it!!)
+            comboDao.deleteComboWithRower(it!!)
             MainScope().launch { refreshView() } }
     }
 
@@ -83,7 +83,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
             requireContext().showToast(R.string.time_to_race)
             TrainingFragmentDirections.actionTrainingFragmentToPreCompetitionFragment().also {
                 findNavController().navigate(it) }
-        } else { requireContext().showToast(R.string.train_sucess) }
+        } // else { requireContext().showToast(R.string.train_sucess) }
     }
 
     private suspend fun refreshView() {
@@ -91,20 +91,26 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         val boatDao = database.boatDao()
         val oarDao = database.oarDao()
         val rowerDao = database.rowerDao()
-        singleComboDao = database.comboDao()
+        comboDao = database.comboDao()
 
         competitionDays = withContext(Dispatchers.IO) {
             ServiceLocator.get(CompetitionDao::class).getCompetitionDays() }
 
-        val combos = withContext(Dispatchers.IO) { singleComboDao.getAllCombos().toMutableList() }
+        val combos = withContext(Dispatchers.IO) { comboDao.getAllCombos().toMutableList() }
         val boats = ArrayList<Boat>()
         val oars = ArrayList<Oar>()
         val rowers = ArrayList<Rower>()
 
         combos.forEach {
-            boats.add(withContext(Dispatchers.IO) { boatDao.search(it.boatId)!! })
-            oars.add(withContext(Dispatchers.IO) { oarDao.search(it.oarId)!! })
-            rowers.add(withContext(Dispatchers.IO) { rowerDao.search(it.rowerId)!! })
+            val boat = withContext(Dispatchers.IO) { boatDao.search(it.boatId) }
+            val oar = withContext(Dispatchers.IO) { oarDao.search(it.oarId) }
+            val rower = withContext(Dispatchers.IO) { rowerDao.search(it.rowerId) }
+            if (boat == null || oar == null || rower == null) { deleteComboFun(it.combinationId) }
+            else {
+                boats.add(withContext(Dispatchers.IO) { boatDao.search(it.boatId)!! })
+                oars.add(withContext(Dispatchers.IO) { oarDao.search(it.oarId)!! })
+                rowers.add(withContext(Dispatchers.IO) { rowerDao.search(it.rowerId)!! })
+            }
         }
         val viewAdapter =
             ComboViewAdapter(boats.toList(), oars.toList(), rowers.toList(), deleteComboFun)

@@ -33,9 +33,15 @@ interface ComboDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertCombo(combo: Combo)
 
-    // Delete combos where rower with given rowerId takes part
+    @Query("DELETE FROM $TABLE_COMBO_SINGLE WHERE $ID_BOAT = (:boatId)")
+    fun deleteComboWithBoat(boatId: Int)
+
+    @Query("DELETE FROM $TABLE_COMBO_SINGLE WHERE $ID_OAR = (:oarId)")
+    fun deleteComboWithOar(oarId: Int)
+
+    /** Delete combos where rower with given rowerId takes part */
     @Query("DELETE FROM $TABLE_COMBO_SINGLE WHERE $ID_ROWER = (:rowerId)")
-    fun deleteCombo(rowerId: Int)
+    fun deleteComboWithRower(rowerId: Int)
 
     @Query("DELETE FROM $TABLE_COMBO_SINGLE")
     fun dropTable()

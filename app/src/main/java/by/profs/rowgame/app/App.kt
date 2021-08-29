@@ -12,5 +12,6 @@ class App : Application() {
         ServiceLocator.register(Context::class, applicationContext)
         ServiceLocator.register(MyRoomDatabase.getDatabase(applicationContext))
         ServiceLocator.register(ServiceLocator.locate<MyRoomDatabase>().competitionDao())
+        ServiceLocator.register(ServiceLocator.locate<MyRoomDatabase>().comboDao())
     }
 }

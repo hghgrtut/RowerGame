@@ -11,8 +11,10 @@ abstract class Trader<T> (private val infoBar: InfoBar, private val dao: MyDao<T
 
     abstract fun calculateCost(item: T): Int
 
-    // !! Also withdraw money/fame (no need to do it manually) !!
-    // Returns true if buying successfully else false
+    /**
+     *  !! Also withdraw money/fame (no need to do it manually) !!
+     *  Returns true if buying successfully else false.
+     */
     open fun buy(item: T): Boolean {
         val balance = infoBar.getMoney()
         val cost = calculateCost(item)

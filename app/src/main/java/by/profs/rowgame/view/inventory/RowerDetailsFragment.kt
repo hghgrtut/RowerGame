@@ -19,12 +19,11 @@ import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
-import by.profs.rowgame.view.extensions.showToast
-import java.net.UnknownHostException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 
 class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     private val args by navArgs<RowerDetailsFragmentArgs>()
@@ -120,27 +119,15 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
 
     private fun setAsExisting(rower: Rower) {
         binding?.button?.text = this.getString(R.string.fire_rower)
-        binding?.button?.setOnClickListener { fire(rower) }
+        binding?.button?.setOnClickListener {
+            recruiter.sell(rower)
+            setAsNew(rower)
+        }
     }
 
     private fun setAsNew(rower: Rower) {
         binding?.button?.text = this.getString(R.string.recruit)
-        binding?.button?.setOnClickListener { recruit(rower) }
-    }
-
-    private fun recruit(rower: Rower) {
-        if (recruiter.buy(rower)) {
-            requireContext().showToast(R.string.recruit_success)
-            setAsExisting(rower)
-        } else {
-            requireContext().showToast(R.string.recruit_fail)
-        }
-    }
-
-    private fun fire(rower: Rower) {
-        recruiter.sell(rower)
-        setAsNew(rower)
-        requireContext().showToast(R.string.fired)
+        binding?.button?.setOnClickListener { if (recruiter.buy(rower)) setAsExisting(rower) }
     }
 
     companion object {
