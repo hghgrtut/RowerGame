@@ -14,9 +14,11 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.databinding.FragmentTrainingBinding
-import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.trainer.Trainer
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
@@ -37,7 +39,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
     private lateinit var recyclerView: RecyclerView
-    private lateinit var comboDao: ComboDao
+    private val comboDao: ComboDao = ServiceLocator.locate()
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val deleteComboFun: (Int?) -> Unit = {
@@ -87,11 +89,9 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     }
 
     private suspend fun refreshView() {
-        val database: MyRoomDatabase = ServiceLocator.locate()
-        val boatDao = database.boatDao()
-        val oarDao = database.oarDao()
-        val rowerDao = database.rowerDao()
-        comboDao = database.comboDao()
+        val boatDao: BoatDao = ServiceLocator.locate()
+        val oarDao: OarDao = ServiceLocator.locate()
+        val rowerDao: RowerDao = ServiceLocator.locate()
 
         competitionDays = withContext(Dispatchers.IO) {
             ServiceLocator.get(CompetitionDao::class).getCompetitionDays() }
@@ -105,8 +105,8 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
             val boat = withContext(Dispatchers.IO) { boatDao.search(it.boatId) }
             val oar = withContext(Dispatchers.IO) { oarDao.search(it.oarId) }
             val rower = withContext(Dispatchers.IO) { rowerDao.search(it.rowerId) }
-            if (boat == null || oar == null || rower == null) { deleteComboFun(it.combinationId) }
-            else {
+            if (boat == null || oar == null || rower == null) { deleteComboFun(it.combinationId)
+            } else {
                 boats.add(withContext(Dispatchers.IO) { boatDao.search(it.boatId)!! })
                 oars.add(withContext(Dispatchers.IO) { oarDao.search(it.oarId)!! })
                 rowers.add(withContext(Dispatchers.IO) { rowerDao.search(it.rowerId)!! })
@@ -116,7 +116,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
             ComboViewAdapter(boats.toList(), oars.toList(), rowers.toList(), deleteComboFun)
         recyclerView = binding!!.list.apply { adapter = viewAdapter }
 
-        val trainer = Trainer(database, deleteComboFun)
+        val trainer = Trainer(deleteComboFun)
 
         binding?.run {
             buttonTrainEndurance.setOnClickListener {

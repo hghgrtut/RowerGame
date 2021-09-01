@@ -31,6 +31,6 @@ class Recruiter(private val infoBar: InfoBar, private val dao: RowerDao) :
             dao.deleteItem(item.id!!)
             comboDao.deleteComboWithRower(item.id)
         }
-        ServiceLocator.get(Context::class).showToast(R.string.recruit_success)
+        ServiceLocator.get(Context::class).showToast(R.string.fired)
     }
 }

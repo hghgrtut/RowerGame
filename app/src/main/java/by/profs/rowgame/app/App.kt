@@ -11,7 +11,10 @@ class App : Application() {
         // ServiceLocator.register(MyRoomDatabase.getDatabase(ServiceLocator.get(Context::class)))
         ServiceLocator.register(Context::class, applicationContext)
         ServiceLocator.register(MyRoomDatabase.getDatabase(applicationContext))
-        ServiceLocator.register(ServiceLocator.locate<MyRoomDatabase>().competitionDao())
-        ServiceLocator.register(ServiceLocator.locate<MyRoomDatabase>().comboDao())
+        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).boatDao())
+        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).comboDao())
+        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).competitionDao())
+        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).oarDao())
+        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).rowerDao())
     }
 }

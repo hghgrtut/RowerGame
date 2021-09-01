@@ -9,27 +9,25 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.items.util.Randomizer.getRandomRower
 import by.profs.rowgame.databinding.FragmentRowerDetailsBinding
-import by.profs.rowgame.presenter.api.RetrofitApiImplementation
-import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
-import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.infobar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
 
 class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     private val args by navArgs<RowerDetailsFragmentArgs>()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentRowerDetailsBinding? = null
-    private lateinit var dao: RowerDao
+    private val dao: RowerDao = ServiceLocator.locate()
     private lateinit var recruiter: Recruiter
 
     override fun onCreateView(
@@ -43,9 +41,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val context = requireContext()
-        dao = MyRoomDatabase.getDatabase(context).rowerDao()
-        recruiter = Recruiter((requireActivity() as ActivityWithInfoBar).infoBar, dao)
+        recruiter = Recruiter(requireActivity().infobar(), dao)
         MainScope().launch { showRower() }
     }
 
@@ -55,55 +51,30 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     }
 
     private suspend fun showRower() {
-        try {
-            val rower: Rower = withContext(Dispatchers.IO) { when (args.source) {
-                FROM_EVENT -> RetrofitApiImplementation.getListOfEventRowers()!![0]
-                FROM_LIST -> dao.search(args.rowerId)!!
-                else -> Randomizer.getRandomRower()
-            } }
-            if (args.source != FROM_LIST) {
-                binding?.buttonNewLegend?.visibility = View.VISIBLE
-                binding?.buttonNewLegend?.setOnClickListener {
-                    navController.navigate(R.id.action_rowerDetailsFragment_to_newLegendFragment)
-                }
+        val rower: Rower
+        if (args.source != FROM_LIST) {
+            rower = withContext(Dispatchers.IO) { getRandomRower() }
+            binding?.buttonNewLegend?.visibility = View.VISIBLE
+            binding?.buttonNewLegend?.setOnClickListener {
+                navController.navigate(R.id.action_rowerDetailsFragment_to_newLegendFragment)
             }
-
-            showImage(binding!!.rowerPic, rower)
-            binding?.age?.text = this.getString(R.string.rower_age, rower.age)
-            binding?.endurance?.text = this.getString(R.string.rower_endurance, rower.endurance)
-            binding?.height?.text = this.getString(R.string.rower_height, rower.height)
-            binding?.name?.text = rower.name
-            binding?.technicalit?.text = this.getString(R.string.rower_technicality, rower.technics)
-            binding?.power?.text = this.getString(R.string.rower_power, rower.power)
-            binding?.weight?.text = this.getString(R.string.rower_weight, rower.weight)
-
-            if (rower.about != null) { showExtraInfo(rower.about) }
-            if (withContext(Dispatchers.IO) { dao.searchByName(rower.name) } == null) {
-                setAsNew(rower)
-            } else {
-                setAsExisting(rower)
-            }
-            if (rower.cost > 0) {
-                binding?.cost?.text = this.getString(R.string.fame_cost, rower.cost)
-                binding?.cost?.visibility = View.VISIBLE
-            }
-        } catch (e: UnknownHostException) {
-            navController.navigate(R.id.action_rowerDetailsFragment_to_netErrorFragment)
+            setAsNew(rower)
+        } else {
+            rower = withContext(Dispatchers.IO) { dao.search(args.rowerId)!! }
+            setAsExisting(rower)
         }
-    }
 
-    private suspend fun showExtraInfo(infoEndpoint: String) {
-        val extraInfo = withContext(Dispatchers.IO) {
-            RetrofitApiImplementation.getRowerExtraInfo(infoEndpoint)
-        }
-        if (extraInfo?.achievements != null) {
-            binding?.achievementsTitle?.visibility = View.VISIBLE
-            binding?.achievements?.text = extraInfo.achievements
-            binding?.achievements?.visibility = View.VISIBLE
-        }
-        if (extraInfo?.otherInfo != null) {
+        showImage(binding!!.rowerPic, rower)
+        binding?.age?.text = this.getString(R.string.rower_age, rower.age)
+        binding?.endurance?.text = this.getString(R.string.rower_endurance, rower.endurance)
+        binding?.height?.text = this.getString(R.string.rower_height, rower.height)
+        binding?.name?.text = rower.name
+        binding?.technicalit?.text = this.getString(R.string.rower_technicality, rower.technics)
+        binding?.power?.text = this.getString(R.string.rower_power, rower.power)
+        binding?.weight?.text = this.getString(R.string.rower_weight, rower.weight)
+        if (rower.about != null) {
             binding?.aboutTitle?.visibility = View.VISIBLE
-            binding?.about?.text = extraInfo.otherInfo
+            binding?.about?.text = rower.about
             binding?.about?.visibility = View.VISIBLE
         }
     }

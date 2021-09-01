@@ -7,9 +7,7 @@ import by.profs.rowgame.data.consts.COL_ROWER_AGE
 import by.profs.rowgame.data.consts.ID_ROWER
 import by.profs.rowgame.data.consts.NAME_ROWER
 import by.profs.rowgame.data.consts.TABLE_ROWERS
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
 @Entity(tableName = TABLE_ROWERS)
 data class Rower(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_ROWER) val id: Int?,

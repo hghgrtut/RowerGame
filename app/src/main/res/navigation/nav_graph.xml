@@ -18,13 +18,6 @@
                 android:defaultValue="6" />
         </action>
         <action
-            android:id="@+id/action_mainFragment_to_rowerDetailsFragment"
-            app:destination="@id/rowerDetailsFragment" >
-            <argument
-                android:name="source"
-                android:defaultValue="1" />
-        </action>
-        <action
             android:id="@+id/action_mainFragment_to_trainingFragment"
             app:destination="@id/trainingFragment" />
         <action
@@ -75,18 +68,9 @@
             app:argType="integer"
             android:defaultValue="-1" />
         <action
-            android:id="@+id/action_rowerDetailsFragment_to_netErrorFragment"
-            app:destination="@id/netErrorFragment"
-            app:popUpTo="@id/mainFragment" />
-        <action
             android:id="@+id/action_rowerDetailsFragment_to_newLegendFragment"
             app:destination="@id/newLegendFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/netErrorFragment"
-        android:name="by.profs.rowgame.view.error.NetErrorFragment"
-        android:label="@string/no_internet"
-        tools:layout="@layout/error_network_layout" />
     <fragment
         android:id="@+id/trainingFragment"
         android:name="by.profs.rowgame.view.training.TrainingFragment"

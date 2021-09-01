@@ -7,8 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.databinding.MainFragmentBinding
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -16,6 +21,11 @@ import by.profs.rowgame.reminder.ReminderReceiver
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.extensions.showToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: MainFragmentBinding? = null
@@ -46,10 +56,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                 MainFragmentDirections.actionMainFragmentToInventoryFragment(INTENT_ROWERS)
                     .also { navController.navigate(it) }
             }
-            goToLegends.setOnClickListener {
-                MainFragmentDirections.actionMainFragmentToRowerDetailsFragment()
-                    .also { navController.navigate(it) }
-            }
             goToNewPair.setOnClickListener {
                 MainFragmentDirections.actionMainFragmentToPairingFragment()
                     .also { navController.navigate(it) }
@@ -60,6 +66,22 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             }
 
             daily.setOnClickListener { getDailyReward() }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        CoroutineScope(Dispatchers.IO).launch {
+            when {
+                ServiceLocator.get(BoatDao::class).getItems().isEmpty() ->
+                    MainScope().launch { binding?.noBoat?.visibility = View.VISIBLE }
+                ServiceLocator.get(OarDao::class).getItems().isEmpty() ->
+                    MainScope().launch { binding?.noBoat?.visibility = View.VISIBLE }
+                ServiceLocator.get(RowerDao::class).getItems().isEmpty() ->
+                    MainScope().launch { binding?.noBoat?.visibility = View.VISIBLE }
+                ServiceLocator.get(ComboDao::class).getRowerIds().isEmpty() ->
+                    MainScope().launch { binding?.noBoat?.visibility = View.VISIBLE }
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 package by.profs.rowgame.presenter.trainer
 
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.combos.Combo
 import by.profs.rowgame.data.items.Damageable
-import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.database.dao.MyDao
 import by.profs.rowgame.presenter.database.dao.OarDao
@@ -13,10 +13,10 @@ import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class Trainer(database: MyRoomDatabase, private val deleteRowerFun: (Int?) -> Unit) {
-    private val boatDao: BoatDao = database.boatDao()
-    private val oarDao: OarDao = database.oarDao()
-    private val rowerDao: RowerDao = database.rowerDao()
+class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
+    private val boatDao: BoatDao = ServiceLocator.locate()
+    private val oarDao: OarDao = ServiceLocator.locate()
+    private val rowerDao: RowerDao = ServiceLocator.locate()
 
     suspend fun startTraining(mode: Int, combos: MutableList<Combo>) {
         combos.forEach { combo ->

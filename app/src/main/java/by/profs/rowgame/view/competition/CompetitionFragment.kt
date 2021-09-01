@@ -26,11 +26,11 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
 import by.profs.rowgame.presenter.competition.RaceCalculator
-import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
@@ -50,8 +50,8 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private lateinit var raceCalculator: RaceCalculator
 
     private val comboDao: ComboDao = ServiceLocator.locate()
-    private lateinit var boatDao: BoatDao
-    private lateinit var oarDao: OarDao
+    private val boatDao: BoatDao = ServiceLocator.locate()
+    private val oarDao: OarDao = ServiceLocator.locate()
 
     private val allBoats = mutableListOf<Boat>()
     private val allOars = mutableListOf<Oar>()
@@ -102,11 +102,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
             raceCalculator = RaceCalculator(competition.type)
 
-            val database: MyRoomDatabase = ServiceLocator.locate()
-            boatDao = database.boatDao()
-            oarDao = database.oarDao()
-            val rowerDao = database.rowerDao()
-
             recyclerView = binding!!.list.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
@@ -117,7 +112,8 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             } else {
                 competitionDao.getParticipants(competition.level, competition.age)
             }).forEach { combo ->
-                val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId)!! }
+                val rower = withContext(Dispatchers.IO) {
+                    ServiceLocator.get(RowerDao::class).search(combo.rowerId)!! }
                 allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
                 allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
                 allRowers.add(rower)
@@ -198,9 +194,9 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                 }
                 rewardForPlace /= 2
             }
-            if (totalPrize > 0) {
+            if (totalPrize > 0) { MainScope().launch {
                 requireContext().showToast(R.string.competition_reward, totalPrize)
-                MainScope().launch { infobar.changeMoney(totalPrize) }
+                infobar.changeMoney(totalPrize) }
             }
         }
     }

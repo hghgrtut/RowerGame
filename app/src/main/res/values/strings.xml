@@ -55,9 +55,9 @@
     <string name="rowers">Гребцы</string>
     <string name="trainings">Тренировки</string>
     <!-- Buttons with training types -->
-    <string name="train_endurance">Выносливость</string>
-    <string name="train_power">Сила</string>
-    <string name="train_technicality">Техника</string>
+    <string name="train_endurance">Бег/концепт</string>
+    <string name="train_power">Спортзал</string>
+    <string name="train_technicality">Лодка</string>
 
     <!-- For all items -->
     <string name="damage">Ущерб: %1$d</string>
@@ -102,6 +102,10 @@
     <string name="cont_descr_boat_type_image">Изображение типа лодки</string>
     <string name="cont_descr_competition_type">Иллюстрация соревнования</string>
     <string name="cont_descr_logo">Логотип</string>
+    <string name="cont_descr_no_boat">У вас нет лодки</string>
+    <string name="cont_descr_no_combo">У вас не рассажены гребцы</string>
+    <string name="cont_descr_no_oar">У вас нет вёсел</string>
+    <string name="cont_descr_no_rower">У вас нет гребцов</string>
     <string name="cont_descr_rower_photo">Превью гребца</string>
     <string name="cont_descr_wing">Изображение отвода</string>
     <!-- Riggers -->
