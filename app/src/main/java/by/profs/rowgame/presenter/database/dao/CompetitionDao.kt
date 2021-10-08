@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import by.profs.rowgame.data.combos.Combo
-import by.profs.rowgame.data.competition.Competition
+import by.profs.rowgame.data.competition.CompetitionInfo
 import by.profs.rowgame.data.competition.License
 import by.profs.rowgame.data.consts.COL_AGE_CATEGORY
 import by.profs.rowgame.data.consts.COL_COMPETITION_LEVEL
@@ -28,7 +28,7 @@ interface CompetitionDao {
     fun createCompetitions()
 
     @Query("SELECT * FROM $TABLE_COMPETITION WHERE $COL_DAY = (:day) LIMIT 1")
-    fun search(day: Int): Competition
+    fun search(day: Int): CompetitionInfo
 
     suspend fun getCompetitionDays(): IntArray {
         var competitionDays = execGetCompetitionDay()
@@ -50,7 +50,7 @@ interface CompetitionDao {
     fun getParticipants(level: Int, age: Int): List<Combo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addLicense(license: License)
+    fun addLicenses(licenses: List<License>)
 
     @Query("DELETE FROM $TABLE_LICENSE")
     fun deleteLicences()

@@ -11,7 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
-import by.profs.rowgame.data.preferences.PreferenceEditor
+import by.profs.rowgame.data.preferences.MoneyFameEditor
 import by.profs.rowgame.databinding.ActivityMainBinding
 
 class MainActivity : ActivityWithInfoBar() {
@@ -24,8 +24,8 @@ class MainActivity : ActivityWithInfoBar() {
     private val binding: ActivityMainBinding get() = requireNotNull(_binding)
     private var _calendar: Calendar? = null
     private val calendar: Calendar get() = requireNotNull(_calendar)
-    private var _prefEditor: PreferenceEditor? = null
-    private val prefEditor: PreferenceEditor get() = requireNotNull(_prefEditor)
+    private var _prefEditor: MoneyFameEditor? = null
+    private val prefEditor: MoneyFameEditor get() = requireNotNull(_prefEditor)
 
     override val infoBar = object : InfoBar {
         override fun showDay() = binding.day.setText(getString(R.string.day, getDay()))
@@ -66,7 +66,7 @@ class MainActivity : ActivityWithInfoBar() {
         setSupportActionBar(toolbar)
         NavigationUI.setupWithNavController(toolbar, navController)
         _calendar = Calendar(this)
-        _prefEditor = PreferenceEditor(this)
+        _prefEditor = MoneyFameEditor()
         infoBar.showAll()
         setContentView(binding.root)
     }

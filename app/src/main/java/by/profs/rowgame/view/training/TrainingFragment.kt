@@ -114,7 +114,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         }
         val viewAdapter =
             ComboViewAdapter(boats.toList(), oars.toList(), rowers.toList(), deleteComboFun)
-        recyclerView = binding!!.list.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
 
         val trainer = Trainer(deleteComboFun)
 

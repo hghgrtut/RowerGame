@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import by.profs.rowgame.data.combos.Combo
-import by.profs.rowgame.data.competition.Competition
+import by.profs.rowgame.data.competition.CompetitionInfo
 import by.profs.rowgame.data.competition.License
 import by.profs.rowgame.data.consts.TABLE_ROWERS
 import by.profs.rowgame.data.items.Boat
@@ -18,8 +18,12 @@ import by.profs.rowgame.presenter.database.dao.OarDao
 import by.profs.rowgame.presenter.database.dao.RowerDao
 
 @Database(
-    entities =
-        [Boat::class, Combo::class, Competition::class, License::class, Oar::class, Rower::class],
+    entities = [Boat::class,
+        Combo::class,
+        CompetitionInfo::class,
+        License::class,
+        Oar::class,
+        Rower::class],
     version = 6
 )
 abstract class MyRoomDatabase : RoomDatabase() {

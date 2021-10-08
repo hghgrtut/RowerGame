@@ -12,8 +12,9 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.presenter.imageloader.loadThumb
 
 class StandingViewAdapter(
-    private val standing: ArrayList<Pair<Rower, Int>>,
-    private val mode: Int
+    private val standing: ArrayList<Rower>,
+    private val mode: Int,
+    private val gap: ArrayList<Int> = ArrayList()
 ) : RecyclerView.Adapter<StandingViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -34,9 +35,9 @@ class StandingViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (mode != RESULTS) holder.gap.text = context.getString(
             if (mode == RACE) R.string.standing_gap else R.string.standing_score,
-            standing[position].second
+            gap[position]
         )
-        val rower: Rower = standing[position].first
+        val rower: Rower = standing[position]
         holder.position.text = (1 + position).toString()
         holder.name.text = rower.name
         holder.rowerPic.loadThumb(rower)

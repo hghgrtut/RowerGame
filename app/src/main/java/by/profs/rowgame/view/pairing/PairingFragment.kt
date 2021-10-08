@@ -68,7 +68,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         val freeBoats = withContext(Dispatchers.IO) {
             ArrayList(dao.getItems().filter { boat -> !boatIds.contains(boat.id) }) }
         val viewAdapter = BoatViewAdapter(freeBoats, PAIRING, infoBar, dao)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.choose_boat)
     }
 
@@ -78,7 +78,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         val rowers = withContext(Dispatchers.IO) {
             dao.getItems().filter { rower -> !rowerIds.contains(rower.id!!) } }
         val viewAdapter = RowerViewAdapter(PAIRING, rowers)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.choose_rower)
     }
 
@@ -88,7 +88,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
         val oars = withContext(Dispatchers.IO) {
             dao.getItems().filter { oar -> !oarIds.contains(oar.id) } }
         val viewAdapter = OarViewAdapter(oars, PAIRING, infoBar, database)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.choose_oar)
     }
 

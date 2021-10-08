@@ -63,14 +63,14 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
         val randomBoats = withContext(Dispatchers.IO) {
             ArrayList(List(SHOP_SIZE) { Randomizer.getRandomBoat() }) }
         val viewAdapter = BoatViewAdapter(randomBoats, SHOP, infoBar, database.boatDao())
-        recyclerView = binding!!.list.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.boat_shop)
     }
 
     private suspend fun showOars() {
         val oars = withContext(Dispatchers.IO) { List(SHOP_SIZE) { Randomizer.getRandomOar() } }
         val viewAdapter = OarViewAdapter(oars, SHOP, infoBar, database)
-        recyclerView = binding!!.list.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.oar_shop)
     }
 }

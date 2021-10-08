@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.competition.CompetitionLevel.Companion.isRegional
-import by.profs.rowgame.data.competition.CompetitionType
 import by.profs.rowgame.databinding.FragmentPreCompetitionBinding
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.view.activity.infobar
 import kotlinx.coroutines.CoroutineScope
@@ -42,8 +42,11 @@ class PreCompetitionFragment : Fragment(R.layout.fragment_pre_competition) {
             val competition = competitionDao.search(requireActivity().infobar().getDay())
             MainScope().launch {
                 binding.run {
-                    imageCompetition.setImageResource(
-                        CompetitionType.values()[competition.type].image)
+                    imageCompetition.setImageResource(when (competition.type) {
+                        AbstractCompetition.CONCEPT -> R.drawable.competition_concept
+                        AbstractCompetition.OFP -> R.drawable.competition_ofp
+                        else -> R.drawable.competition_water
+                    })
                     nameCompetition.text = competition.toString()
                     if (!competition.level.isRegional()) {
                         aboutParticipants.visibility = View.VISIBLE

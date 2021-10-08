@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
@@ -32,13 +32,13 @@ class BoatViewAdapter(
     MyViewAdapter<Boat> {
 
     private lateinit var context: Context
-    private lateinit var fragment: Fragment
+    private lateinit var navController: NavController
     private val informator: BoatInformator = BoatInformator()
     private val trader: BoatTrader = BoatTrader(infoBar, dao)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        fragment = parent.findFragment()
+        navController = findNavController(parent.findFragment())
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_boat, parent, false)
         )
@@ -137,7 +137,6 @@ class BoatViewAdapter(
                 if (trader.buy(boat)) R.string.buy_sucess else R.string.check_balance)
             PAIRING -> {
                 PairingPreferences(context).occupyBoat(boat.id!!)
-                val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController(fragment) }
                 PairingFragmentDirections.actionPairingFragmentSelf(item = INTENT_ROWERS)
                     .also { navController.navigate(it) }
             }

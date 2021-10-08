@@ -73,7 +73,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         val dao = database.boatDao()
         val myBoats = withContext(Dispatchers.IO) { ArrayList(dao.getItems()) }
         val viewAdapter = BoatViewAdapter(myBoats, INVENTORY, infoBar, dao)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.boat_inventory)
         binding?.fab?.setOnClickListener {
             InventoryFragmentDirections.actionInventoryFragmentToShopFragment(args.itemType)
@@ -84,7 +84,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private suspend fun showOars() {
         val oars = withContext(Dispatchers.IO) { database.oarDao().getItems() }
         val viewAdapter = OarViewAdapter(oars, INVENTORY, infoBar, database)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         requireActivity().setTitle(R.string.oar_inventory)
         binding?.fab?.setOnClickListener {
             InventoryFragmentDirections.actionInventoryFragmentToShopFragment(args.itemType)
@@ -96,7 +96,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         val dao = database.rowerDao()
         val rowers = withContext(Dispatchers.IO) { dao.getItems() }
         val viewAdapter = RowerViewAdapter(INVENTORY, rowers, navController)
-        recyclerView.apply { adapter = viewAdapter }
+        recyclerView.adapter = viewAdapter
         binding?.fab?.setOnClickListener {
             InventoryFragmentDirections.actionInventoryFragmentToRowerDetailsFragment()
                 .also { navController.navigate(it) }

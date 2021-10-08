@@ -12,77 +12,47 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
-import by.profs.rowgame.data.competition.Ages
-import by.profs.rowgame.data.competition.Competition
-import by.profs.rowgame.data.competition.CompetitionLevel
-import by.profs.rowgame.data.competition.CompetitionLevel.Companion.isRegional
-import by.profs.rowgame.data.competition.CompetitionType
-import by.profs.rowgame.data.competition.CompetitionType.Companion.isOFPCompetition
-import by.profs.rowgame.data.competition.CompetitionType.Companion.isWaterCompetition
-import by.profs.rowgame.data.competition.License
-import by.profs.rowgame.data.items.Boat
-import by.profs.rowgame.data.items.Oar
+import by.profs.rowgame.data.competition.CompetitionInfo
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
-import by.profs.rowgame.presenter.competition.RaceCalculator
-import by.profs.rowgame.presenter.database.dao.BoatDao
-import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.competition.Rewarder
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isOFPCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isWaterCompetition
+import by.profs.rowgame.presenter.competition.type.ConceptCompetition
+import by.profs.rowgame.presenter.competition.type.OFPCompetition
+import by.profs.rowgame.presenter.competition.type.WaterCompetition
+import by.profs.rowgame.presenter.competition.type.WaterCompetition.Companion.FINAL_A
+import by.profs.rowgame.presenter.competition.type.WaterCompetition.Companion.FINAL_B
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
-import by.profs.rowgame.presenter.database.dao.OarDao
-import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
-import by.profs.rowgame.view.extensions.showToast
-import kotlinx.coroutines.CoroutineScope
+import by.profs.rowgame.view.extensions.enableClick
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CompetitionFragment : Fragment(R.layout.fragment_competition) {
-    private var binding: FragmentCompetitionBinding? = null
+    private var _binding: FragmentCompetitionBinding? = null
+    private val binding: FragmentCompetitionBinding get() = requireNotNull(_binding)
     private lateinit var recyclerView: RecyclerView
-    private lateinit var raceCalculator: RaceCalculator
 
-    private val comboDao: ComboDao = ServiceLocator.locate()
-    private val boatDao: BoatDao = ServiceLocator.locate()
-    private val oarDao: OarDao = ServiceLocator.locate()
-
-    private val allBoats = mutableListOf<Boat>()
-    private val allOars = mutableListOf<Oar>()
-    private val allRowers = mutableListOf<Rower>()
-    private val finalABoats = mutableListOf<Boat>()
-    private val finalAOars = mutableListOf<Oar>()
-    private val finalARowers = mutableListOf<Rower>()
-    private val finalBBoats = mutableListOf<Boat>()
-    private val finalBOars = mutableListOf<Oar>()
-    private val finalBRowers = mutableListOf<Rower>()
-    private var finalists: ArrayList<Pair<Rower, Int>>? = null
-    private lateinit var rating: ArrayList<Pair<Rower, Int>>
-
-    private var raceBoats = mutableListOf<Boat>()
-    private var raceOars = mutableListOf<Oar>()
-    private var raceRowers = mutableListOf<Rower>()
-
-    private var from = 0
-    private var phase: Int = START
-    private val race: Race = Race()
+    private var finalists: ArrayList<Rower> = ArrayList()
 
     private val competitionDao: CompetitionDao = ServiceLocator.locate()
-    private lateinit var competition: Competition
+    private lateinit var competition: CompetitionInfo
+    private lateinit var someCompetition: AbstractCompetition
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCompetitionBinding.inflate(inflater, container, false)
-        return binding?.root
+    ): View {
+        _binding = FragmentCompetitionBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,270 +60,125 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         MainScope().launch {
             competition = withContext(Dispatchers.IO) {
                 competitionDao.search((requireActivity() as ActivityWithInfoBar).infoBar.getDay()) }
-            requireActivity().infobar().nextAndShowDay()
-            (requireActivity() as ActivityWithInfoBar).run {
-                setTitle(when (competition.type) {
-                    CompetitionType.CONCEPT.ordinal -> R.string.concept
-                    CompetitionType.OFP.ordinal -> R.string.OFP
-                    else -> R.string.semifinal
-                })
+            someCompetition = when (competition.type) {
+                AbstractCompetition.CONCEPT -> ConceptCompetition(competition)
+                AbstractCompetition.OFP -> OFPCompetition(competition)
+                else -> WaterCompetition(competition)
+            }
+            (requireActivity() as ActivityWithInfoBar).apply {
+                infoBar.nextAndShowDay()
                 setSubtitle(competition.getMainInfo().toString())
             }
 
-            raceCalculator = RaceCalculator(competition.type)
-
-            recyclerView = binding!!.list.apply {
+            recyclerView = binding.list.apply {
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = LinearLayoutManager(ServiceLocator.locate())
             }
 
-            awaitAll(CoroutineScope(Dispatchers.IO).async { (if (competition.level.isRegional()) {
-                comboDao.getCombosToAge(Ages.values()[competition.age].age)
-            } else {
-                competitionDao.getParticipants(competition.level, competition.age)
-            }).forEach { combo ->
-                val rower = withContext(Dispatchers.IO) {
-                    ServiceLocator.get(RowerDao::class).search(combo.rowerId)!! }
-                allBoats.add(withContext(Dispatchers.IO) { boatDao.search(combo.boatId)!! })
-                allOars.add(withContext(Dispatchers.IO) { oarDao.search(combo.oarId)!! })
-                allRowers.add(rower)
-            } })
-
-            Race().setupRace()
-            binding?.buttonRaceFull?.setOnClickListener { race.showRace() }
-            if (competition.type.isWaterCompetition()) {
-                binding?.buttonRace?.visibility = View.VISIBLE
-                binding?.buttonRace?.setOnClickListener { race.shortRace() }
-            }
+            withContext(Dispatchers.IO) { someCompetition.initCompetitors() }
+            beforeRace()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
-    }
-
-    private fun calculateRace(
-        boats: List<Boat>,
-        oars: List<Oar>,
-        rowers: List<Rower>
-    ) { rating = raceCalculator.calculateRace(boats, oars, rowers, rating) }
-
-    private fun calculateSemifinal(boats: List<Boat>, oars: List<Oar>, rowers: List<Rower>) {
-        var finalistA = 0
-        var finalistB = 0
-        while (rowers[finalistA].name != rating[FIRST].first.name) finalistA++
-        while (rowers[finalistB].name != rating[SECOND].first.name) finalistB++
-        finalABoats.add(boats[finalistA])
-        finalAOars.add(oars[finalistA])
-        finalARowers.add(rowers[finalistA])
-        finalBBoats.add(boats[finalistB])
-        finalBOars.add(oars[finalistB])
-        finalBRowers.add(rowers[finalistB])
+        _binding = null
     }
 
     private fun showResults() {
-        recyclerView.apply {
-            adapter = StandingViewAdapter(finalists!!, StandingViewAdapter.RESULTS) }
+        recyclerView.adapter = StandingViewAdapter(finalists, StandingViewAdapter.RESULTS)
         requireActivity().setTitle(R.string.results)
         reward()
-        binding?.run {
-            buttonRace.visibility = View.GONE
-            buttonRaceFull.visibility = View.GONE
-            buttonReward.visibility = View.VISIBLE
-            buttonReward.setOnClickListener {
-                findNavController().navigate(R.id.action_competitionFragment_to_trainingFragment)
-                (requireActivity() as ActivityWithInfoBar).setSubtitle("")
-            }
+        hideRaceButtons()
+        binding.buttonReward.enableClick {
+            findNavController().navigate(R.id.action_competitionFragment_to_trainingFragment)
+            (requireActivity() as ActivityWithInfoBar).setSubtitle("")
         }
     }
 
     private fun reward() {
-        if (finalists == null) return
         val infobar = requireActivity().infobar()
-        CoroutineScope(Dispatchers.IO).launch {
-            val myRowers = comboDao.getRowerIds()
-            if (myRowers.contains(finalists!![FIRST].first.id)) {
-                boatDao.insert(Randomizer.getRandomBoat())
-                MainScope().launch { infobar.changeFame(fameForWin) }
-            }
-            if (myRowers.contains(finalists!![SECOND].first.id))
-                oarDao.insert(Randomizer.getRandomOar())
-            if (myRowers.contains(finalists!![THIRD].first.id))
-                oarDao.insert(Randomizer.getRandomOar())
-            var totalPrize = 0
-            var rewardForPlace = basicPrize * competition.level * competition.age
-            finalists!!.take(quota).forEach {
-                val rowerId = it.first.id
-                if (rowerId != null && myRowers.contains(rowerId)) {
-                    competitionDao
-                        .addLicense(License(null, rowerId, competition.level + 1, competition.age))
-                    competitionDao
-                        .addLicense(License(null, rowerId, competition.level, competition.age + 1))
-                    totalPrize += rewardForPlace
-                }
-                rewardForPlace /= 2
-            }
-            if (totalPrize > 0) { MainScope().launch {
-                requireContext().showToast(R.string.competition_reward, totalPrize)
-                infobar.changeMoney(totalPrize) }
-            }
+        val rewarder = Rewarder(finalists, competition)
+        infobar.changeFame(rewarder.calculateFame())
+        rewarder.giveItems()
+        MainScope().launch {
+            val prize = rewarder.giveLicensesAndCalculateMoney()
+            infobar.changeMoney(prize)
         }
     }
 
-    private fun addRandomRowers(howMany: Int) {
-        val basicLevel = CompetitionLevel.values()[competition.level]
-        val age = Ages.values()[competition.age]
-        allRowers.addAll(List(howMany) { Randomizer.getRandomRower(
-                minSkill = (basicLevel.minRowerSkill * age.skillCoef).toInt(),
-                maxSkill = (basicLevel.maxRowerSkill * age.skillCoef).toInt(),
-                maxAge = age.age
-        ) })
+    private fun beforeRace() {
+        someCompetition.phase = AbstractCompetition.BEFORE
+        requireActivity().title = someCompetition.raceTitle()
+        (someCompetition as? WaterCompetition)?.let {
+            it.setupRace()
+            recyclerView.adapter =
+                ComboViewAdapter(it.getRaceBoats(), it.getRaceOars(), it.getRaceRowers())
+            binding.buttonRaceFull.setOnClickListener { showRace() }
+            binding.buttonRace.enableClick {
+                while (someCompetition.phase < AbstractCompetition.FINISH) it.calculateRace()
+                endRace(true)
+            }
+        } ?: run {
+            val rowers = ArrayList(someCompetition.getRaceRowers())
+            recyclerView.adapter = StandingViewAdapter(rowers, StandingViewAdapter.RESULTS)
+        }
+        binding.buttonRaceFull.setOnClickListener { showRace() }
     }
 
-    private fun sortedRating() = ArrayList(
-        rating.sortedBy { if (competition.type.isOFPCompetition()) -it.second else it.second })
-
-    inner class Race {
-        fun setupRace() {
-            rating = ArrayList()
-            if (competition.type.isWaterCompetition()) {
-                when (requireActivity().title as String) {
-                    getString(R.string.semifinal) -> {
-                        val to = from + raceSize
-                        val free = to - allBoats.size
-                        if (free > 0) {
-                            allBoats.addAll(List(free) { Randomizer.getRandomBoat() })
-                            allOars.addAll(List(free) { Randomizer.getRandomOar() })
-                            addRandomRowers(free)
-                        }
-                        raceBoats = allBoats.subList(from, to)
-                        raceOars = allOars.subList(from, to)
-                        raceRowers = allRowers.subList(from, to)
-                    }
-                    getString(R.string.final_, 'B') -> {
-                        raceBoats = finalBBoats
-                        raceOars = finalBOars
-                        raceRowers = finalBRowers
-                    }
-                    getString(R.string.final_, 'A') -> {
-                        raceBoats = finalABoats
-                        raceOars = finalAOars
-                        raceRowers = finalARowers
-                    }
-                }
-                raceRowers.forEach { rower -> rating.add(Pair(rower, 0)) }
-                MainScope().launch {
-                    val viewAdapter = ComboViewAdapter(raceBoats, raceOars, raceRowers)
-                    recyclerView.apply { adapter = viewAdapter }
-                }
-            } else {
-                addRandomRowers(totalRowers - allRowers.size)
-                raceRowers = allRowers
-                for (i in raceRowers.indices) rating.add(Pair(raceRowers[i], 0))
-                MainScope().launch {
-                    val viewAdapter = StandingViewAdapter(rating, StandingViewAdapter.RESULTS)
-                    recyclerView.apply { adapter = viewAdapter }
-                }
+    private fun showRace() {
+        val isWater = competition.type.isWaterCompetition()
+        when {
+            someCompetition.phase == AbstractCompetition.BEFORE && isWater -> hideRaceButtons()
+            someCompetition.phase == AbstractCompetition.FINISH -> {
+                endRace()
+                return
             }
         }
+        someCompetition.calculateRace()
+        recyclerView.setViewAdapter(
+            if (competition.type.isOFPCompetition()) StandingViewAdapter.SCORE
+            else StandingViewAdapter.RACE
+        )
+        requireActivity().title = someCompetition.raceTitle()
+        if (isWater && someCompetition.phase <= AbstractCompetition.FINISH) {
+            Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay) }
+    }
 
-        internal fun showRace() {
-            changeRaceTitle()
-            when {
-                phase == START && competition.type.isWaterCompetition() -> {
-                        binding?.buttonRace?.visibility = View.GONE
-                        binding?.buttonRaceFull?.visibility = View.GONE }
-                phase == FINISH -> binding?.buttonRaceFull?.visibility = View.VISIBLE
-                phase > FINISH -> {
-                    phase = START
-                    if (competition.type.isWaterCompetition()) {
-                        binding?.buttonRace?.visibility = View.VISIBLE }
-                    endRace()
+    private fun endRace(isShort: Boolean = false) {
+        val rating = someCompetition.raceCalculator!!.getStanding()
+        (someCompetition as? WaterCompetition)?.let {
+            when (it.raceNumber) {
+                FINAL_B -> finalists = rating
+                FINAL_A -> {
+                    finalists.addAll(0, rating)
+                    showResults()
                     return
                 }
+                else -> it.calculateSemifinal(rating)
             }
-            calculateRace(raceBoats, raceOars, raceRowers)
-            phase += phaseLength
-            recyclerView.apply { adapter =
-                StandingViewAdapter(
-                    sortedRating(),
-                    if (competition.type.isOFPCompetition()) StandingViewAdapter.SCORE
-                    else StandingViewAdapter.RACE)
-            }
-            if (competition.type.isWaterCompetition() && phase <= FINISH)
-                Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay)
+            it.raceNumber++
+            if (isShort) beforeRace() else binding.buttonRaceFull.enableClick { beforeRace() }
+        } ?: run {
+            finalists = rating
+            showResults()
         }
+    }
 
-        private fun endRace() {
-            rating = sortedRating()
-            if (competition.type.isWaterCompetition()) {
-                if (from <= totalRowers) {
-                    calculateSemifinal(raceBoats, raceOars, raceRowers)
-                    from += raceSize
-                    requireActivity().title =
-                        if (from > totalRowers) getString(R.string.final_, 'B')
-                        else getString(R.string.semifinal)
-                    setupRace()
-                } else if (finalists == null) {
-                    finalists = ArrayList(rating)
-                    requireActivity().title = getString(R.string.final_, 'A')
-                    setupRace()
-                } else {
-                    finalists!!.addAll(0, rating) // not-null check higher
-                    showResults()
-                }
-            } else {
-                finalists = rating
-                showResults()
-            }
-        }
+    private fun hideRaceButtons() = binding.apply {
+        buttonRace.visibility = View.GONE
+        buttonRaceFull.visibility = View.GONE
+    }
 
-        internal fun shortRace() {
-            for (i in 1..shortRaceIterations) calculateRace(raceBoats, raceOars, raceRowers)
-            endRace()
-        }
-
-        private fun changeRaceTitle() = requireActivity().setTitle(when (phase) {
-            START -> {
-                if (competition.type.isOFPCompetition()) R.string.phase_tyaga
-                else R.string.phase_start
-            }
-            HALF -> {
-                if (competition.type.isOFPCompetition()) R.string.phase_jumping
-                else R.string.phase_half
-            }
-            ONE_AND_HALF -> {
-                if (competition.type.isOFPCompetition()) R.string.phase_jump_series
-                else R.string.phase_one_and_half
-            }
-            else -> {
-                if (competition.type.isOFPCompetition()) R.string.phase_running
-                else R.string.phase_finish
-            }
-        })
+    private fun RecyclerView.setViewAdapter(mode: Int) {
+        val rating = someCompetition.raceCalculator!!.sortedRating()
+        adapter = StandingViewAdapter(
+            ArrayList(rating.map { it.first }),
+            mode,
+            ArrayList(rating.map { it.second }))
     }
 
     companion object {
-        private const val phaseLength = 500
-        const val raceSize = 6
-        private const val totalRowers = 30 // 6 starts
-        private const val fameForWin = 4
-        private const val shortRaceIterations = 4 // for more precise results
         private const val delay = 650L
-        private const val quota = 7
-        private const val basicPrize = 500
-        // Numeration in rowers array
-        private const val FIRST = 0
-        private const val SECOND = 1
-        private const val THIRD = 2
-        private const val FOURTH = 3
-        private const val FIFTH = 4
-        private const val SIXTH = 5
-        // Phases
-        private const val START = phaseLength
-        private const val HALF = phaseLength * 2
-        private const val ONE_AND_HALF = phaseLength * 3
-        private const val FINISH = phaseLength * 4
     }
 }
