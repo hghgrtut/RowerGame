@@ -7,10 +7,11 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.view.activity.InfoBar
-import by.profs.rowgame.view.extensions.showToast
+import by.profs.rowgame.view.fragments.extensions.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 class Recruiter(private val infoBar: InfoBar, private val dao: RowerDao) :
     Trader<Rower>(infoBar, dao) {
     private val scope = CoroutineScope(Dispatchers.IO)

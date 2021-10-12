@@ -38,4 +38,10 @@
         <item>Варезе, ITA</item>
         <item>Плодив, BUL</item>
     </string-array>
+
+    <string-array name ="strategies">
+        <item>На старте</item>
+        <item>По всей дистанции</item>
+        <item>На финише</item>
+    </string-array>
 </resources>

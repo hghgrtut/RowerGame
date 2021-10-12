@@ -20,8 +20,8 @@ import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
 import by.profs.rowgame.view.activity.InfoBar
-import by.profs.rowgame.view.extensions.showToast
-import by.profs.rowgame.view.pairing.PairingFragmentDirections
+import by.profs.rowgame.view.fragments.extensions.showToast
+import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope

@@ -18,11 +18,11 @@ class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
     private val oarDao: OarDao = ServiceLocator.locate()
     private val rowerDao: RowerDao = ServiceLocator.locate()
 
-    suspend fun startTraining(mode: Int, combos: MutableList<Combo>) {
+    suspend fun startTraining(mode: Int, combos: MutableList<Combo>) = withContext(Dispatchers.IO) {
         combos.forEach { combo ->
-            val boat = withContext(Dispatchers.IO) { boatDao.search(combo.boatId) } ?: return
-            val oar = withContext(Dispatchers.IO) { oarDao.search(combo.oarId) } ?: return
-            val rower = withContext(Dispatchers.IO) { rowerDao.search(combo.rowerId) } ?: return
+            val boat = boatDao.search(combo.boatId) ?: return@withContext
+            val oar = oarDao.search(combo.oarId) ?: return@withContext
+            val rower = rowerDao.search(combo.rowerId) ?: return@withContext
             var random = (1..rowerUpChance).random()
             if (random < rowerCharacteristicsNumber) {
                 when (mode) {
@@ -30,16 +30,10 @@ class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
                     TRAIN_POWER -> rower.upPower()
                     TRAIN_TECHNICALITY -> rower.upTechnics()
                 }
-                rowerDao.updateItem(rower)
+                rower.saveUpdate()
             }
             random = (1..injuryChance).random()
-            if (random == 1) {
-                if (rower.hurt((1..maxInjury).random())) rowerDao.updateItem(rower)
-                else {
-                    deleteCombo(combo)
-                    rowerDao.deleteItem(rower.id!!)
-                }
-            }
+            if (random == 1 && !rower.hurt((1..maxInjury).random())) deleteCombo(combo)
             brokeItem(combo, boat, boatDao as MyDao<Damageable>)
             brokeItem(combo, oar, oarDao as MyDao<Damageable>)
         }

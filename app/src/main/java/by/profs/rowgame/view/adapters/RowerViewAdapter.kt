@@ -17,9 +17,9 @@ import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
-import by.profs.rowgame.view.inventory.InventoryFragmentDirections
-import by.profs.rowgame.view.inventory.RowerDetailsFragment.Companion.FROM_LIST
-import by.profs.rowgame.view.pairing.PairingFragmentDirections
+import by.profs.rowgame.view.fragments.inventory.InventoryFragmentDirections
+import by.profs.rowgame.view.fragments.inventory.RowerDetailsFragment.Companion.FROM_LIST
+import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 
 class RowerViewAdapter(
     private val target: Int,

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.training.TrainingFragment">
+    tools:context=".view.fragments.training.TrainingFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@id/button_train_power"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:context=".view.inventory.InventoryFragment"
+        tools:context=".view.fragments.inventory.InventoryFragment"
         tools:listitem="@layout/item_pair" />
 
     <Button

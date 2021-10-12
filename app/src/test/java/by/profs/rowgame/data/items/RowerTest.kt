@@ -9,7 +9,7 @@ class RowerTest : TestCase() {
     private val endurance = 15
     private val technics = 5
     private val power = 20
-    private val rower = Rower(null, "Hg Hg", Rower.MALE, 19, 200, 84, power, technics, endurance)
+    private val rower = Rower(null, "Hg Hg", Rower.MALE, 19, 200, 84, power, technics, endurance, 1)
 
     @Test
     fun testUpEndurance() {

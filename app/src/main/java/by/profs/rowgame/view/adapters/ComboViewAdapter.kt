@@ -4,46 +4,58 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
+import by.profs.rowgame.app.ServiceLocator
+import by.profs.rowgame.data.competition.CompetitionStrategy
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
+import by.profs.rowgame.databinding.ItemPairBinding
+import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.imageloader.loadThumb
 import by.profs.rowgame.presenter.informators.OarInformator
+import by.profs.rowgame.view.fragments.extensions.makeInvisible
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 
 class ComboViewAdapter(
     private val boats: List<Boat>,
     private val oars: List<Oar>,
     private val rowers: List<Rower>,
-    private val deleteRowerFun: ((Int?) -> Unit) ? = null
+    private val myRowerIds: List<Int>? = null
 ) : RecyclerView.Adapter<ComboViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
     private val oarInformator: OarInformator = OarInformator()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val rowerPic: ImageView = view.findViewById(R.id.rower_pic)
-        val boatTypePic: ImageView = view.findViewById(R.id.boat_type_pic)
-        val boatManufacturePic: ImageView = view.findViewById(R.id.boat_manuf_pic)
-        val oarManufacturerPic: ImageView = view.findViewById(R.id.oar_manuf_pic)
+        private val binding = ItemPairBinding.bind(view)
+        val rowerPic: ImageView = binding.rowerPic
+        val boatTypePic: ImageView = binding.boatTypePic
+        val boatManufacturePic: ImageView = binding.boatManufPic
+        val oarManufacturerPic: ImageView = binding.oarManufPic
 
-        val rowerName: TextView = view.findViewById(R.id.name)
-        val rowerHeight: TextView = view.findViewById(R.id.height)
-        val rowerWeight: TextView = view.findViewById(R.id.weight_rower)
-        val rowerAge: TextView = view.findViewById(R.id.age)
-        val boatRigger: TextView = view.findViewById(R.id.rigger)
-        val boatWeight: TextView = view.findViewById(R.id.weight_boat)
-        val oarModel: TextView = view.findViewById(R.id.model_oar)
-        val oarBlade: TextView = view.findViewById(R.id.blade)
-        val oarWeight: TextView = view.findViewById(R.id.weight_oar)
+        val rowerName: TextView = binding.name
+        val rowerHeight: TextView = binding.height
+        val rowerWeight: TextView = binding.weightRower
+        val rowerAge: TextView = binding.age
+        val boatRigger: TextView = binding.rigger
+        val boatWeight: TextView = binding.weightBoat
+        val oarModel: TextView = binding.modelOar
+        val oarBlade: TextView = binding.blade
+        val oarWeight: TextView = binding.weightOar
 
-        val button: Button = view.findViewById(R.id.detachButton)
+        val button: Button = binding.detachButton
+        val spinner: Spinner = binding.spinner
+        val strategyTitle: TextView = binding.strategy
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -93,11 +105,25 @@ class ComboViewAdapter(
         holder.oarModel.text = context.getString(R.string.model, info[1])
         holder.oarWeight.text = context.getString(R.string.item_weight, info[2])
 
-        if (deleteRowerFun != null) {
-            holder.button.visibility = View.VISIBLE
+        myRowerIds?.let { if (myRowerIds.contains(rower.id)) with(holder) {
+            strategyTitle.makeVisible()
+            spinner.apply {
+                makeVisible()
+                val list = CompetitionStrategy.values().map { context.getString(it.strategyName) }
+                adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, list)
+                onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, i: Long) {
+                        rower.strategy = pos
+                        rower.saveUpdate()
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+                }
+            } }
+        } ?: run {
+            holder.button.makeVisible()
             holder.button.setOnClickListener {
-                deleteRowerFun.invoke(rower.id)
-                holder.itemView.visibility = View.GONE
+                ServiceLocator.get(ComboDao::class).deleteComboWithRower(rower.id!!)
+                holder.itemView.makeInvisible()
             }
         }
     }

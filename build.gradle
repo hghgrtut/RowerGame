@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
+        classpath 'com.android.tools.build:gradle:7.0.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
@@ -59,6 +59,6 @@ task clean(type: Delete) {
 
 ext {
     roomVersion = '2.3.0'
-    coroutinesVersion = '1.5.1'
+    coroutinesVersion = '1.5.2'
     navigationVersion = '2.3.5'
 }

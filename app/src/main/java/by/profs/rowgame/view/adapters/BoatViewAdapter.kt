@@ -20,8 +20,8 @@ import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
 import by.profs.rowgame.view.activity.InfoBar
-import by.profs.rowgame.view.extensions.showToast
-import by.profs.rowgame.view.pairing.PairingFragmentDirections
+import by.profs.rowgame.view.fragments.extensions.showToast
+import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 
 class BoatViewAdapter(
     private val boats: ArrayList<Boat>,

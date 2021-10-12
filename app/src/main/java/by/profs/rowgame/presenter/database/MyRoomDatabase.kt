@@ -24,7 +24,7 @@ import by.profs.rowgame.presenter.database.dao.RowerDao
         License::class,
         Oar::class,
         Rower::class],
-    version = 6
+    version = 7
 )
 abstract class MyRoomDatabase : RoomDatabase() {
     abstract fun boatDao(): BoatDao

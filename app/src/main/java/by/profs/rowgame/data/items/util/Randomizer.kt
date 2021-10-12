@@ -1,6 +1,7 @@
 package by.profs.rowgame.data.items.util
 
 import by.profs.rowgame.data.competition.Ages
+import by.profs.rowgame.data.competition.CompetitionStrategy
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
@@ -66,7 +67,8 @@ object Randomizer {
             weight,
             (minSkill..maxSkill).random(),
             (minSkill..maxSkill).random(),
-            (minSkill..maxSkill).random()
+            (minSkill..maxSkill).random(),
+            strategy = (CompetitionStrategy.values().indices).random()
         )
     }
 

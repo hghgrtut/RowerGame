@@ -9,5 +9,5 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/padding"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".view.inventory.InventoryFragment"
+    tools:context=".view.fragments.inventory.InventoryFragment"
     tools:listitem="@layout/item_oar" />

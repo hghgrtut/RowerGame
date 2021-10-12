@@ -9,11 +9,12 @@ import by.profs.rowgame.data.consts.ID_ROWER
 import by.profs.rowgame.data.consts.NAME_ROWER
 import by.profs.rowgame.data.consts.TABLE_ROWERS
 import by.profs.rowgame.data.items.Rower
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RowerDao : MyDao<Rower> {
     @Query("SELECT * FROM $TABLE_ROWERS")
-    override fun getItems(): List<Rower>
+    override fun getItems(): Flow<List<Rower>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override fun insert(item: Rower)

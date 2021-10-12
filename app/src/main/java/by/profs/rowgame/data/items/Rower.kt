@@ -3,10 +3,15 @@ package by.profs.rowgame.data.items
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.consts.COL_ROWER_AGE
 import by.profs.rowgame.data.consts.ID_ROWER
 import by.profs.rowgame.data.consts.NAME_ROWER
 import by.profs.rowgame.data.consts.TABLE_ROWERS
+import by.profs.rowgame.presenter.database.dao.RowerDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Entity(tableName = TABLE_ROWERS)
 data class Rower(
@@ -19,6 +24,7 @@ data class Rower(
     @ColumnInfo(name = "power") var power: Int,
     @ColumnInfo(name = "technics") var technics: Int,
     @ColumnInfo(name = "endurance") var endurance: Int,
+    @ColumnInfo(name = "strategy") var strategy: Int,
     @ColumnInfo(name = "thumb") val thumb: String? = null,
     @ColumnInfo(name = "about") val about: String? = null,
     @ColumnInfo(name = "cost") val cost: Int = 0,
@@ -36,10 +42,19 @@ data class Rower(
     fun upTechnics(level: Int = 1) { technics += level }
 
     fun hurt(injur: Int): Boolean {
-        if (endurance < injur || power < injur || technics < injur) return false
+        val dao: RowerDao by ServiceLocator.locateLazy()
+        if (endurance < injur || power < injur || technics < injur) {
+            dao.deleteItem(id!!)
+            return false
+        }
         upEndurance(-injur)
         upPower(-injur)
         upTechnics(-injur)
+        saveUpdate()
         return true
+    }
+
+    fun saveUpdate() = CoroutineScope(Dispatchers.IO).launch {
+        ServiceLocator.get(RowerDao::class).updateItem(this@Rower)
     }
 }

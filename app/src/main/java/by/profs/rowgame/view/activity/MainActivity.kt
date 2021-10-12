@@ -13,6 +13,8 @@ import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.MoneyFameEditor
 import by.profs.rowgame.databinding.ActivityMainBinding
+import by.profs.rowgame.reminder.ReminderReceiver
+import by.profs.rowgame.view.fragments.extensions.showToast
 
 class MainActivity : ActivityWithInfoBar() {
     private val navController by lazy(LazyThreadSafetyMode.NONE) {
@@ -69,6 +71,7 @@ class MainActivity : ActivityWithInfoBar() {
         _prefEditor = MoneyFameEditor()
         infoBar.showAll()
         setContentView(binding.root)
+        getDailyReward()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -83,7 +86,24 @@ class MainActivity : ActivityWithInfoBar() {
         }
     }
 
+    // Warning: can be hacked by scrolling date on phone
+    private fun getDailyReward() {
+        val calendar = Calendar(applicationContext)
+        val currentDate = calendar.getToday()
+
+        if (currentDate <= calendar.getLastDailyDay()) return
+
+        calendar.setLastDailyDay(currentDate)
+        ReminderReceiver.setNotification(applicationContext)
+        infoBar.changeFame(bonusFame)
+        infoBar.changeMoney(bonusMoney)
+        applicationContext.showToast(R.string.daily_collected, bonusMoney, bonusFame)
+    }
+
     companion object {
+        private const val bonusMoney = 600
+        private const val bonusFame = 1
+
         private fun changeTheme(resources: Resources): Boolean {
             when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                 Configuration.UI_MODE_NIGHT_YES ->

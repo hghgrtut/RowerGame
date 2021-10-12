@@ -8,11 +8,12 @@ import androidx.room.Update
 import by.profs.rowgame.data.consts.ID_OAR
 import by.profs.rowgame.data.consts.TABLE_OAR
 import by.profs.rowgame.data.items.Oar
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OarDao : MyDao<Oar> {
     @Query("SELECT * FROM $TABLE_OAR")
-    override fun getItems(): List<Oar>
+    override fun getItems(): Flow<List<Oar>>
 
     @Query("SELECT * FROM $TABLE_OAR WHERE $ID_OAR = (:id) LIMIT 1")
     override fun search(id: Int): Oar?

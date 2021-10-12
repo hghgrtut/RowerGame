@@ -7,11 +7,12 @@ import androidx.room.Query
 import androidx.room.Update
 import by.profs.rowgame.data.consts.TABLE_BOAT
 import by.profs.rowgame.data.items.Boat
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BoatDao : MyDao<Boat> {
     @Query("SELECT * FROM $TABLE_BOAT")
-    override fun getItems(): List<Boat>
+    override fun getItems(): Flow<List<Boat>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     override fun insert(item: Boat)

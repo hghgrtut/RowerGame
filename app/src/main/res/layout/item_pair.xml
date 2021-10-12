@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/pair_item_height"
-    >
+    android:layout_height="@dimen/pair_item_height">
 
     <ImageView
         android:id="@+id/rower_pic"
@@ -82,7 +80,7 @@
         android:layout_height="wrap_content"
         android:text="@string/boat_type"
         app:layout_constraintBottom_toTopOf="@+id/rigger"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
@@ -95,43 +93,43 @@
         tools:text="@string/rigger" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/weight_boat"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/item_weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rigger" />
+        app:layout_constraintTop_toBottomOf="@+id/rigger"
+        tools:text="@string/item_weight" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/model_oar"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/model"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/oar_manuf_pic" />
+        app:layout_constraintTop_toTopOf="@id/oar_manuf_pic"
+        tools:text="@string/model" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/blade"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Лопасть: Double Wing"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/model_oar" />
+        app:layout_constraintTop_toBottomOf="@+id/model_oar"
+        tools:text="Лопасть: Double Wing" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/weight_oar"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/item_weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blade" />
+        app:layout_constraintTop_toBottomOf="@+id/blade"
+        tools:text="@string/item_weight" />
 
     <Button
-        android:id="@+id/detachButton"
+        android:id="@+id/detach_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/detach_pair"
@@ -139,5 +137,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/oar_manuf_pic"
         app:layout_constraintTop_toBottomOf="@+id/boat_manuf_pic" />
+
+
+    <TextView
+        android:id="@+id/strategy"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/competition_strategy"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/spinner"
+        app:layout_constraintEnd_toStartOf="@+id/boat_type_pic"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="visible" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        style="@style/Widget.AppCompat.Spinner.DropDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rigger"
+        app:layout_constraintStart_toStartOf="@id/strategy"
+        app:layout_constraintTop_toBottomOf="@+id/strategy"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

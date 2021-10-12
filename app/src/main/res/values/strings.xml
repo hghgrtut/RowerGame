@@ -82,6 +82,13 @@
     <!-- For standing item -->
     <string name="standing_gap">%1$d м</string>
     <string name="standing_score">%1$d очков</string>
+    <!-- For pair item -->
+    <string name="competition_strategy">Вылаживаться:</string>
+
+    <!-- Strategies -->
+    <string name="strategy_start">На старте</string>
+    <string name="strategy_overall">Равномерно на дистанции</string>
+    <string name="strategy_finish">На финише</string>
 
     <!-- Toasts -->
     <string name="buy_sucess">Куплено</string>
@@ -89,7 +96,6 @@
     <string name="competition_reward">Получено за соревнования: %1$d</string>
     <string name="check_balance">Недостаточно денег!</string>
     <string name="daily_collected">Бонус: %1$d денег и %2$d славы</string>
-    <string name="daily_already_collected">Ежедневный бонус уже собран</string>
     <string name="error">Ошибка!</string>
     <string name="fired">Выгнан!</string>
     <string name="recruit_fail">Недостаточно славы!</string>
