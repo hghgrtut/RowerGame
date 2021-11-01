@@ -1,5 +1,6 @@
 package by.profs.rowgame.presenter.traders
 
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.app.ServiceLocator.locateLazy
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.Manufacturer
@@ -11,8 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BoatTrader(private val infoBar: InfoBar, private val dao: BoatDao) :
-    Trader<Boat>(infoBar, dao) {
+class BoatTrader(private val infoBar: InfoBar) :
+    Trader<Boat>(infoBar, ServiceLocator.get(BoatDao::class)) {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val comboDao: ComboDao by locateLazy()
 

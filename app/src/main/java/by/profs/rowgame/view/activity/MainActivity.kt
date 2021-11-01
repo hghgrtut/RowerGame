@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import by.profs.rowgame.R
 import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.MoneyFameEditor
@@ -64,9 +65,10 @@ class MainActivity : ActivityWithInfoBar() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
-        val toolbar: Toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
-        NavigationUI.setupWithNavController(toolbar, navController)
+
+        setSupportActionBar(binding.toolbar)
+        setupBottomNavigation()
+
         _calendar = Calendar(this)
         _prefEditor = MoneyFameEditor()
         infoBar.showAll()
@@ -98,6 +100,13 @@ class MainActivity : ActivityWithInfoBar() {
         infoBar.changeFame(bonusFame)
         infoBar.changeMoney(bonusMoney)
         applicationContext.showToast(R.string.daily_collected, bonusMoney, bonusFame)
+    }
+
+    private fun setupBottomNavigation() {
+        val appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.inventoryFragment, R.id.shopFragment, R.id.pairingFragment, R.id.trainingFragment))
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.navView.setupWithNavController(navController)
     }
 
     companion object {

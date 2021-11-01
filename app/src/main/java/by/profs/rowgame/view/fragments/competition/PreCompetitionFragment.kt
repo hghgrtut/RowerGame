@@ -13,7 +13,7 @@ import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.competition.CompetitionLevel.Companion.isRegional
 import by.profs.rowgame.databinding.FragmentPreCompetitionBinding
-import by.profs.rowgame.presenter.competition.AbstractCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.view.activity.infobar
 import kotlinx.coroutines.CoroutineScope

@@ -10,12 +10,10 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import by.profs.rowgame.R
-import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.competition.Ages
 import by.profs.rowgame.data.competition.CompetitionStrategy
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.databinding.FragmentNewLegendBinding
-import by.profs.rowgame.presenter.database.MyRoomDatabase
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.traders.Recruiter
@@ -152,11 +150,9 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
     private fun recruit() {
         val infoBar: InfoBar = requireActivity().infobar()
         val cost = getCurrentCost()
-
-        val dao = ServiceLocator.get(MyRoomDatabase::class).rowerDao()
         binding.run {
             val link = editPhotoLink.editText?.text.toString()
-            if (Recruiter(infoBar, dao).buy(Rower(
+            if (Recruiter(infoBar).buy(Rower(
                 id = null,
                 name = editName.editText?.text.toString(),
                 gender = if (editGender.checkedRadioButtonId == R.id.gender_male) Rower.MALE

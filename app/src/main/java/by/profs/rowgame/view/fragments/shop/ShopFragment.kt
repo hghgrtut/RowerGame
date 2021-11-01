@@ -5,14 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
-import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentShopBinding
-import by.profs.rowgame.presenter.database.MyRoomDatabase
-import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.utils.SHOP_SIZE
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.InfoBar
@@ -26,9 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ShopFragment : Fragment(R.layout.fragment_shop) {
-    private val args by navArgs<ShopFragmentArgs>()
     private var binding: FragmentShopBinding? = null
-    private val database: MyRoomDatabase = ServiceLocator.locate()
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
@@ -37,7 +31,7 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = binding!!.list.setup()
-        MainScope().launch { if (args.itemType == INTENT_OARS) showOars() else showBoats() }
+        MainScope().launch { if (listOf(true, false).random()) showOars() else showBoats() } // TODO: normal getting of type
     }
 
     override fun onCreateView(
@@ -58,15 +52,13 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
     private suspend fun showBoats() {
         val randomBoats = withContext(Dispatchers.IO) {
             ArrayList(List(SHOP_SIZE) { Randomizer.getRandomBoat() }) }
-        val viewAdapter = BoatViewAdapter(randomBoats, SHOP, infoBar, database.boatDao())
+        val viewAdapter = BoatViewAdapter(randomBoats, SHOP, infoBar)
         recyclerView.adapter = viewAdapter
-        requireActivity().setTitle(R.string.boat_shop)
     }
 
     private suspend fun showOars() {
         val oars = withContext(Dispatchers.IO) { List(SHOP_SIZE) { Randomizer.getRandomOar() } }
-        val viewAdapter = OarViewAdapter(oars, SHOP, infoBar, database)
+        val viewAdapter = OarViewAdapter(oars, SHOP, infoBar)
         recyclerView.adapter = viewAdapter
-        requireActivity().setTitle(R.string.oar_shop)
     }
 }

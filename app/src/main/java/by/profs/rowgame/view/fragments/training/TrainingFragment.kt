@@ -18,6 +18,7 @@ import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.presenter.database.dao.OarDao
 import by.profs.rowgame.presenter.database.dao.RowerDao
+import by.profs.rowgame.presenter.mappers.ComboItemWrapper
 import by.profs.rowgame.presenter.trainer.Trainer
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
@@ -107,8 +108,10 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
                 rowers.add(rowerDao.search(it.rowerId)!!)
             }
         }
-        val viewAdapter = ComboViewAdapter(boats, oars, rowers)
-        MainScope().launch { recyclerView.adapter = viewAdapter }
+
+        MainScope().launch {
+            recyclerView.adapter = ComboViewAdapter(ComboItemWrapper.map(boats, oars, rowers))
+        }
 
         val trainer = Trainer(deleteComboFun)
 

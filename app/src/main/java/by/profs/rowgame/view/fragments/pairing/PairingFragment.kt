@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.databinding.FragmentPairingBinding
-import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -30,7 +33,7 @@ import kotlinx.coroutines.withContext
 class PairingFragment : Fragment(R.layout.fragment_pairing) {
     private val args by navArgs<PairingFragmentArgs>()
     private var binding: FragmentPairingBinding? = null
-    private val database: MyRoomDatabase = ServiceLocator.locate()
+    private val comboDao: ComboDao = ServiceLocator.locate()
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
@@ -61,18 +64,18 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingBoat() {
-        val dao = database.boatDao()
-        val boatIds = withContext(Dispatchers.IO) { getComboDao().getBoatIds() }
+        val dao: BoatDao = ServiceLocator.locate()
+        val boatIds = withContext(Dispatchers.IO) { comboDao.getBoatIds() }
         dao.getItems().collectLatest {
             recyclerView.adapter = BoatViewAdapter(
-                ArrayList(it.filter { boat -> !boatIds.contains(boat.id) }), PAIRING, infoBar, dao)
+                ArrayList(it.filter { boat -> !boatIds.contains(boat.id) }), PAIRING, infoBar)
         }
         requireActivity().setTitle(R.string.choose_boat)
     }
 
     private suspend fun choosingRower() {
-        val dao = database.rowerDao()
-        val rowerIds = withContext(Dispatchers.IO) { getComboDao().getRowerIds() }
+        val dao: RowerDao = ServiceLocator.locate()
+        val rowerIds = withContext(Dispatchers.IO) { comboDao.getRowerIds() }
         dao.getItems().collectLatest {
             recyclerView.adapter = RowerViewAdapter(
                 PAIRING, it.filter { rower -> !rowerIds.contains(rower.id!!) })
@@ -81,14 +84,12 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingOar() {
-        val dao = database.oarDao()
-        val oarIds = withContext(Dispatchers.IO) { getComboDao().getOarIds() }
+        val dao: OarDao = ServiceLocator.locate()
+        val oarIds = withContext(Dispatchers.IO) { comboDao.getOarIds() }
         dao.getItems().collectLatest {
-            recyclerView.adapter = OarViewAdapter(
-                it.filter { oar -> !oarIds.contains(oar.id) }, PAIRING, infoBar, database)
+            recyclerView.adapter =
+                OarViewAdapter(it.filter { oar -> !oarIds.contains(oar.id) }, PAIRING, infoBar)
         }
         requireActivity().setTitle(R.string.choose_oar)
     }
-
-    private fun getComboDao() = database.comboDao()
 }

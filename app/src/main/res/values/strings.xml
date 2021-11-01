@@ -15,11 +15,9 @@
 
     <!-- Activity titles -->
     <string name="about_rower">О гребце</string>
-    <string name="boat_inventory">Мои лодки</string>
-    <string name="boat_shop">Магазин лодок</string>
+    <string name="inventory">Моё</string>
+    <string name="shop">Магазин</string>
     <string name="final_">Финал %1$c</string>
-    <string name="oar_inventory">Мои вёсла</string>
-    <string name="oar_shop">Магазин вёсел</string>
     <string name="choose_boat">Выберите лодку</string>
     <string name="choose_oar">Выберите весла</string>
     <string name="choose_rower">Выберите гребца</string>
@@ -35,7 +33,6 @@
     <string name="phase_jump_series">Поточные прыжки</string>
     <string name="phase_running">Бег</string>
     <string name="results">Результаты</string>
-    <string name="rower_inventory">Мои спортсмены</string>
     <string name="semifinal">Полуфинал</string>
 
     <!-- For buttons in activities -->

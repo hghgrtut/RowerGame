@@ -56,8 +56,8 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
 
     // Crashlytics
-    implementation 'com.google.firebase:firebase-analytics-ktx:19.0.2' // Optional
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.3'
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.0.0' // Optional
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.4'
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
     testImplementation 'junit:junit:4.13.2'

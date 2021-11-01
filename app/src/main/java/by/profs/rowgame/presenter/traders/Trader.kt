@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class Trader<T> (private val infoBar: InfoBar, private val dao: MyDao<T>) {
+abstract class Trader<T> (private val infoBar: InfoBar, protected val dao: MyDao<T>) {
     private val scope = CoroutineScope(Dispatchers.IO)
 
     abstract fun calculateCost(item: T): Int

@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.databinding.FragmentInventoryBinding
-import by.profs.rowgame.presenter.database.MyRoomDatabase
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.presenter.navigation.INTENT_BOATS
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -22,16 +22,16 @@ import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.INVENTORY
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.RowerViewAdapter
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 import by.profs.rowgame.view.fragments.extensions.setup
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
-    private val args by navArgs<InventoryFragmentArgs>()
+    private val itemType = listOf(INTENT_BOATS, INTENT_OARS, INTENT_ROWERS).random() // TODO: normal getting of type
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentInventoryBinding? = null
-    private val database: MyRoomDatabase = ServiceLocator.locate()
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
@@ -53,7 +53,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     override fun onResume() {
         super.onResume()
-        MainScope().launch { when (args.itemType) { // intent type
+        MainScope().launch { when (itemType) {
                 INTENT_OARS -> showOars()
                 INTENT_BOATS -> showBoats()
                 INTENT_ROWERS -> showRowers()
@@ -66,39 +66,23 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         binding = null
     }
 
-    private suspend fun showBoats() {
-        requireActivity().setTitle(R.string.boat_inventory)
-        fabListenerNavigateToShop()
-        val dao = database.boatDao()
-        dao.getItems().collectLatest {
-            val viewAdapter = BoatViewAdapter(ArrayList(it), INVENTORY, infoBar, dao)
-            recyclerView.adapter = viewAdapter
-        }
+    private suspend fun showBoats() = ServiceLocator.get(BoatDao::class).getItems().collectLatest {
+        recyclerView.adapter = BoatViewAdapter(ArrayList(it), INVENTORY, infoBar)
     }
 
-    private suspend fun showOars() {
-        requireActivity().setTitle(R.string.oar_inventory)
-        fabListenerNavigateToShop()
-        database.oarDao().getItems().collectLatest {
-            val viewAdapter = OarViewAdapter(it, INVENTORY, infoBar, database)
-            recyclerView.adapter = viewAdapter
-        }
+    private suspend fun showOars() = ServiceLocator.get(OarDao::class).getItems().collectLatest {
+        recyclerView.adapter = OarViewAdapter(it, INVENTORY, infoBar)
     }
 
     private suspend fun showRowers() {
-        fabListenerNavigateTo(
-            InventoryFragmentDirections.actionInventoryFragmentToRowerDetailsFragment())
-        requireActivity().setTitle(R.string.rower_inventory)
-        val dao = database.rowerDao()
-        dao.getItems().collectLatest {
-            val viewAdapter = RowerViewAdapter(INVENTORY, it, navController)
-            recyclerView.adapter = viewAdapter
+        binding?.fab?.apply {
+            makeVisible()
+            setOnClickListener { navController.navigate(
+                InventoryFragmentDirections.actionInventoryFragmentToRowerDetailsFragment())
+            }
+        }
+        ServiceLocator.get(RowerDao::class).getItems().collectLatest {
+            recyclerView.adapter = RowerViewAdapter(INVENTORY, it, navController)
         }
     }
-
-    private fun fabListenerNavigateTo(navDirections: NavDirections): Unit? =
-        binding?.fab?.setOnClickListener { navController.navigate(navDirections) }
-
-    private fun fabListenerNavigateToShop(): Unit? = fabListenerNavigateTo(
-        InventoryFragmentDirections.actionInventoryFragmentToShopFragment(args.itemType))
 }

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.consts.COL_ROWER_AGE
+import by.profs.rowgame.data.consts.COL_STRATEGY
 import by.profs.rowgame.data.consts.ID_ROWER
 import by.profs.rowgame.data.consts.NAME_ROWER
 import by.profs.rowgame.data.consts.TABLE_ROWERS
@@ -24,7 +25,7 @@ data class Rower(
     @ColumnInfo(name = "power") var power: Int,
     @ColumnInfo(name = "technics") var technics: Int,
     @ColumnInfo(name = "endurance") var endurance: Int,
-    @ColumnInfo(name = "strategy") var strategy: Int,
+    @ColumnInfo(name = COL_STRATEGY) var strategy: Int,
     @ColumnInfo(name = "thumb") val thumb: String? = null,
     @ColumnInfo(name = "about") val about: String? = null,
     @ColumnInfo(name = "cost") val cost: Int = 0,

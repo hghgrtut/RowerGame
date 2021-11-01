@@ -12,8 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Recruiter(private val infoBar: InfoBar, private val dao: RowerDao) :
-    Trader<Rower>(infoBar, dao) {
+class Recruiter(private val infoBar: InfoBar) :
+    Trader<Rower>(infoBar, ServiceLocator.get(RowerDao::class)) {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val comboDao: ComboDao by ServiceLocator.locateLazy()
 

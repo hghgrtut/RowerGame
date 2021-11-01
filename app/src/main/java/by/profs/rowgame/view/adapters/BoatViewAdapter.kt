@@ -15,7 +15,6 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
 import by.profs.rowgame.data.preferences.PairingPreferences
-import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
@@ -26,15 +25,14 @@ import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 class BoatViewAdapter(
     private val boats: ArrayList<Boat>,
     private val type: Int,
-    infoBar: InfoBar,
-    dao: BoatDao
+    infoBar: InfoBar
 ) : RecyclerView.Adapter<BoatViewAdapter.ViewHolder>(),
     MyViewAdapter<Boat> {
 
     private lateinit var context: Context
     private lateinit var navController: NavController
     private val informator: BoatInformator = BoatInformator()
-    private val trader: BoatTrader = BoatTrader(infoBar, dao)
+    private val trader: BoatTrader = BoatTrader(infoBar)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context

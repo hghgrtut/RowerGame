@@ -4,8 +4,9 @@ import by.profs.rowgame.data.competition.CompetitionStrategy
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.presenter.competition.AbstractCompetition.Companion.isOFPCompetition
-import by.profs.rowgame.presenter.competition.AbstractCompetition.Companion.isWaterCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isOFPCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isWaterCompetition
 
 class RaceCalculator(
     private val raceType: Int,

@@ -10,9 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class OarTrader(private val infoBar: InfoBar, private val dao: OarDao) :
-    Trader<Oar>(infoBar, dao) {
-    private val scope = CoroutineScope(Dispatchers.IO)
+class OarTrader(private val infoBar: InfoBar) :
+    Trader<Oar>(infoBar, ServiceLocator.get(OarDao::class)) {
     private val comboDao: ComboDao by ServiceLocator.locateLazy()
 
     override fun calculateCost(item: Oar): Int =
@@ -20,7 +19,7 @@ class OarTrader(private val infoBar: InfoBar, private val dao: OarDao) :
 
     override fun sell(item: Oar) {
         infoBar.changeMoney(calculateCost(item))
-        scope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             dao.deleteItem(item.id!!)
             comboDao.deleteComboWithOar(item.id)
         }

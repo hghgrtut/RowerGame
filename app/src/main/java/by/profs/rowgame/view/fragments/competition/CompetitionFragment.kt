@@ -16,18 +16,19 @@ import by.profs.rowgame.data.competition.License
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
-import by.profs.rowgame.presenter.competition.AbstractCompetition
-import by.profs.rowgame.presenter.competition.AbstractCompetition.Companion.isOFPCompetition
-import by.profs.rowgame.presenter.competition.AbstractCompetition.Companion.isWaterCompetition
-import by.profs.rowgame.presenter.competition.ConceptCompetition
-import by.profs.rowgame.presenter.competition.OFPCompetition
-import by.profs.rowgame.presenter.competition.WaterCompetition
-import by.profs.rowgame.presenter.competition.WaterCompetition.Companion.FINAL_A
-import by.profs.rowgame.presenter.competition.WaterCompetition.Companion.FINAL_B
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isOFPCompetition
+import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isWaterCompetition
+import by.profs.rowgame.presenter.competition.type.ConceptCompetition
+import by.profs.rowgame.presenter.competition.type.OFPCompetition
+import by.profs.rowgame.presenter.competition.type.WaterCompetition
+import by.profs.rowgame.presenter.competition.type.WaterCompetition.Companion.FINAL_A
+import by.profs.rowgame.presenter.competition.type.WaterCompetition.Companion.FINAL_B
 import by.profs.rowgame.presenter.database.dao.BoatDao
 import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
 import by.profs.rowgame.presenter.database.dao.OarDao
+import by.profs.rowgame.presenter.mappers.ComboItemWrapper
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
 import by.profs.rowgame.view.activity.infobar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
@@ -112,8 +113,8 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         requireActivity().title = someCompetition.raceTitle()
         val raceRowers = ArrayList(someCompetition.getRaceRowers())
         (someCompetition as? WaterCompetition)?.let {
-            recyclerView.adapter =
-                ComboViewAdapter(it.getRaceBoats(), it.getRaceOars(), raceRowers, myRowers)
+            val viewItems = ComboItemWrapper.map(it.getRaceBoats(), it.getRaceOars(), raceRowers)
+            recyclerView.adapter = ComboViewAdapter(viewItems, myRowers)
             binding.buttonRaceFull.setOnClickListener { showRace() }
             binding.buttonRace.enableClick {
                 while (someCompetition.raceCalculator!!.phase < AbstractCompetition.FINISH) {
@@ -188,7 +189,10 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         private const val THIRD = 2
     }
 
-    inner class Rewarder(private val standing: ArrayList<Rower>, private val competition: CompetitionInfo) {
+    inner class Rewarder(
+        private val standing: ArrayList<Rower>,
+        private val competition: CompetitionInfo
+    ) {
         fun calculateFame(): Int = if (isMine(FIRST)) fameForWin else 0
 
         fun giveItems() {
@@ -220,6 +224,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         }
 
         private fun isMine(position: Int) = myRowers.contains(standing[position].id)
-        private fun giveRandomOar() = ServiceLocator.get(OarDao::class).insert(Randomizer.getRandomOar())
+        private fun giveRandomOar() =
+            ServiceLocator.get(OarDao::class).insert(Randomizer.getRandomOar())
     }
 }

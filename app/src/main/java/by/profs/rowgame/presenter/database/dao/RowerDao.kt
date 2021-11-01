@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import by.profs.rowgame.data.consts.COL_STRATEGY
 import by.profs.rowgame.data.consts.ID_ROWER
 import by.profs.rowgame.data.consts.NAME_ROWER
 import by.profs.rowgame.data.consts.TABLE_ROWERS
@@ -24,6 +25,9 @@ interface RowerDao : MyDao<Rower> {
 
     @Query("SELECT * FROM $TABLE_ROWERS WHERE $ID_ROWER = (:id) LIMIT 1")
     override fun search(id: Int): Rower?
+
+    @Query("UPDATE $TABLE_ROWERS SET $COL_STRATEGY = :strategy WHERE $ID_ROWER = :rowerId")
+    fun setStrategy(rowerId: Int, strategy: Int)
 
     @Update
     override fun updateItem(item: Rower)

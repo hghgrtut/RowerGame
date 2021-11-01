@@ -9,11 +9,11 @@ class App : Application() {
 
         // ServiceLocator.register(MyRoomDatabase.getDatabase(ServiceLocator.get(Context::class)))
         ServiceLocator.register(applicationContext)
-        ServiceLocator.register(MyRoomDatabase.getDatabase(applicationContext))
-        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).boatDao())
-        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).comboDao())
-        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).competitionDao())
-        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).oarDao())
-        ServiceLocator.register(ServiceLocator.get(MyRoomDatabase::class).rowerDao())
+        val database = MyRoomDatabase.getDatabase(applicationContext)
+        ServiceLocator.register(database.boatDao())
+        ServiceLocator.register(database.comboDao())
+        ServiceLocator.register(database.competitionDao())
+        ServiceLocator.register(database.oarDao())
+        ServiceLocator.register(database.rowerDao())
     }
 }

@@ -27,7 +27,6 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
     private val args by navArgs<RowerDetailsFragmentArgs>()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentRowerDetailsBinding? = null
-    private val dao: RowerDao = ServiceLocator.locate()
     private lateinit var recruiter: Recruiter
 
     override fun onCreateView(
@@ -41,7 +40,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recruiter = Recruiter(requireActivity().infobar(), dao)
+        recruiter = Recruiter(requireActivity().infobar())
         MainScope().launch { showRower() }
     }
 
@@ -58,10 +57,16 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
             binding?.buttonNewLegend?.setOnClickListener {
                 navController.navigate(R.id.action_rowerDetailsFragment_to_newLegendFragment)
             }
-            setAsNew(rower)
+            binding?.button?.text = this.getString(R.string.recruit)
+            binding?.button?.setOnClickListener { if (recruiter.buy(rower)) unEnable() }
         } else {
-            rower = withContext(Dispatchers.IO) { dao.search(args.rowerId)!! }
-            setAsExisting(rower)
+            rower = withContext(Dispatchers.IO) {
+                ServiceLocator.get(RowerDao::class).search(args.rowerId)!! }
+            binding?.button?.text = this.getString(R.string.fire_rower)
+            binding?.button?.setOnClickListener {
+                recruiter.sell(rower)
+                unEnable()
+            }
         }
 
         showImage(binding!!.rowerPic, rower)
@@ -88,22 +93,7 @@ class RowerDetailsFragment : Fragment(R.layout.fragment_rower_details) {
         }
     }
 
-    private fun setAsExisting(rower: Rower) {
-        binding?.button?.text = this.getString(R.string.fire_rower)
-        binding?.button?.setOnClickListener {
-            recruiter.sell(rower)
-            setAsNew(rower)
-        }
-    }
+    private fun unEnable() = binding?.button?.setEnabled(false)
 
-    private fun setAsNew(rower: Rower) {
-        binding?.button?.text = this.getString(R.string.recruit)
-        binding?.button?.setOnClickListener { if (recruiter.buy(rower)) setAsExisting(rower) }
-    }
-
-    companion object {
-        const val FROM_EVENT = 1
-        const val RANDOM_ROWER = 2
-        const val FROM_LIST = 3
-    }
+    companion object { const val FROM_LIST = 3 }
 }

@@ -4,14 +4,5 @@
     <color name="tint_ripple">#D34F4F</color>
     <color name="background_primary">#3B4147</color>
     <color name="change_theme">#958639</color>
-    <color name="hurted_rower">#D34F4F</color>
-    <!-- Buttons in main menu -->
-    <color name="b1">#57540E</color>
-    <color name="b2">#2E0759</color>
-    <color name="b3">#5E3D09</color>
-    <color name="b4">#471C0B</color>
-    <color name="b5">#5E0917</color>
-    <color name="b6">#4C0759</color>
-    <color name="b7">#2E0759</color>
     <color name="triangle">#9C27B0</color>
 </resources>
