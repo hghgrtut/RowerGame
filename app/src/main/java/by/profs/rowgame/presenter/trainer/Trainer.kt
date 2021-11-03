@@ -2,9 +2,7 @@ package by.profs.rowgame.presenter.trainer
 
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.combos.Combo
-import by.profs.rowgame.data.items.Damageable
 import by.profs.rowgame.presenter.database.dao.BoatDao
-import by.profs.rowgame.presenter.database.dao.MyDao
 import by.profs.rowgame.presenter.database.dao.OarDao
 import by.profs.rowgame.presenter.database.dao.RowerDao
 import by.profs.rowgame.utils.TRAIN_ENDURANCE
@@ -20,10 +18,8 @@ class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
 
     suspend fun startTraining(mode: Int, combos: MutableList<Combo>) = withContext(Dispatchers.IO) {
         combos.forEach { combo ->
-            val boat = boatDao.search(combo.boatId) ?: return@withContext
-            val oar = oarDao.search(combo.oarId) ?: return@withContext
-            val rower = rowerDao.search(combo.rowerId) ?: return@withContext
             var random = (1..rowerUpChance).random()
+            val rower = rowerDao.search(combo.rowerId) ?: return@withContext
             if (random < rowerCharacteristicsNumber) {
                 when (mode) {
                     TRAIN_ENDURANCE -> rower.upEndurance()
@@ -32,25 +28,35 @@ class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
                 }
                 rower.saveUpdate()
             }
+
             random = (1..injuryChance).random()
             if (random == 1 && !rower.hurt((1..maxInjury).random())) deleteCombo(combo)
-            brokeItem(combo, boat, boatDao as MyDao<Damageable>)
-            brokeItem(combo, oar, oarDao as MyDao<Damageable>)
+
+            random = getDamage()
+            if (random < acceptableDamage) {
+                val item = boatDao.search(combo.boatId)!!
+                if (item.broke(random)) boatDao.updateItem(item)
+                else {
+                    deleteCombo(combo)
+                    oarDao.deleteItem(item.id!!)
+                }
+            }
+
+            random = getDamage()
+            if (random < acceptableDamage) {
+                val item = oarDao.search(combo.oarId)!!
+                if (item.broke(random)) oarDao.updateItem(item)
+                else {
+                    deleteCombo(combo)
+                    oarDao.deleteItem(item.id!!)
+                }
+            }
         }
     }
 
     private fun deleteCombo(combo: Combo) = deleteRowerFun(combo.rowerId)
 
-    private fun brokeItem(combo: Combo, item: Damageable, dao: MyDao<Damageable>) {
-        val random = (1..maxDamage).random()
-        if (random < acceptableDamage) {
-            if (item.broke(random)) dao.updateItem(item)
-            else {
-                deleteCombo(combo)
-                dao.deleteItem(item.id!!)
-            }
-        }
-    }
+    private fun getDamage() = (1..maxDamage).random()
 
     companion object {
         private const val acceptableDamage = 11

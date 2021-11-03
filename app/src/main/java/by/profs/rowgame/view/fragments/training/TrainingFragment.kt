@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,7 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val deleteComboFun: (Int?) -> Unit = {
+        MainScope().launch { this@TrainingFragment.context?.showToast(R.string.something_broke) }
         scope.launch {
             comboDao.deleteComboWithRower(it!!)
             refreshView()
@@ -64,7 +66,10 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         infoBar.showDay()
 
         recyclerView = binding!!.list.setup()
-        refreshView()
+        scope.launch {
+            competitionDays = ServiceLocator.get(CompetitionDao::class).getCompetitionDays()
+            refreshView()
+        }
     }
 
     override fun onDestroyView() {
@@ -85,12 +90,10 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         }
     }
 
-    private fun refreshView() = scope.launch {
+    private fun refreshView() {
         val boatDao: BoatDao = ServiceLocator.locate()
         val oarDao: OarDao = ServiceLocator.locate()
         val rowerDao: RowerDao = ServiceLocator.locate()
-
-        competitionDays = ServiceLocator.get(CompetitionDao::class).getCompetitionDays()
 
         val combos = comboDao.getAllCombos().toMutableList()
         val boats = ArrayList<Boat>()
@@ -115,16 +118,15 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
 
         val trainer = Trainer(deleteComboFun)
 
+        fun Button.setupTrain(mode: Int) = setOnClickListener {
+            scope.launch { trainer.startTraining(mode, combos) }
+            nextDay()
+        }
+
         binding?.run {
-            buttonTrainEndurance.setOnClickListener {
-                scope.launch { trainer.startTraining(TRAIN_ENDURANCE, combos) }
-                nextDay() }
-            buttonTrainPower.setOnClickListener {
-                scope.launch { trainer.startTraining(TRAIN_POWER, combos) }
-                nextDay() }
-            buttonTrainTechnical.setOnClickListener {
-                scope.launch { trainer.startTraining(TRAIN_TECHNICALITY, combos) }
-                nextDay() }
+            buttonTrainEndurance.setupTrain(TRAIN_ENDURANCE)
+            buttonTrainEndurance.setupTrain(TRAIN_POWER)
+            buttonTrainEndurance.setupTrain(TRAIN_TECHNICALITY)
         }
     }
 }

@@ -98,6 +98,7 @@
     <string name="recruit_fail">Недостаточно славы!</string>
     <string name="recruit_success">Добавлен(а)!</string>
     <string name="sell_sucess">Продано</string>
+    <string name="something_broke">Продано</string>
     <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
     <string name="time_to_race">Время гоняться :)</string>
     <string name="train_sucess">Тренировка прошла</string>
