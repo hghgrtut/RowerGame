@@ -25,10 +25,8 @@ class MainActivity : ActivityWithInfoBar() {
     }
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding get() = requireNotNull(_binding)
-    private var _calendar: Calendar? = null
-    private val calendar: Calendar get() = requireNotNull(_calendar)
-    private var _prefEditor: MoneyFameEditor? = null
-    private val prefEditor: MoneyFameEditor get() = requireNotNull(_prefEditor)
+    private val calendar: Calendar = Calendar
+    private val prefEditor: MoneyFameEditor = MoneyFameEditor
 
     override val infoBar = object : InfoBar {
         override fun showDay() = binding.day.setText(getString(R.string.day, getDay()))
@@ -69,8 +67,6 @@ class MainActivity : ActivityWithInfoBar() {
         setSupportActionBar(binding.toolbar)
         setupBottomNavigation()
 
-        _calendar = Calendar(this)
-        _prefEditor = MoneyFameEditor()
         infoBar.showAll()
         setContentView(binding.root)
         getDailyReward()
@@ -90,7 +86,6 @@ class MainActivity : ActivityWithInfoBar() {
 
     // Warning: can be hacked by scrolling date on phone
     private fun getDailyReward() {
-        val calendar = Calendar(applicationContext)
         val currentDate = calendar.getToday()
 
         if (currentDate <= calendar.getLastDailyDay()) return

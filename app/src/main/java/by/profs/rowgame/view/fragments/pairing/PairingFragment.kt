@@ -64,32 +64,32 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingBoat() {
+        requireActivity().setTitle(R.string.choose_boat)
         val dao: BoatDao = ServiceLocator.locate()
         val boatIds = withContext(Dispatchers.IO) { comboDao.getBoatIds() }
         dao.getItems().collectLatest {
             recyclerView.adapter = BoatViewAdapter(
                 ArrayList(it.filter { boat -> !boatIds.contains(boat.id) }), PAIRING, infoBar)
         }
-        requireActivity().setTitle(R.string.choose_boat)
     }
 
     private suspend fun choosingRower() {
+        requireActivity().setTitle(R.string.choose_rower)
         val dao: RowerDao = ServiceLocator.locate()
         val rowerIds = withContext(Dispatchers.IO) { comboDao.getRowerIds() }
         dao.getItems().collectLatest {
             recyclerView.adapter = RowerViewAdapter(
                 PAIRING, it.filter { rower -> !rowerIds.contains(rower.id!!) })
         }
-        requireActivity().setTitle(R.string.choose_rower)
     }
 
     private suspend fun choosingOar() {
+        requireActivity().setTitle(R.string.choose_oar)
         val dao: OarDao = ServiceLocator.locate()
         val oarIds = withContext(Dispatchers.IO) { comboDao.getOarIds() }
         dao.getItems().collectLatest {
             recyclerView.adapter =
                 OarViewAdapter(it.filter { oar -> !oarIds.contains(oar.id) }, PAIRING, infoBar)
         }
-        requireActivity().setTitle(R.string.choose_oar)
     }
 }

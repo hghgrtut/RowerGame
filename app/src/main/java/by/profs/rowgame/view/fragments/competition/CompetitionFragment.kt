@@ -15,6 +15,7 @@ import by.profs.rowgame.data.competition.CompetitionInfo
 import by.profs.rowgame.data.competition.License
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Randomizer
+import by.profs.rowgame.data.preferences.LevelEditor
 import by.profs.rowgame.databinding.FragmentCompetitionBinding
 import by.profs.rowgame.presenter.competition.type.AbstractCompetition
 import by.profs.rowgame.presenter.competition.type.AbstractCompetition.Companion.isOFPCompetition
@@ -206,9 +207,9 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             var totalPrize = 0
             var rewardForPlace = basicPrize * competition.level * competition.age
             withContext(Dispatchers.IO) {
-                standing.take(quota).forEach {
-                    val rowerId = it.id
-                    if (rowerId != null && myRowers.contains(rowerId)) {
+                for (position in 0 until quota) {
+                    if (isMine(position)) {
+                        val rowerId = standing[position].id!!
                         competitionDao.addLicenses(
                             listOf(
                                 License(null, rowerId, competition.level + 1, competition.age),
@@ -216,6 +217,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                             )
                         )
                         totalPrize += rewardForPlace
+                        if (position <= THIRD) LevelEditor.trySet(competition.getCompetitionLevel())
                     }
                     rewardForPlace /= 2
                 }

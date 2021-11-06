@@ -1,13 +1,11 @@
 package by.profs.rowgame.data.preferences
 
-import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.combos.Combo
 
-class PairingPreferences(context: Context) {
-    private val preferences: SharedPreferences =
-        context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
+object PairingPreferences {
+    private val preferences: SharedPreferences = ServiceLocator.locate()
 
     fun occupyBoat(id: Int) {
         preferences.edit().apply {

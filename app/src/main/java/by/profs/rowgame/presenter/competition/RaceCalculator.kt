@@ -36,7 +36,6 @@ class RaceCalculator(
         distances.sort()
         if (raceType.isOFPCompetition())
             distances.forEachIndexed { ind, it -> distances[ind] = MAX_SCORE - it }
-        // TODO: check that it selects valid array
         val chance = chances[when (phase) {
             AbstractCompetition.START -> 0
             AbstractCompetition.FINISH -> 2
@@ -64,21 +63,19 @@ class RaceCalculator(
     }
 
     private fun calculatePower(boat: Boat? = null, oar: Oar? = null, rower: Rower): Int {
-        var power: Int = 0
-        when (raceType) {
+        var result: Int = 0
+        with(rower) { when (raceType) {
             AbstractCompetition.WATER -> {
-                power = (rower.technics * KEY_SKILL_COEF).toInt() + rower.endurance + rower.power +
-                        (boat!!.weight + boat.wing + oar!!.blade + oar.weight) * BOAT_OAR_COEF
-                if (minIdealWeight[boat.body]!! <= rower.weight &&
-                    rower.weight <= maxIdealWeight[boat.body]!!
-                ) power = (power * IDEAL_WEIGHT_COEF).toInt()
+                result = (technics * KEY_SKILL_COEF).toInt() + endurance + power +
+                        boat!!.getPower() + oar!!.getPower()
+                if (boat.isIdealFor(rower.weight)) result = (result * IDEAL_WEIGHT_COEF).toInt()
             }
-            AbstractCompetition.CONCEPT -> power = rower.power +
-                    (rower.technics / KEY_SKILL_COEF + rower.endurance * KEY_SKILL_COEF).toInt()
-            AbstractCompetition.OFP -> power = rower.endurance +
-                    (rower.technics / KEY_SKILL_COEF + rower.power * KEY_SKILL_COEF).toInt()
-        }
-        return power
+            AbstractCompetition.CONCEPT ->
+                result = power + (technics / KEY_SKILL_COEF + endurance * KEY_SKILL_COEF).toInt()
+            AbstractCompetition.OFP ->
+                result = endurance + (technics / KEY_SKILL_COEF + power * KEY_SKILL_COEF).toInt()
+        } }
+        return result
     }
 
     fun sortedRating(): List<Pair<Rower, Int>> =
@@ -90,25 +87,6 @@ class RaceCalculator(
         private const val KEY_SKILL_COEF = 1.5
         private const val MAX_SCORE = 100
         private const val OVERALL = 1.5
-
-        private val minIdealWeight: HashMap<Int, Int> = hashMapOf(
-            Boat.UNIVERSAL to FOR_UNIVERSAL_MIN,
-            Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MIN,
-            Boat.SMALL to FOR_SMALL_MIN,
-            Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MIN,
-            Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MIN,
-            Boat.LONG to FOR_LONG_MIN,
-            Boat.EXTRA_LONG to FOR_EXTRA_LONG_MIN
-        )
-        private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(
-            Boat.UNIVERSAL to FOR_UNIVERSAL_MAX,
-            Boat.EXTRA_SMALL to FOR_EXTRA_SMALL_MAX,
-            Boat.SMALL to FOR_SMALL_MAX,
-            Boat.MEDIUM_SMALL to FOR_MEDIUM_SMALL_MAX,
-            Boat.MEDIUM_LONG to FOR_MEDIUM_LONG_MAX,
-            Boat.LONG to FOR_LONG_MAX,
-            Boat.EXTRA_LONG to FOR_EXTRA_LONG_MAX
-        )
         private val maxGap: HashMap<Int, Int> = hashMapOf(
             AbstractCompetition.CONCEPT to 40,
             AbstractCompetition.OFP to 57,

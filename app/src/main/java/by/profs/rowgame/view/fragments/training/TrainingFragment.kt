@@ -125,8 +125,8 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
 
         binding?.run {
             buttonTrainEndurance.setupTrain(TRAIN_ENDURANCE)
-            buttonTrainEndurance.setupTrain(TRAIN_POWER)
-            buttonTrainEndurance.setupTrain(TRAIN_TECHNICALITY)
+            buttonTrainPower.setupTrain(TRAIN_POWER)
+            buttonTrainTechnical.setupTrain(TRAIN_TECHNICALITY)
         }
     }
 }

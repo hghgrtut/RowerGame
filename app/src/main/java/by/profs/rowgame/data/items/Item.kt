@@ -1,7 +1,11 @@
 package by.profs.rowgame.data.items
 
-interface Damageable {
+interface Item {
     val id: Int?
+
+    fun getLevel(): Int
+
+    fun getPower(): Int
 
     fun broke(damag: Int): Boolean
 }

@@ -42,12 +42,10 @@ class ReminderReceiver : BroadcastReceiver() {
         private const val NOTIFICATION_CHANNEL_ID = "T"
 
         fun setNotification(context: Context) {
+            val currTime = System.currentTimeMillis()
             (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).setExact(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() -
-                        (System.currentTimeMillis() % DAY_IN_MILLIS) +
-                        DAY_IN_MILLIS +
-                        Calendar(context.applicationContext).getTrainingTime(),
+                currTime - (currTime % DAY_IN_MILLIS) + DAY_IN_MILLIS + Calendar.getTrainingTime(),
                 PendingIntent.getBroadcast(context,
                     NOTIFICATION_TRAINING_REQUEST,
                     Intent(context, ReminderReceiver::class.java),

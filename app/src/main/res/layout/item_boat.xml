@@ -21,9 +21,9 @@
         android:layout_width="@dimen/boat_type_image_size"
         android:layout_height="@dimen/boat_type_image_size"
         android:contentDescription="@string/cont_descr_boat_type_image"
+        android:src="@drawable/boat_single_scull"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
-        tools:src="@drawable/boat_single_scull" />
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     <ImageView
         android:id="@+id/wing_image"
@@ -61,10 +61,10 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/type"
         app:layout_constraintBottom_toTopOf="@+id/shell_lenght"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/model"
-        tools:text="@string/type" />
+        app:layout_constraintTop_toBottomOf="@+id/model" />
 
     <TextView
         android:id="@+id/shell_lenght"
@@ -116,6 +116,17 @@
         app:layout_constraintEnd_toStartOf="@+id/wing_image"
         app:layout_constraintTop_toBottomOf="@+id/model"
         tools:text="@string/recommended_weight" />
+
+    <TextView
+        android:id="@+id/power"
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/damage"
+        app:layout_constraintEnd_toStartOf="@+id/cost"
+        tools:text="81" />
 
     <TextView
         android:id="@+id/cost"

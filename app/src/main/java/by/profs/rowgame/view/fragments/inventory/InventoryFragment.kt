@@ -22,6 +22,7 @@ import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.INVENTORY
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.RowerViewAdapter
+import by.profs.rowgame.view.fragments.extensions.makeInvisible
 import by.profs.rowgame.view.fragments.extensions.makeVisible
 import by.profs.rowgame.view.fragments.extensions.setup
 import kotlinx.coroutines.MainScope
@@ -29,7 +30,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
-    private val itemType = listOf(INTENT_BOATS, INTENT_OARS, INTENT_ROWERS).random() // TODO: normal getting of type
+    private var itemType = listOf(INTENT_BOATS, INTENT_OARS, INTENT_ROWERS).random()
     private val navController by lazy(LazyThreadSafetyMode.NONE) { findNavController() }
     private var binding: FragmentInventoryBinding? = null
     private lateinit var recyclerView: RecyclerView
@@ -49,15 +50,15 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding!!.list.setup()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        MainScope().launch { when (itemType) {
-                INTENT_OARS -> showOars()
-                INTENT_BOATS -> showBoats()
-                INTENT_ROWERS -> showRowers()
-            }
+        when (itemType) {
+            INTENT_OARS -> showOars()
+            INTENT_BOATS -> showBoats()
+            INTENT_ROWERS -> showRowers()
+        }
+        binding!!.run {
+            boats.setOnClickListener { showBoats() }
+            oars.setOnClickListener { showOars() }
+            rowers.setOnClickListener { showRowers() }
         }
     }
 
@@ -66,15 +67,21 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         binding = null
     }
 
-    private suspend fun showBoats() = ServiceLocator.get(BoatDao::class).getItems().collectLatest {
-        recyclerView.adapter = BoatViewAdapter(ArrayList(it), INVENTORY, infoBar)
+    private fun showBoats() = MainScope().launch {
+        hideFab()
+        ServiceLocator.get(BoatDao::class).getItems().collectLatest {
+            recyclerView.adapter = BoatViewAdapter(ArrayList(it), INVENTORY, infoBar)
+        }
     }
 
-    private suspend fun showOars() = ServiceLocator.get(OarDao::class).getItems().collectLatest {
-        recyclerView.adapter = OarViewAdapter(it, INVENTORY, infoBar)
+    private fun showOars() = MainScope().launch {
+        hideFab()
+        ServiceLocator.get(OarDao::class).getItems().collectLatest {
+            recyclerView.adapter = OarViewAdapter(it, INVENTORY, infoBar)
+        }
     }
 
-    private suspend fun showRowers() {
+    private fun showRowers() = MainScope().launch {
         binding?.fab?.apply {
             makeVisible()
             setOnClickListener { navController.navigate(
@@ -85,4 +92,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             recyclerView.adapter = RowerViewAdapter(INVENTORY, it, navController)
         }
     }
+
+    private fun hideFab() = binding!!.fab.makeInvisible()
 }

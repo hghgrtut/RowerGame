@@ -15,6 +15,7 @@ import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.util.Manufacturer
+import by.profs.rowgame.data.preferences.LevelEditor
 import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.presenter.informators.OarInformator
@@ -37,6 +38,7 @@ class OarViewAdapter(
     private lateinit var context: Context
     private lateinit var fragment: Fragment
     private val informator: OarInformator = OarInformator()
+    private val level: Int = LevelEditor.get()
     private val trader: OarTrader = OarTrader(infoBar)
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -51,7 +53,10 @@ class OarViewAdapter(
         val itemView = holder.itemView
         val oar = oars[position]
         displayItem(holder, oar)
-        holder.button.setOnClickListener { tradeOar(oar, itemView) }
+        holder.button.run{
+            if (type == SHOP && oar.getLevel() > level) isEnabled = false
+            else setOnClickListener { tradeOar(oar, itemView) }
+        }
     }
 
     override fun getItemCount(): Int = oars.size
@@ -59,19 +64,21 @@ class OarViewAdapter(
     class ViewHolder(view: View) : MyViewAdapter.ViewHolder(view) {
         val bladeImage: ImageView = view.findViewById(R.id.blade_image)
         val blade: TextView = view.findViewById(R.id.blade)
+        val power: TextView = view.findViewById(R.id.power)
     }
 
     private fun displayItem(holder: ViewHolder, oar: Oar) {
         displayItem(holder as MyViewAdapter.ViewHolder, oar)
         showManufacturerSpecificInfo(holder, oar)
+        holder.power.text = oar.getPower().toString()
     }
 
-    override fun displayItem(holder: MyViewAdapter.ViewHolder, item: Oar) {
-        holder.logo.setImageResource(Manufacturer.valueOf(item.manufacturer).logoResId)
-        holder.cost.text = context.getString(R.string.cost, trader.calculateCost(item))
-        holder.damage.text = context.getString(R.string.damage, item.damage)
-        holder.manufacturer.text = context.getString(R.string.manufacturer, item.manufacturer)
-        holder.button.text = context.getString(when (type) {
+    override fun displayItem(holder: MyViewAdapter.ViewHolder, item: Oar) = holder.run {
+        logo.setImageResource(Manufacturer.valueOf(item.manufacturer).logoResId)
+        cost.text = context.getString(R.string.cost, trader.calculateCost(item))
+        damage.text = context.getString(R.string.damage, item.damage)
+        manufacturer.text = context.getString(R.string.manufacturer, item.manufacturer)
+        button.text = context.getString(when (this@OarViewAdapter.type) {
             INVENTORY -> R.string.sell
             PAIRING -> R.string.take
             else -> R.string.buy
@@ -100,7 +107,7 @@ class OarViewAdapter(
             SHOP -> context.showToast(
                 if (trader.buy(oar)) R.string.buy_sucess else R.string.check_balance)
             PAIRING -> {
-                val pairingPreferences = PairingPreferences(context)
+                val pairingPreferences = PairingPreferences
                 pairingPreferences.occupyOar(oar.id!!)
                 scope.launch {
                     ServiceLocator.get(ComboDao::class).insertCombo(pairingPreferences.getCombo())

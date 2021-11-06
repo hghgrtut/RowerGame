@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".view.activity.MainActivity">
 
+    <Button
+        android:id="@+id/boats"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/boats"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rowers" />
+
+    <Button
+        android:id="@+id/rowers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/rowers"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/oars"
+        app:layout_constraintStart_toEndOf="@id/boats" />
+
+    <Button
+        android:id="@+id/oars"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/oars"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rowers"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:name="by.profs.rowgame.ItemFragment"
@@ -17,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rowers"
         tools:context=".view.fragments.inventory.InventoryFragment"
         tools:listitem="@layout/item_boat" />
 

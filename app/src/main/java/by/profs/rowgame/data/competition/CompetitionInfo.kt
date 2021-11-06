@@ -37,6 +37,20 @@ data class CompetitionInfo(
         if (age != Ages.Adult.ordinal) competitionInfo.append(" U${Ages.values()[age].age}")
         return competitionInfo
     }
+
+    fun getCompetitionLevel(): Int = age + when (level) {
+            CompetitionLevel.Region.ordinal -> BASE_REGION
+            CompetitionLevel.Republic.ordinal -> BASE_REPUBLIC
+            CompetitionLevel.Continental.ordinal -> BASE_CONTINENTAL
+            else -> BASE_WORLD
+        }
+
+    private companion object {
+        private const val BASE_REGION = 0
+        private const val BASE_REPUBLIC = 3
+        private const val BASE_CONTINENTAL = 5
+        private const val BASE_WORLD = 7
+    }
 }
 
 private fun StringBuilder.appendLocation(level: Int) {

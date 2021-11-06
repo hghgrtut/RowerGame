@@ -16,7 +16,16 @@ data class Oar(
     @ColumnInfo(name = "blade") val blade: Int,
     @ColumnInfo(name = "type") val type: Int,
     @ColumnInfo(name = "damage") var damage: Int = 0
-) : Damageable {
+) : Item {
+    override fun getPower(): Int = (blade + weight) * powerCoeff
+
+    override fun getLevel(): Int = blade * weight - 1
+
+    override fun broke(damag: Int): Boolean {
+        damage += damag
+        return damage + damag < IDEAL
+    }
+
     companion object {
         const val RECREATIONAL = 1
         const val SPORTIVE = 2
@@ -27,14 +36,9 @@ data class Oar(
 
         const val BASIC_COST = 60
 
+        private const val powerCoeff = 10
+
         fun getManufacturersList(): List<String> =
             listOf(Manufacturer.Braca.name, Manufacturer.Concept.name, Manufacturer.Croker.name)
-    }
-
-    override fun broke(damag: Int): Boolean {
-        if (damage + damag < IDEAL) {
-            damage += damag
-            return true
-        } else return false
     }
 }

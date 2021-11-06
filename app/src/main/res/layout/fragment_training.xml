@@ -22,25 +22,23 @@
         tools:listitem="@layout/item_pair" />
 
     <Button
-        android:id="@+id/button_train_endurance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/train_endurance"
-        android:maxLines="1"
-        app:layout_constraintHorizontal_weight="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_train_power"/>
-
-    <Button
         android:id="@+id/button_train_power"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/train_power"
-        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_train_endurance"
-        app:layout_constraintEnd_toStartOf="@+id/button_train_technical" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_train_endurance"/>
+
+    <Button
+        android:id="@+id/button_train_endurance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="@string/train_endurance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_train_technical"
+        app:layout_constraintStart_toEndOf="@+id/button_train_power" />
 
     <Button
         android:id="@+id/button_train_technical"
@@ -49,7 +47,6 @@
         android:text="@string/train_technicality"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1.5"
-        app:layout_constraintStart_toEndOf="@+id/button_train_power" />
+        app:layout_constraintStart_toEndOf="@id/button_train_endurance" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

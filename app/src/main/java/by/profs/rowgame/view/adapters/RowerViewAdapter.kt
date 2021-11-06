@@ -54,7 +54,7 @@ class RowerViewAdapter(
                     .actionInventoryFragmentToRowerDetailsFragment(FROM_LIST, rower.id!!)
                     .also { navController!!.navigate(it) }
             } else {
-                PairingPreferences(context).occupyRower(rower.id!!)
+                PairingPreferences.occupyRower(rower.id!!)
                 val navController by lazy(LazyThreadSafetyMode.NONE) {
                     NavHostFragment.findNavController(fragment) }
                 PairingFragmentDirections.actionPairingFragmentSelf(INTENT_OARS)

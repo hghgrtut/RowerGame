@@ -12,8 +12,8 @@ import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.data.items.Boat
-import by.profs.rowgame.data.items.util.BoatTypes
 import by.profs.rowgame.data.items.util.Manufacturer
+import by.profs.rowgame.data.preferences.LevelEditor
 import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
@@ -32,6 +32,7 @@ class BoatViewAdapter(
     private lateinit var context: Context
     private lateinit var navController: NavController
     private val informator: BoatInformator = BoatInformator()
+    private val level: Int = LevelEditor.get()
     private val trader: BoatTrader = BoatTrader(infoBar)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,7 +46,10 @@ class BoatViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val boat = boats[position]
         displayItem(holder, boat)
-        holder.button.setOnClickListener { tradeBoat(boat, holder.itemView) }
+        holder.button.run {
+            if (type == SHOP && boat.getLevel() > level) isEnabled = false
+            else setOnClickListener { tradeBoat(boat, holder.itemView) }
+        }
     }
 
     override fun getItemCount(): Int = boats.size
@@ -53,7 +57,7 @@ class BoatViewAdapter(
     class ViewHolder(view: View) : MyViewAdapter.ViewHolder(view) {
         val typeImage: ImageView = view.findViewById(R.id.type_image)
         val wingImage: ImageView = view.findViewById(R.id.wing_image)
-
+        val power: TextView = view.findViewById(R.id.power)
         val lenght: TextView = view.findViewById(R.id.shell_lenght)
         val rigger: TextView = view.findViewById(R.id.rigger)
         val rowerWeight: TextView = view.findViewById(R.id.rower_weight)
@@ -72,6 +76,7 @@ class BoatViewAdapter(
         holder.lenght.text = context.getString(R.string.shell_lenght, info[0])
         holder.rowerWeight.text = context.getString(R.string.recommended_weight, info[1])
         holder.model.text = context.getString(R.string.model, info[2])
+        holder.power.text = item.getPower().toString()
     }
 
     override fun displayItem(holder: MyViewAdapter.ViewHolder, item: Boat) {
@@ -85,25 +90,15 @@ class BoatViewAdapter(
             else -> R.string.take
         })
         showWeight(holder.weight, item)
-        holder.type.text = context.getString(R.string.type, BoatTypes.valueOf(item.type).type)
     }
 
     private fun showWeight(view: TextView, boat: Boat) {
-        view.text = context.getString(R.string.item_weight,
-            when (boat.type) {
-                BoatTypes.SingleScull.name -> when (boat.weight) {
+        view.text = context.getString(R.string.item_weight, when (boat.weight) {
                     Boat.ELITE -> "14"
                     Boat.SPORTIVE -> "16"
                     else -> "18"
                 }
-//                BoatTypes.DoubleScull.name ->
-//                BoatTypes.Pair.name ->
-//                BoatTypes.CoxedPair.name ->
-//                BoatTypes.QuadrupleScull.name ->
-//                BoatTypes.Four.name ->
-//                BoatTypes.CoxedFour.name ->
-                else -> throw NotImplementedError("${boat.type} not supported")
-        })
+        )
     }
 
     private fun showWingAndType(holder: ViewHolder, item: Boat) {
@@ -113,16 +108,7 @@ class BoatViewAdapter(
             Boat.CARBON_WING -> R.drawable.wing_carbon
             else -> R.drawable.wing_backwing
         })
-        holder.typeImage.setImageResource(when (item.type) {
-            BoatTypes.SingleScull.name -> R.drawable.boat_single_scull
-            BoatTypes.DoubleScull.name -> R.drawable.boat_double_scull
-            BoatTypes.Pair.name -> R.drawable.boat_pair
-            BoatTypes.CoxedPair.name -> R.drawable.boat_coxed_pair
-            BoatTypes.QuadrupleScull.name -> R.drawable.boat_quadruple_scull
-            BoatTypes.Four.name -> R.drawable.boat_four
-            BoatTypes.CoxedFour.name -> R.drawable.boat_coxed_four
-            else -> R.drawable.boat_eight
-        })
+        holder.typeImage.setImageResource(R.drawable.boat_single_scull)
     }
 
     private fun tradeBoat(boat: Boat, itemView: View) { when (type) {
@@ -134,7 +120,7 @@ class BoatViewAdapter(
             SHOP -> context.showToast(
                 if (trader.buy(boat)) R.string.buy_sucess else R.string.check_balance)
             PAIRING -> {
-                PairingPreferences(context).occupyBoat(boat.id!!)
+                PairingPreferences.occupyBoat(boat.id!!)
                 PairingFragmentDirections.actionPairingFragmentSelf(item = INTENT_ROWERS)
                     .also { navController.navigate(it) }
             }

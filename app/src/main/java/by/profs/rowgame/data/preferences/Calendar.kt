@@ -1,14 +1,14 @@
 package by.profs.rowgame.data.preferences
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.text.format.DateUtils.DAY_IN_MILLIS
 import android.text.format.DateUtils.HOUR_IN_MILLIS
-import androidx.appcompat.app.AppCompatActivity
+import by.profs.rowgame.app.ServiceLocator
 
-class Calendar(context: Context) {
-    private val preferences: SharedPreferences =
-        context.getSharedPreferences(USER_PREF, AppCompatActivity.MODE_PRIVATE)
+object Calendar {
+    private const val lastDay = 365
+    private const val defaultTrainingTime = 6 * HOUR_IN_MILLIS // 9:00, Minsk (+3)
+    private val preferences: SharedPreferences = ServiceLocator.locate()
 
     private fun getGlobalDay(): Int = preferences.getInt(DAY, lastDay)
 
@@ -32,10 +32,5 @@ class Calendar(context: Context) {
             putInt(DAY, if (getGlobalDay() != Int.MAX_VALUE) getGlobalDay() + 1 else 1)
             apply()
         }
-    }
-
-    companion object {
-        private const val lastDay = 365
-        private const val defaultTrainingTime = 6 * HOUR_IN_MILLIS // 9:00, Minsk (+3)
     }
 }
