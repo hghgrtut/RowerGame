@@ -22,6 +22,7 @@ import by.profs.rowgame.presenter.informators.OarInformator
 import by.profs.rowgame.presenter.informators.OarInformator.Companion.bladeImages
 import by.profs.rowgame.presenter.traders.OarTrader
 import by.profs.rowgame.view.activity.InfoBar
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 import by.profs.rowgame.view.fragments.extensions.showToast
 import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 import kotlinx.coroutines.CoroutineScope
@@ -53,9 +54,11 @@ class OarViewAdapter(
         val itemView = holder.itemView
         val oar = oars[position]
         displayItem(holder, oar)
-        holder.button.run{
-            if (type == SHOP && oar.getLevel() > level) isEnabled = false
-            else setOnClickListener { tradeOar(oar, itemView) }
+        holder.run {
+            if (type == SHOP && oar.getLevel() > level) {
+                button.isEnabled = false
+                locked.makeVisible()
+            } else { button.setOnClickListener { tradeOar(oar, itemView) } }
         }
     }
 

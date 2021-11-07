@@ -25,6 +25,7 @@ import by.profs.rowgame.utils.TRAIN_ENDURANCE
 import by.profs.rowgame.utils.TRAIN_POWER
 import by.profs.rowgame.utils.TRAIN_TECHNICALITY
 import by.profs.rowgame.view.activity.ActivityWithInfoBar
+import by.profs.rowgame.view.activity.FullScreenAble
 import by.profs.rowgame.view.activity.InfoBar
 import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.fragments.extensions.setup
@@ -58,6 +59,8 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
     ): View? {
         binding = FragmentTrainingBinding.inflate(inflater, container, false)
         _infoBar = (requireActivity() as ActivityWithInfoBar).infoBar
+        (requireActivity() as ActivityWithInfoBar).setSubtitle("")
+        (requireActivity() as FullScreenAble).changeMode(false)
         return binding?.root
     }
 

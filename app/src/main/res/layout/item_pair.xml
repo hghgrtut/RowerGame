@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/pair_item_height">
+    android:layout_height="@dimen/pair_item_height"
+    android:paddingHorizontal="@dimen/padding_items">
 
     <ImageView
         android:id="@+id/rower_pic"
@@ -164,5 +165,19 @@
         app:layout_constraintStart_toStartOf="@id/strategy"
         app:layout_constraintTop_toBottomOf="@+id/strategy"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/combo_power"
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/model_oar"
+        app:layout_constraintEnd_toStartOf="@+id/oar_manuf_pic"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_boat"
+        tools:text="81" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

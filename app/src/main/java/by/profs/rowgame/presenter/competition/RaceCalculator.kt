@@ -17,10 +17,11 @@ class RaceCalculator(
     var phase: Int = AbstractCompetition.BEFORE
         private set
     private val chances = Array(CompetitionStrategy.values().size) { Array(rowers.size) { lane ->
-        if (raceType.isWaterCompetition()) calculatePower(boats!![lane], oars!![lane], rowers[lane])
-        else calculatePower(rower = rowers[lane])
+        if (!raceType.isWaterCompetition()) rowers[lane].calculatePower()
+        else getPowerOnWater(boats!![lane], oars!![lane], rowers[lane])
     } }
     private val rating: Array<Pair<Rower, Int>> = Array(rowers.size) { Pair(rowers[it], 0) }
+    private val isOfp: Boolean = raceType.isOFPCompetition()
 
     init {
         val overall = CompetitionStrategy.OVERALL.ordinal
@@ -34,8 +35,7 @@ class RaceCalculator(
         phase++
         val distances = IntArray(rating.size) { (0..maxGap[raceType]!!).random() }
         distances.sort()
-        if (raceType.isOFPCompetition())
-            distances.forEachIndexed { ind, it -> distances[ind] = MAX_SCORE - it }
+        if (isOfp) distances.forEachIndexed { ind, it -> distances[ind] = MAX_SCORE - it }
         val chance = chances[when (phase) {
             AbstractCompetition.START -> 0
             AbstractCompetition.FINISH -> 2
@@ -56,33 +56,27 @@ class RaceCalculator(
             place++
         }
         val excessGap: Int =
-            if (!raceType.isOFPCompetition()) rating.map { it.second }.minOrNull()!!
-            else distances.maxOrNull()!! - MAX_SCORE
+            if (isOfp) distances.maxOrNull()!! - MAX_SCORE
+            else rating.map { it.second }.minOrNull()!!
         rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
         return rating
     }
 
-    private fun calculatePower(boat: Boat? = null, oar: Oar? = null, rower: Rower): Int {
-        var result: Int = 0
-        with(rower) { when (raceType) {
-            AbstractCompetition.WATER -> {
-                result = (technics * KEY_SKILL_COEF).toInt() + endurance + power +
-                        boat!!.getPower() + oar!!.getPower()
-                if (boat.isIdealFor(rower.weight)) result = (result * IDEAL_WEIGHT_COEF).toInt()
-            }
-            AbstractCompetition.CONCEPT ->
-                result = power + (technics / KEY_SKILL_COEF + endurance * KEY_SKILL_COEF).toInt()
-            AbstractCompetition.OFP ->
-                result = endurance + (technics / KEY_SKILL_COEF + power * KEY_SKILL_COEF).toInt()
-        } }
-        return result
-    }
+    private fun Rower.calculatePower(): Int = if (raceType == AbstractCompetition.CONCEPT) {
+        power + (technics / KEY_SKILL_COEF + endurance * KEY_SKILL_COEF).toInt()
+    } else { endurance + (technics / KEY_SKILL_COEF + power * KEY_SKILL_COEF).toInt() }
 
     fun sortedRating(): List<Pair<Rower, Int>> =
         rating.sortedBy { if (!raceType.isOFPCompetition()) it.second else -it.second }
 
     companion object {
-        private const val BOAT_OAR_COEF = 10
+        fun getPowerOnWater(boat: Boat, oar: Oar, rower: Rower): Int {
+            var result = rower.run { (technics * KEY_SKILL_COEF).toInt() + endurance + power }
+            result += boat.getPower() + oar.getPower()
+            if (boat.isIdealFor(rower.weight)) result = (result * IDEAL_WEIGHT_COEF).toInt()
+            return result
+        }
+
         private const val IDEAL_WEIGHT_COEF = 1.25
         private const val KEY_SKILL_COEF = 1.5
         private const val MAX_SCORE = 100

@@ -8,6 +8,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import by.profs.rowgame.R
@@ -15,9 +16,11 @@ import by.profs.rowgame.data.preferences.Calendar
 import by.profs.rowgame.data.preferences.MoneyFameEditor
 import by.profs.rowgame.databinding.ActivityMainBinding
 import by.profs.rowgame.reminder.ReminderReceiver
+import by.profs.rowgame.view.fragments.extensions.makeInvisible
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 import by.profs.rowgame.view.fragments.extensions.showToast
 
-class MainActivity : ActivityWithInfoBar() {
+class MainActivity : ActivityWithInfoBar(), FullScreenAble {
     private val navController by lazy(LazyThreadSafetyMode.NONE) {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
@@ -27,6 +30,9 @@ class MainActivity : ActivityWithInfoBar() {
     private val binding: ActivityMainBinding get() = requireNotNull(_binding)
     private val calendar: Calendar = Calendar
     private val prefEditor: MoneyFameEditor = MoneyFameEditor
+
+    override fun changeMode(isFullScreen: Boolean) =
+        if (isFullScreen) binding.navView.makeInvisible() else binding.navView.makeVisible()
 
     override val infoBar = object : InfoBar {
         override fun showDay() = binding.day.setText(getString(R.string.day, getDay()))
@@ -102,6 +108,7 @@ class MainActivity : ActivityWithInfoBar() {
             R.id.inventoryFragment, R.id.shopFragment, R.id.pairingFragment, R.id.trainingFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration)
     }
 
     companion object {

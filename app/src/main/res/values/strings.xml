@@ -61,6 +61,7 @@
     <string name="manufacturer">Производитель: %1$s</string>
     <string name="model">Модель: %1$s</string>
     <string name="item_weight">Вес: %1$s кг</string>
+    <string name="item_locked">Закрыто.\nВыигрывай\nчаще:)</string>
     <!-- For boat item -->
     <string name="rigger">Отводы: %1$s</string>
     <string name="recommended_weight">Вес гребца:\n%1$s</string>
@@ -98,7 +99,7 @@
     <string name="recruit_fail">Недостаточно славы!</string>
     <string name="recruit_success">Добавлен(а)!</string>
     <string name="sell_sucess">Продано</string>
-    <string name="something_broke">Продано</string>
+    <string name="something_broke">Что-то сломалось</string>
     <string name="race_results_list">Первое место: %1$s\nВторое место: %2$s\nТретье место: %3$s\nЧетвёртое место: %4$s\nПятое место: %5$s\nШестое место: %6$s\n</string>
     <string name="time_to_race">Время гоняться :)</string>
     <string name="train_sucess">Тренировка прошла</string>
@@ -135,7 +136,7 @@
     <string name="link_to_photo">Ссылка на фото</string>
     <string name="make_new_legend">Создай своего гребца</string>
     <string name="male">Парень</string>
-    <string name="name_surname">Имя и фамилия</string>
+    <string name="name_surname">Фамилия и имя</string>
     <string name="power">Мощь</string>
     <string name="technicality">Техничность</string>
     <string name="weight">Вес</string>

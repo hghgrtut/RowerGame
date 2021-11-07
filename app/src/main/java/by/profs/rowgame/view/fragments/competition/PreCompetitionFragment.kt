@@ -15,6 +15,7 @@ import by.profs.rowgame.data.competition.CompetitionLevel.Companion.isRegional
 import by.profs.rowgame.databinding.FragmentPreCompetitionBinding
 import by.profs.rowgame.presenter.competition.type.AbstractCompetition
 import by.profs.rowgame.presenter.database.dao.CompetitionDao
+import by.profs.rowgame.view.activity.FullScreenAble
 import by.profs.rowgame.view.activity.infobar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,7 @@ class PreCompetitionFragment : Fragment(R.layout.fragment_pre_competition) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPreCompetitionBinding.inflate(inflater, container, false)
+        (requireActivity() as FullScreenAble).changeMode(true)
         return binding.root
     }
 
@@ -57,6 +59,7 @@ class PreCompetitionFragment : Fragment(R.layout.fragment_pre_competition) {
                     }
                 }
                 Handler(getMainLooper()).postDelayed({
+                    _binding ?: return@postDelayed
                     findNavController().navigate(PreCompetitionFragmentDirections
                         .actionPreCompetitionFragmentToCompetitionFragment())
                     },

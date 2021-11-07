@@ -4,7 +4,8 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="big_margin">32dp</dimen>
     <dimen name="centralizeable_margin">200dp</dimen>
-    <dimen name="padding">16dp</dimen>
+    <dimen name="padding_items">8dp</dimen>
+    <dimen name="margin">16dp</dimen>
 
     <dimen name="boat_item_height">156dp</dimen>
     <dimen name="result_item_height">80dp</dimen>

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.items.Rower
-import by.profs.rowgame.presenter.imageloader.loadThumb
+import by.profs.rowgame.view.fragments.extensions.loadThumb
 
 class StandingViewAdapter(
     private val standing: ArrayList<Rower>,

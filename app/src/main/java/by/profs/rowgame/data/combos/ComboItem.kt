@@ -11,9 +11,11 @@ data class ComboItem(
     val height: String,
     val rowerWeight: String,
     val rowerAge: String,
+    var strategy: Int,
     val rigger: String,
     val boatWeight: String,
     val blade: String,
     val oarModel: String,
-    val oarWeight: String
+    val oarWeight: String,
+    val basicPower: String
 )

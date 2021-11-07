@@ -138,7 +138,7 @@
         android:id="@+id/button"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding"
+        android:layout_margin="@dimen/margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/fire_rower" />
@@ -147,7 +147,7 @@
         android:id="@+id/button_new_legend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding"
+        android:layout_margin="@dimen/margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"

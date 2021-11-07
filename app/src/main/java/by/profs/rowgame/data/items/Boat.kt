@@ -11,7 +11,9 @@ import by.profs.rowgame.presenter.competition.FOR_EXTRA_LONG_MIN
 import by.profs.rowgame.presenter.competition.FOR_EXTRA_SMALL_MAX
 import by.profs.rowgame.presenter.competition.FOR_EXTRA_SMALL_MIN
 import by.profs.rowgame.presenter.competition.FOR_LONG_MAX
+import by.profs.rowgame.presenter.competition.FOR_LONG_MIN
 import by.profs.rowgame.presenter.competition.FOR_MEDIUM_LONG_MAX
+import by.profs.rowgame.presenter.competition.FOR_MEDIUM_LONG_MIN
 import by.profs.rowgame.presenter.competition.FOR_MEDIUM_SMALL_MAX
 import by.profs.rowgame.presenter.competition.FOR_MEDIUM_SMALL_MIN
 import by.profs.rowgame.presenter.competition.FOR_SMALL_MAX
@@ -74,6 +76,8 @@ data class Boat(
             EXTRA_SMALL to FOR_EXTRA_SMALL_MIN,
             SMALL to FOR_SMALL_MIN,
             MEDIUM_SMALL to FOR_MEDIUM_SMALL_MIN,
+            MEDIUM_LONG to FOR_MEDIUM_LONG_MIN,
+            LONG to FOR_LONG_MIN,
             EXTRA_LONG to FOR_EXTRA_LONG_MIN
         )
         private val maxIdealWeight: HashMap<Int, Int> = hashMapOf(

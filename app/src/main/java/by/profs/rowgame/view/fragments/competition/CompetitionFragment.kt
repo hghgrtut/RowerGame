@@ -36,6 +36,7 @@ import by.profs.rowgame.view.adapters.ComboViewAdapter
 import by.profs.rowgame.view.adapters.StandingViewAdapter
 import by.profs.rowgame.view.fragments.extensions.enableClick
 import by.profs.rowgame.view.fragments.extensions.makeInvisible
+import by.profs.rowgame.view.fragments.extensions.setTitle
 import by.profs.rowgame.view.fragments.extensions.setup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -93,7 +94,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
     private fun showResults() {
         recyclerView.adapter = StandingViewAdapter(finalists, StandingViewAdapter.RESULTS)
-        requireActivity().setTitle(R.string.results)
+        setTitle(R.string.results)
         val infobar = requireActivity().infobar()
         CoroutineScope(Dispatchers.IO).launch {
             val rewarder = Rewarder(finalists, competition)
@@ -105,13 +106,11 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
         hideRaceButtons()
         binding.buttonReward.enableClick {
             findNavController().navigate(R.id.action_competitionFragment_to_trainingFragment)
-            (requireActivity() as ActivityWithInfoBar).setSubtitle("")
         }
     }
 
     private fun beforeRace() = MainScope().launch {
         withContext(Dispatchers.IO) { someCompetition.setupRace() }
-        requireActivity().title = someCompetition.raceTitle()
         val raceRowers = ArrayList(someCompetition.getRaceRowers())
         (someCompetition as? WaterCompetition)?.let {
             val viewItems = ComboItemWrapper.map(it.getRaceBoats(), it.getRaceOars(), raceRowers)
@@ -124,9 +123,11 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             }
         } ?: recyclerView.setAdapter(StandingViewAdapter(raceRowers, StandingViewAdapter.RESULTS))
         binding.buttonRaceFull.setOnClickListener { showRace() }
+        setCompetitionTitle()
     }
 
     private fun showRace() {
+        _binding ?: return
         val isWater = competition.type.isWaterCompetition()
         when (someCompetition.raceCalculator!!.phase) {
             AbstractCompetition.BEFORE -> if (isWater) hideRaceButtons()
@@ -136,13 +137,17 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
             }
         }
         someCompetition.calculateRace()
-        recyclerView.setViewAdapter(
+
+        val rating = getRating()
+        recyclerView.adapter = StandingViewAdapter(
+            ArrayList(rating.map { it.first }),
             if (competition.type.isOFPCompetition()) StandingViewAdapter.SCORE
-            else StandingViewAdapter.RACE
+            else StandingViewAdapter.RACE,
+            ArrayList(rating.map { it.second })
         )
-        requireActivity().title = someCompetition.raceTitle()
-        if (isWater && someCompetition.raceCalculator!!.phase <= AbstractCompetition.FINISH) {
-            Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay) }
+        setCompetitionTitle()
+        if (isWater && someCompetition.raceCalculator!!.phase <= AbstractCompetition.FINISH)
+            Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay)
     }
 
     private fun endRace(isShort: Boolean = false) {
@@ -168,15 +173,9 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private fun hideRaceButtons() =
         listOf(binding.buttonRace, binding.buttonRaceFull).forEach { it.makeInvisible() }
 
-    private fun RecyclerView.setViewAdapter(mode: Int) {
-        val rating = getRating()
-        adapter = StandingViewAdapter(
-            ArrayList(rating.map { it.first }),
-            mode,
-            ArrayList(rating.map { it.second }))
-    }
-
     private fun getRating() = someCompetition.raceCalculator!!.sortedRating()
+
+    private fun setCompetitionTitle() = setTitle(someCompetition.raceTitle())
 
     companion object {
         private const val delay = 650L

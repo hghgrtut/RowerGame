@@ -8,7 +8,7 @@ object CoilImageLoader : ImageLoader {
     override fun loadImageFromNetwork(view: ImageView, url: String) {
         view.load(url) {
             crossfade(true)
-            error(R.drawable.image_failed_download)
+            error(R.drawable.placeholder_man)
             placeholder(R.drawable.placeholder_universal)
         }
     }

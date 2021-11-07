@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/boat_item_height"
-    android:layout_marginVertical="@dimen/padding"
+    android:paddingHorizontal="@dimen/padding_items"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/margin"
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
@@ -28,7 +29,7 @@
     <ImageView
         android:id="@+id/wing_image"
         android:layout_width="@dimen/boat_wing_picture_size"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/boat_wing_picture_size"
         android:contentDescription="@string/cont_descr_wing"
         android:layout_marginEnd="@dimen/small_margin"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,20 +52,10 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/type"
+        app:layout_constraintBottom_toTopOf="@+id/shell_lenght"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/manufacturer"
         tools:text="@string/model" />
-
-    <TextView
-        android:id="@+id/type"
-        style="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/type"
-        app:layout_constraintBottom_toTopOf="@+id/shell_lenght"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/model" />
 
     <TextView
         android:id="@+id/shell_lenght"
@@ -73,7 +64,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/rigger"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/type"
+        app:layout_constraintTop_toBottomOf="@+id/model"
         tools:text="@string/shell_lenght" />
 
     <TextView
@@ -137,8 +128,18 @@
         app:layout_constraintEnd_toStartOf="@+id/wing_image"
         tools:text="@string/cost" />
 
+    <TextView
+        android:id="@+id/locked"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/item_locked"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/button_trade"
+        app:layout_constraintTop_toBottomOf="@id/wing_image" />
+
     <Button
-        android:id="@+id/buyOar"
+        android:id="@+id/button_trade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/buy"

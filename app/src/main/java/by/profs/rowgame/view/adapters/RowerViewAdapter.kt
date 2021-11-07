@@ -17,6 +17,7 @@ import by.profs.rowgame.data.preferences.PairingPreferences
 import by.profs.rowgame.presenter.imageloader.CoilImageLoader
 import by.profs.rowgame.presenter.imageloader.ImageLoader
 import by.profs.rowgame.presenter.navigation.INTENT_OARS
+import by.profs.rowgame.view.fragments.extensions.loadThumb
 import by.profs.rowgame.view.fragments.inventory.InventoryFragmentDirections
 import by.profs.rowgame.view.fragments.inventory.RowerDetailsFragment.Companion.FROM_LIST
 import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
@@ -40,7 +41,7 @@ class RowerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val rower = rowers[position]
-        showImage(holder.rowerImage, rower)
+        holder.rowerImage.loadThumb(rower.thumb)
         holder.age.text = context.getString(R.string.rower_age, rower.age)
         holder.endurance.text = context.getString(R.string.rower_endurance, rower.endurance)
         holder.height.text = context.getString(R.string.rower_height, rower.height)
@@ -75,13 +76,5 @@ class RowerViewAdapter(
         val power: TextView = view.findViewById(R.id.power)
         val technicality: TextView = view.findViewById(R.id.technicality)
         val weight: TextView = view.findViewById(R.id.weight)
-    }
-
-    private fun showImage(view: ImageView, rower: Rower) {
-        if (rower.thumb != null) { imageLoader.loadImageFromNetwork(view, rower.thumb)
-        } else { view.setImageResource(
-                if (rower.gender == Rower.MALE) { R.drawable.placeholder_man
-                } else { R.drawable.placeholder_woman })
-        }
     }
 }

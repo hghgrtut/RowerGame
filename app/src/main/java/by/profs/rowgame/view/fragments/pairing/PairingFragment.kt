@@ -23,6 +23,7 @@ import by.profs.rowgame.view.adapters.BoatViewAdapter
 import by.profs.rowgame.view.adapters.OarViewAdapter
 import by.profs.rowgame.view.adapters.PAIRING
 import by.profs.rowgame.view.adapters.RowerViewAdapter
+import by.profs.rowgame.view.fragments.extensions.setTitle
 import by.profs.rowgame.view.fragments.extensions.setup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -64,7 +65,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingBoat() {
-        requireActivity().setTitle(R.string.choose_boat)
+        setTitle(R.string.choose_boat)
         val dao: BoatDao = ServiceLocator.locate()
         val boatIds = withContext(Dispatchers.IO) { comboDao.getBoatIds() }
         dao.getItems().collectLatest {
@@ -74,7 +75,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingRower() {
-        requireActivity().setTitle(R.string.choose_rower)
+        setTitle(R.string.choose_rower)
         val dao: RowerDao = ServiceLocator.locate()
         val rowerIds = withContext(Dispatchers.IO) { comboDao.getRowerIds() }
         dao.getItems().collectLatest {
@@ -84,7 +85,7 @@ class PairingFragment : Fragment(R.layout.fragment_pairing) {
     }
 
     private suspend fun choosingOar() {
-        requireActivity().setTitle(R.string.choose_oar)
+        setTitle(R.string.choose_oar)
         val dao: OarDao = ServiceLocator.locate()
         val oarIds = withContext(Dispatchers.IO) { comboDao.getOarIds() }
         dao.getItems().collectLatest {

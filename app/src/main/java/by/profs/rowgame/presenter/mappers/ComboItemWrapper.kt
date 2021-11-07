@@ -8,6 +8,7 @@ import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.Oar
 import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.data.items.util.Manufacturer
+import by.profs.rowgame.presenter.competition.RaceCalculator.Companion.getPowerOnWater
 import by.profs.rowgame.presenter.informators.OarInformator
 
 object ComboItemWrapper {
@@ -50,11 +51,13 @@ object ComboItemWrapper {
             height,
             rowerWeight,
             age,
+            strategy = rower.strategy,
             rigger,
             boatWeight,
             blade,
             oarModel,
-            oarWeight
+            oarWeight,
+            getPowerOnWater(boat, oar, rower).toString()
         )
     }
 }

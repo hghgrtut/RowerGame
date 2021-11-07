@@ -43,8 +43,10 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
             boatViewAdapter = BoatViewAdapter(boats, SHOP, infoBar)
             oarViewAdapter = OarViewAdapter(oars, SHOP, infoBar)
             recyclerView.adapter = listOf(boatViewAdapter, oarViewAdapter).random()
-            binding!!.oars.setOnClickListener { recyclerView.adapter = oarViewAdapter }
-            binding!!.boats.setOnClickListener { recyclerView.adapter = boatViewAdapter }
+            binding?.let { it ->
+                it.oars.setOnClickListener { recyclerView.adapter = oarViewAdapter }
+                it.boats.setOnClickListener { recyclerView.adapter = boatViewAdapter }
+            }
         }
     }
 

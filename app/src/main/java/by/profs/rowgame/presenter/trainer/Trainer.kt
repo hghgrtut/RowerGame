@@ -38,7 +38,7 @@ class Trainer(private val deleteRowerFun: (Int?) -> Unit) {
                 if (item.broke(random)) boatDao.updateItem(item)
                 else {
                     deleteCombo(combo)
-                    oarDao.deleteItem(item.id!!)
+                    boatDao.deleteItem(item.id!!)
                 }
             }
 

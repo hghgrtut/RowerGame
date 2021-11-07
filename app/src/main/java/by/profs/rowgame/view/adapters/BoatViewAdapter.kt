@@ -19,6 +19,7 @@ import by.profs.rowgame.presenter.informators.BoatInformator
 import by.profs.rowgame.presenter.navigation.INTENT_ROWERS
 import by.profs.rowgame.presenter.traders.BoatTrader
 import by.profs.rowgame.view.activity.InfoBar
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 import by.profs.rowgame.view.fragments.extensions.showToast
 import by.profs.rowgame.view.fragments.pairing.PairingFragmentDirections
 
@@ -46,9 +47,11 @@ class BoatViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val boat = boats[position]
         displayItem(holder, boat)
-        holder.button.run {
-            if (type == SHOP && boat.getLevel() > level) isEnabled = false
-            else setOnClickListener { tradeBoat(boat, holder.itemView) }
+        holder.run {
+            if (type == SHOP && boat.getLevel() > level) {
+                button.isEnabled = false
+                locked.makeVisible()
+            } else { button.setOnClickListener { tradeBoat(boat, holder.itemView) } }
         }
     }
 

@@ -3,7 +3,6 @@ package by.profs.rowgame.view.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
@@ -16,9 +15,9 @@ import by.profs.rowgame.data.combos.ComboItem
 import by.profs.rowgame.data.competition.CompetitionStrategy
 import by.profs.rowgame.databinding.ItemPairBinding
 import by.profs.rowgame.presenter.database.dao.ComboDao
-import by.profs.rowgame.presenter.database.dao.RowerDao
-import by.profs.rowgame.presenter.imageloader.loadThumb
+import by.profs.rowgame.view.adapters.utils.StrategySpinner
 import by.profs.rowgame.view.fragments.extensions.enableClick
+import by.profs.rowgame.view.fragments.extensions.loadThumb
 import by.profs.rowgame.view.fragments.extensions.makeInvisible
 import by.profs.rowgame.view.fragments.extensions.makeVisible
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +48,7 @@ class ComboViewAdapter(
         val button: Button = binding.detachButton
         val spinner: Spinner = binding.spinner
         val strategyTitle: TextView = binding.strategy
+        val comboPower: TextView = binding.comboPower
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -84,25 +84,20 @@ class ComboViewAdapter(
                         CompetitionStrategy.values().map { context.getString(it.strategyName) }
                     adapter =
                         ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, list)
-                    onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            p: AdapterView<*>?,
-                            v: View?,
-                            pos: Int,
-                            i: Long
-                        ) {
-                            scope.launch {
-                                ServiceLocator.get(RowerDao::class).setStrategy(rowerId!!, pos)
-                            }
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-                    }
+                    setSelection(item.strategy)
+                    onItemSelectedListener =
+                        StrategySpinner(item.rowerId!!) { strategy -> item.strategy = strategy }
                 }
             }
-        } ?: holder.button.enableClick {
-            holder.itemView.makeInvisible()
-            scope.launch { ServiceLocator.get(ComboDao::class).deleteComboWithRower(rowerId!!) }
+        } ?: holder.run {
+            button.enableClick {
+                holder.itemView.makeInvisible()
+                scope.launch { ServiceLocator.get(ComboDao::class).deleteComboWithRower(rowerId!!) }
+            }
+            comboPower.apply {
+                text = item.basicPower
+                makeVisible()
+            }
         }
     }
 

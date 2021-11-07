@@ -101,6 +101,7 @@
         tools:layout="@layout/fragment_pre_competition">
         <action
             android:id="@+id/action_preCompetitionFragment_to_competitionFragment"
-            app:destination="@id/competitionFragment" />
+            app:destination="@id/competitionFragment"
+            app:popUpTo="@id/trainingFragment" />
     </fragment>
 </navigation>

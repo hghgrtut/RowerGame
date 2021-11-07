@@ -43,9 +43,8 @@ data class Rower(
     fun upTechnics(level: Int = 1) { technics += level }
 
     fun hurt(injur: Int): Boolean {
-        val dao: RowerDao by ServiceLocator.locateLazy()
         if (endurance < injur || power < injur || technics < injur) {
-            dao.deleteItem(id!!)
+            ServiceLocator.get(RowerDao::class).deleteItem(id!!)
             return false
         }
         upEndurance(-injur)

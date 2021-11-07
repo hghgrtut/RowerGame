@@ -38,6 +38,8 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNewLegendBinding.inflate(inflater, container, false)
+        _characteristics =
+            arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
         return binding.root
     }
 
@@ -48,9 +50,6 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             binding.editHeight, binding.editName, binding.editPhotoLink, binding.editPower,
             binding.editTechnicality, binding.editWeight)
         savedInstanceState?.restoreState()
-
-        _characteristics =
-            arrayOf(binding.editEndurance, binding.editPower, binding.editTechnicality)
         showCurrentCost()
         binding.create.setOnClickListener { if (validate()) recruit() }
 
@@ -86,15 +85,13 @@ class NewLegendFragment : Fragment(R.layout.fragment_new_legend) {
             val text = field.editText?.text
             if (field.editText?.text != null) outState.putString(index.toString(), text.toString())
         }
-        if (binding.editGender.checkedRadioButtonId == R.id.gender_female) {
+        if (_binding != null && binding.editGender.checkedRadioButtonId == R.id.gender_female) {
             outState.putBoolean(WOMAN, true) }
     }
 
     private fun Bundle.restoreState() {
         editableFields.forEachIndexed { index, field ->
-            val key = index.toString()
-            val text = this.getString(key)
-            if (text != null) field.editText?.setText(text)
+            this.getString(index.toString())?.let { field.editText?.setText(it) }
         }
         if (this.getBoolean(WOMAN)) binding.editGender.check(R.id.gender_female)
     }
