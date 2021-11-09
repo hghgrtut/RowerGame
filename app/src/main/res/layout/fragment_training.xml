@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:context=".view.fragments.inventory.InventoryFragment"
-        tools:listitem="@layout/item_pair" />
+        tools:listitem="@layout/item_combo" />
 
     <Button
         android:id="@+id/button_train_power"

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/pair_item_height"
+    android:paddingHorizontal="@dimen/padding_items">
+
+    <ImageView
+        android:id="@+id/rower_pic"
+        android:layout_width="@dimen/pair_picture_size"
+        android:layout_height="@dimen/pair_picture_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/placeholder_woman" />
+
+    <ImageView
+        android:id="@+id/boat_type_pic"
+        android:layout_width="@dimen/pair_picture_size"
+        android:layout_height="@dimen/pair_picture_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rower_pic"
+        android:src="@drawable/boat_single_scull" />
+
+    <ImageView
+        android:id="@+id/boat_manuf_pic"
+        android:layout_width="@dimen/pair_picture_size"
+        android:layout_height="@dimen/pair_picture_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/boat_type_pic"
+        tools:src="@drawable/logo_empacher" />
+
+    <ImageView
+        android:id="@+id/oar_manuf_pic"
+        android:layout_width="@dimen/pair_picture_size"
+        android:layout_height="@dimen/pair_picture_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/boat_manuf_pic"
+        tools:src="@drawable/logo_croker" />
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Староселец Татьяна" />
+
+    <TextView
+        android:id="@+id/height"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        tools:text="@string/rower_height" />
+
+    <TextView
+        android:id="@+id/weight_rower"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/height"
+        tools:text="@string/rower_weight" />
+
+    <TextView
+        android:id="@+id/age"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weight_rower"
+        tools:text="@string/rower_age" />
+
+    <TextView
+        android:id="@+id/type"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/boat_type"
+        app:layout_constraintBottom_toTopOf="@+id/rigger"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/rigger"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boat_type_pic"
+        tools:text="@string/rigger" />
+
+    <TextView
+        android:id="@+id/weight_boat"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rigger"
+        tools:text="@string/item_weight" />
+
+    <TextView
+        android:id="@+id/model_oar"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/oar_manuf_pic"
+        tools:text="@string/model" />
+
+    <TextView
+        android:id="@+id/blade"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/model_oar"
+        tools:text="Лопасть: Double Wing" />
+
+    <TextView
+        android:id="@+id/weight_oar"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blade"
+        tools:text="@string/item_weight" />
+
+    <Button
+        android:id="@+id/detach_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detach_pair"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/oar_manuf_pic"
+        app:layout_constraintTop_toBottomOf="@+id/boat_manuf_pic" />
+
+    <TextView
+        android:id="@+id/strategy"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/competition_strategy"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/spinner"
+        app:layout_constraintEnd_toStartOf="@+id/boat_type_pic"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:visibility="visible" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        style="@style/Widget.AppCompat.Spinner.DropDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rigger"
+        app:layout_constraintStart_toStartOf="@id/strategy"
+        app:layout_constraintTop_toBottomOf="@+id/strategy"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/combo_power"
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/model_oar"
+        app:layout_constraintEnd_toStartOf="@+id/oar_manuf_pic"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight_boat"
+        tools:text="81" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

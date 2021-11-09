@@ -146,4 +146,10 @@
     <string name="my_participants">Наши участники:</string>
 
     <string name="train_reminder">Напоминание о тренировке</string>
+
+    <!-- DetachDialog -->
+    <string name="no">Нет</string>
+    <string name="detach">Разбить на лодку, вёсла и гребца?</string>
+    <string name="warning">Внимание!</string>
+    <string name="yes">Да</string>
 </resources>

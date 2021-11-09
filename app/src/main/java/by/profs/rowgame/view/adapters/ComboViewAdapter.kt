@@ -1,20 +1,23 @@
 package by.profs.rowgame.view.adapters
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import by.profs.rowgame.R
 import by.profs.rowgame.app.ServiceLocator
 import by.profs.rowgame.data.combos.ComboItem
-import by.profs.rowgame.data.competition.CompetitionStrategy
-import by.profs.rowgame.databinding.ItemPairBinding
+import by.profs.rowgame.databinding.ItemComboBinding
 import by.profs.rowgame.presenter.database.dao.ComboDao
+import by.profs.rowgame.presenter.database.dao.RowerDao
+import by.profs.rowgame.view.adapters.utils.DetachDialog
 import by.profs.rowgame.view.adapters.utils.StrategySpinner
 import by.profs.rowgame.view.fragments.extensions.enableClick
 import by.profs.rowgame.view.fragments.extensions.loadThumb
@@ -26,11 +29,13 @@ import kotlinx.coroutines.launch
 
 class ComboViewAdapter(
     private val items: List<ComboItem>,
-    private val myRowerIds: List<Int>? = null
+    private val myRowerIds: List<Int>? = null,
+    private val fragmentManager: FragmentManager? = null,
+    private val changeStrategyFun: ((Int, Int) -> Unit)? = null
 ) : RecyclerView.Adapter<ComboViewAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val binding = ItemPairBinding.bind(view)
+        private val binding = ItemComboBinding.bind(view)
         val rowerPic: ImageView = binding.rowerPic
         val boatManufacturePic: ImageView = binding.boatManufPic
         val oarManufacturerPic: ImageView = binding.oarManufPic
@@ -52,7 +57,7 @@ class ComboViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_pair, parent, false))
+        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_combo, parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
@@ -76,23 +81,25 @@ class ComboViewAdapter(
         val rowerId = item.rowerId
         val scope = CoroutineScope(Dispatchers.IO)
         myRowerIds?.let {
+            Log.d("jjj", myRowerIds.toString())
             if (myRowerIds.contains(rowerId)) with(holder) {
                 strategyTitle.makeVisible()
-                spinner.apply {
-                    makeVisible()
-                    val list =
-                        CompetitionStrategy.values().map { context.getString(it.strategyName) }
-                    adapter =
-                        ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, list)
-                    setSelection(item.strategy)
-                    onItemSelectedListener =
-                        StrategySpinner(item.rowerId!!) { strategy -> item.strategy = strategy }
+                StrategySpinner(spinner, item.strategy) { strategy ->
+                    changeStrategyFun!!(rowerId!!, strategy)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        ServiceLocator.get(RowerDao::class).setStrategy(rowerId, strategy)
+                    }
                 }
             }
         } ?: holder.run {
             button.enableClick {
-                holder.itemView.makeInvisible()
-                scope.launch { ServiceLocator.get(ComboDao::class).deleteComboWithRower(rowerId!!) }
+                ServiceLocator.get(Context::class)
+                DetachDialog {
+                    holder.itemView.makeInvisible()
+                    scope.launch {
+                        ServiceLocator.get(ComboDao::class).deleteComboWithRower(rowerId!!)
+                    }
+                }.show(fragmentManager!!, "detachDialog")
             }
             comboPower.apply {
                 text = item.basicPower

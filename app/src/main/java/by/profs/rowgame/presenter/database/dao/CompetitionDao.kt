@@ -41,7 +41,8 @@ interface CompetitionDao {
 
     @Query("SELECT $NAME_ROWER FROM $TABLE_ROWERS WHERE $ID_ROWER IN (" +
             "SELECT DISTINCT $ID_ROWER FROM $TABLE_LICENSE" +
-            " WHERE $COL_COMPETITION_LEVEL = (:level) AND $COL_AGE_CATEGORY = (:age))")
+            " WHERE $COL_COMPETITION_LEVEL = (:level) AND $COL_AGE_CATEGORY = (:age) AND " +
+            "$ID_ROWER IN (SELECT $ID_ROWER FROM $TABLE_COMBO_SINGLE))")
     fun getParticipantsNames(level: Int, age: Int): List<String>
 
     @Query("SELECT * FROM $TABLE_COMBO_SINGLE WHERE $ID_ROWER IN (" +

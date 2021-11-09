@@ -21,9 +21,23 @@ class ConceptCompetition(private val competition: CompetitionInfo) : AbstractCom
     private val competitionDao: CompetitionDao by ServiceLocator.locateLazy()
     private val rowerDao: RowerDao by ServiceLocator.locateLazy()
     private val allRowers = mutableListOf<Rower>()
-    override var raceCalculator: RaceCalculator? = null
+    private var _raceCalculator: RaceCalculator? = null
 
-    override fun getRaceRowers(): MutableList<Rower> = allRowers
+    override fun getRaceRowers(): List<Rower> = allRowers
+
+    override fun getRaceCalculator(): RaceCalculator {
+        if (_raceCalculator == null) _raceCalculator =
+            RaceCalculator(AbstractCompetition.CONCEPT, allRowers)
+        return _raceCalculator!!
+    }
+
+    override fun deleteRaceCalculator() { _raceCalculator = null }
+
+    override val changeStrategy: (Int, Int) -> Unit = { rowerId, strategy ->
+        var i = 0
+        while (allRowers[i].id != rowerId) i++
+        allRowers[i].strategy = strategy
+    }
 
     override suspend fun setupRace() {
         (if (competition.level.isRegional()) {
@@ -41,15 +55,14 @@ class ConceptCompetition(private val competition: CompetitionInfo) : AbstractCom
                 maxSkill = (basicLevel.maxRowerSkill * age.skillCoef).toInt(),
                 maxAge = age.age)
         })
-        raceCalculator = RaceCalculator(AbstractCompetition.CONCEPT, allRowers)
     }
 
     override fun raceTitle(): String = ServiceLocator.get(Context::class).getString(
-        when (raceCalculator!!.phase) {
-            AbstractCompetition.BEFORE -> R.string.concept
+        when (_raceCalculator?.phase) {
+            null -> R.string.concept
             AbstractCompetition.START -> R.string.phase_start
             AbstractCompetition.HALF -> R.string.phase_half
             AbstractCompetition.ONE_AND_HALF -> R.string.phase_one_and_half
             else -> R.string.phase_finish
-    })
+        })
 }

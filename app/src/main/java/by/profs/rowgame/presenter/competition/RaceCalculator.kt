@@ -55,10 +55,10 @@ class RaceCalculator(
             chance[i] = 0
             place++
         }
-        val excessGap: Int =
-            if (isOfp) distances.maxOrNull()!! - MAX_SCORE
-            else rating.map { it.second }.minOrNull()!!
-        rating.forEachIndexed { index, it -> rating[index] = Pair(it.first, it.second - excessGap) }
+        if (!isOfp) {
+            val excessGap: Int = rating.map { it.second }.minOrNull()!!
+            rating.forEachIndexed { ind, it -> rating[ind] = Pair(it.first, it.second - excessGap) }
+        }
         return rating
     }
 
@@ -66,8 +66,7 @@ class RaceCalculator(
         power + (technics / KEY_SKILL_COEF + endurance * KEY_SKILL_COEF).toInt()
     } else { endurance + (technics / KEY_SKILL_COEF + power * KEY_SKILL_COEF).toInt() }
 
-    fun sortedRating(): List<Pair<Rower, Int>> =
-        rating.sortedBy { if (!raceType.isOFPCompetition()) it.second else -it.second }
+    fun sortedRating() = rating.sortedBy { if (!isOfp) it.second else -it.second }
 
     companion object {
         fun getPowerOnWater(boat: Boat, oar: Oar, rower: Rower): Int {

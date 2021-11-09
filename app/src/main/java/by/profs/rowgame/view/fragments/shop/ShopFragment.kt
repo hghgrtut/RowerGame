@@ -27,7 +27,7 @@ class ShopFragment : Fragment(R.layout.fragment_shop) {
     private lateinit var recyclerView: RecyclerView
     private var _infoBar: InfoBar? = null
     private val infoBar: InfoBar get() = requireNotNull(_infoBar)
-    private val maxItemLevel = LevelEditor.get() + 2
+    private val maxItemLevel = LevelEditor.get() + 1
     private lateinit var boatViewAdapter: BoatViewAdapter
     private lateinit var oarViewAdapter: OarViewAdapter
 

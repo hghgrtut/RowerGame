@@ -2,20 +2,23 @@ package by.profs.rowgame.view.adapters.utils
 
 import android.view.View
 import android.widget.AdapterView
-import by.profs.rowgame.app.ServiceLocator
-import by.profs.rowgame.presenter.database.dao.RowerDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import by.profs.rowgame.data.competition.CompetitionStrategy
+import by.profs.rowgame.view.fragments.extensions.makeVisible
 
-class StrategySpinner(private val rowerId: Int, private val updateFun: (Int) -> Unit)
-    : AdapterView.OnItemSelectedListener {
-    override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, i: Long) {
-        updateFun(pos)
-        CoroutineScope(Dispatchers.IO).launch {
-            ServiceLocator.get(RowerDao::class).setStrategy(rowerId, pos)
+class StrategySpinner(spinner: Spinner, strategy: Int, private val updateFun: (Int) -> Unit) {
+    init {
+        spinner.apply {
+            makeVisible()
+            val list = CompetitionStrategy.values().map { context.getString(it.strategyName) }
+            adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, list)
+            setSelection(strategy)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, i: Long) =
+                    updateFun(pos)
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+            }
         }
     }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) = Unit
 }

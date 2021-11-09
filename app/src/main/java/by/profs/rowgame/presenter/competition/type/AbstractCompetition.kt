@@ -4,15 +4,19 @@ import by.profs.rowgame.data.items.Rower
 import by.profs.rowgame.presenter.competition.RaceCalculator
 
 interface AbstractCompetition {
-    var raceCalculator: RaceCalculator?
-
     suspend fun setupRace()
 
-    fun getRaceRowers(): MutableList<Rower>
+    fun getRaceCalculator(): RaceCalculator
+
+    fun deleteRaceCalculator()
+
+    fun getRaceRowers(): List<Rower>
 
     fun raceTitle(): String
 
-    fun calculateRace(): Array<Pair<Rower, Int>> = raceCalculator!!.calculateRace()
+    fun calculateRace(): Array<Pair<Rower, Int>> = getRaceCalculator().calculateRace()
+
+    val changeStrategy: (Int, Int) -> Unit
 
     companion object {
         const val BEFORE = 14

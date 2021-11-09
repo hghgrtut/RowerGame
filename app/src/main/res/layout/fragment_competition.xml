@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".view.fragments.inventory.InventoryFragment"
-        tools:listitem="@layout/item_pair" />
+        tools:listitem="@layout/item_combo" />
 
     <Button
         android:id="@+id/button_race"

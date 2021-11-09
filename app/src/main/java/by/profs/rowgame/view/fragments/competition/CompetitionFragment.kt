@@ -111,17 +111,19 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
     private fun beforeRace() = MainScope().launch {
         withContext(Dispatchers.IO) { someCompetition.setupRace() }
-        val raceRowers = ArrayList(someCompetition.getRaceRowers())
+        val raceRowers = someCompetition.getRaceRowers()
+        val f = someCompetition.changeStrategy
         (someCompetition as? WaterCompetition)?.let {
             val viewItems = ComboItemWrapper.map(it.getRaceBoats(), it.getRaceOars(), raceRowers)
-            recyclerView.adapter = ComboViewAdapter(viewItems, myRowers)
+            recyclerView.adapter = ComboViewAdapter(viewItems, myRowers, changeStrategyFun = f)
             binding.buttonRaceFull.setOnClickListener { showRace() }
             binding.buttonRace.enableClick {
-                while (someCompetition.raceCalculator!!.phase < AbstractCompetition.FINISH) {
+                while (someCompetition.getRaceCalculator().phase < AbstractCompetition.FINISH) {
                     it.calculateRace() }
                 endRace(true)
             }
-        } ?: recyclerView.setAdapter(StandingViewAdapter(raceRowers, StandingViewAdapter.RESULTS))
+        } ?: recyclerView.setAdapter(StandingViewAdapter(
+            raceRowers, StandingViewAdapter.BEFORE, changeStrategyFun = f, myRowerIds = myRowers))
         binding.buttonRaceFull.setOnClickListener { showRace() }
         setCompetitionTitle()
     }
@@ -129,7 +131,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private fun showRace() {
         _binding ?: return
         val isWater = competition.type.isWaterCompetition()
-        when (someCompetition.raceCalculator!!.phase) {
+        when (someCompetition.getRaceCalculator().phase) {
             AbstractCompetition.BEFORE -> if (isWater) hideRaceButtons()
             AbstractCompetition.FINISH -> {
                 endRace()
@@ -140,18 +142,19 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
 
         val rating = getRating()
         recyclerView.adapter = StandingViewAdapter(
-            ArrayList(rating.map { it.first }),
+            rating.map { it.first },
             if (competition.type.isOFPCompetition()) StandingViewAdapter.SCORE
             else StandingViewAdapter.RACE,
             ArrayList(rating.map { it.second })
         )
         setCompetitionTitle()
-        if (isWater && someCompetition.raceCalculator!!.phase <= AbstractCompetition.FINISH)
+        if (isWater && someCompetition.getRaceCalculator().phase <= AbstractCompetition.FINISH)
             Handler(Looper.getMainLooper()).postDelayed({ showRace() }, delay)
     }
 
     private fun endRace(isShort: Boolean = false) {
         val rating = ArrayList(getRating().map { it.first })
+        someCompetition.deleteRaceCalculator()
         (someCompetition as? WaterCompetition)?.let {
             when (it.raceNumber) {
                 FINAL_B -> finalists = rating
@@ -162,7 +165,6 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
                 }
                 else -> it.calculateSemifinal(rating)
             }
-            it.raceNumber++
             if (isShort) beforeRace() else binding.buttonRaceFull.enableClick { beforeRace() }
         } ?: run {
             finalists = rating
@@ -173,7 +175,7 @@ class CompetitionFragment : Fragment(R.layout.fragment_competition) {
     private fun hideRaceButtons() =
         listOf(binding.buttonRace, binding.buttonRaceFull).forEach { it.makeInvisible() }
 
-    private fun getRating() = someCompetition.raceCalculator!!.sortedRating()
+    private fun getRating() = someCompetition.getRaceCalculator().sortedRating()
 
     private fun setCompetitionTitle() = setTitle(someCompetition.raceTitle())
 

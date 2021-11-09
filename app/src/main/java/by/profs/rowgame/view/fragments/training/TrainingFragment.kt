@@ -116,7 +116,9 @@ class TrainingFragment : Fragment(R.layout.fragment_training) {
         }
 
         MainScope().launch {
-            recyclerView.adapter = ComboViewAdapter(ComboItemWrapper.map(boats, oars, rowers))
+            recyclerView.adapter = ComboViewAdapter(
+                ComboItemWrapper.map(boats, oars, rowers),
+                fragmentManager = parentFragmentManager)
         }
 
         val trainer = Trainer(deleteComboFun)

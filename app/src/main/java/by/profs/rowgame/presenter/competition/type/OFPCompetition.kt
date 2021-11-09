@@ -19,9 +19,23 @@ class OFPCompetition(private val competition: CompetitionInfo) : AbstractCompeti
     private val comboDao: ComboDao by locateLazy()
     private val rowerDao: RowerDao by locateLazy()
     private val allRowers = mutableListOf<Rower>()
-    override var raceCalculator: RaceCalculator? = null
+    private var _raceCalculator: RaceCalculator? = null
 
-    override fun getRaceRowers(): MutableList<Rower> = allRowers
+    override fun getRaceRowers(): List<Rower> = allRowers
+
+    override fun getRaceCalculator(): RaceCalculator {
+        if (_raceCalculator == null) _raceCalculator =
+            RaceCalculator(AbstractCompetition.OFP, allRowers)
+        return _raceCalculator!!
+    }
+
+    override fun deleteRaceCalculator() { _raceCalculator = null }
+
+    override val changeStrategy: (Int, Int) -> Unit = { rowerId, strategy ->
+        var i = 0
+        while (allRowers[i].id != rowerId) i++
+        allRowers[i].strategy = strategy
+    }
 
     override suspend fun setupRace() {
         comboDao.getCombosToAge(Ages.values()[competition.age].age).forEach { combo ->
@@ -35,15 +49,14 @@ class OFPCompetition(private val competition: CompetitionInfo) : AbstractCompeti
                 maxSkill = (basicLevel.maxRowerSkill * age.skillCoef).toInt(),
                 maxAge = age.age)
         })
-        raceCalculator = RaceCalculator(AbstractCompetition.OFP, allRowers)
     }
 
     override fun raceTitle(): String = ServiceLocator.get(Context::class).getString(
-        when (raceCalculator!!.phase) {
-        AbstractCompetition.BEFORE -> R.string.OFP
-        AbstractCompetition.START -> R.string.phase_tyaga
-        AbstractCompetition.HALF -> R.string.phase_jumping
-        AbstractCompetition.ONE_AND_HALF -> R.string.phase_jump_series
-        else -> R.string.phase_running
-    })
+        when (_raceCalculator?.phase) {
+            null -> R.string.OFP
+            AbstractCompetition.START -> R.string.phase_tyaga
+            AbstractCompetition.HALF -> R.string.phase_jumping
+            AbstractCompetition.ONE_AND_HALF -> R.string.phase_jump_series
+            else -> R.string.phase_running
+        })
 }
