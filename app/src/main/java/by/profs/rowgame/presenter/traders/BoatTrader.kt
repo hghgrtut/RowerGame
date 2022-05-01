@@ -1,17 +1,21 @@
 package by.profs.rowgame.presenter.traders
 
+import by.profs.rowgame.app.ServiceLocator
+import by.profs.rowgame.app.ServiceLocator.locateLazy
 import by.profs.rowgame.data.items.Boat
 import by.profs.rowgame.data.items.util.Manufacturer
-import by.profs.rowgame.data.preferences.PreferenceEditor
-import by.profs.rowgame.presenter.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.BoatDao
+import by.profs.rowgame.presenter.database.dao.ComboDao
 import by.profs.rowgame.utils.IDEAL
+import by.profs.rowgame.view.activity.InfoBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BoatTrader(private val prefEditor: PreferenceEditor, private val dao: BoatDao) :
-    Trader<Boat>(prefEditor, dao) {
+class BoatTrader(private val infoBar: InfoBar) :
+    Trader<Boat>(infoBar, ServiceLocator.get(BoatDao::class)) {
     private val scope = CoroutineScope(Dispatchers.IO)
+    private val comboDao: ComboDao by locateLazy()
 
     override fun calculateCost(item: Boat): Int {
         val price = if (item.manufacturer == Manufacturer.Nemiga.name) { Boat.NEMIGA_COST
@@ -20,8 +24,11 @@ class BoatTrader(private val prefEditor: PreferenceEditor, private val dao: Boat
     }
 
     override fun sell(item: Boat) {
-        prefEditor.setBalance(prefEditor.getBalance() + calculateCost(item))
-        scope.launch { dao.deleteItem(item.id!!) }
+        infoBar.changeMoney(calculateCost(item))
+        scope.launch {
+            dao.deleteItem(item.id!!)
+            comboDao.deleteComboWithBoat(item.id)
+        }
     }
 
     private fun classCoef(weight: Int): Int = when (weight) {

@@ -1,8 +1,9 @@
 package by.profs.rowgame.data.items.util
 
+import androidx.annotation.DrawableRes
 import by.profs.rowgame.R
 
-enum class BoatTypes(val type: String, val boatImage: Int) {
+enum class BoatTypes(val type: String, @DrawableRes val boatImage: Int) {
     SingleScull("1x", R.drawable.boat_single_scull),
     DoubleScull("2x", R.drawable.boat_double_scull), Pair("2-", R.drawable.boat_pair),
     CoxedPair("2+", R.drawable.boat_coxed_pair),

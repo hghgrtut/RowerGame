@@ -1,97 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/oar_item_height"
-    android:layout_marginVertical="@dimen/padding">
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/margin"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="@dimen/oar_blade_picture_size"
         android:layout_height="@dimen/oar_item_height"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button_trade"
 
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/logo_croker" />
+        tools:src="@drawable/logo_croker"
+        android:contentDescription="@string/manufacturer" />
 
     <ImageView
         android:id="@+id/blade_image"
         android:layout_width="@dimen/oar_blade_picture_size"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/oar_blade_picture_size"
         app:layout_constraintEnd_toStartOf="@+id/logo"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/blade_macon" />
+        tools:src="@drawable/blade_macon"
+        android:contentDescription="@string/blade" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/manufacturer"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/manufacturer"
+        app:layout_constraintBottom_toTopOf="@+id/model"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread"
+        tools:text="@string/manufacturer" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/model"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/model"
+        app:layout_constraintBottom_toTopOf="@+id/blade"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/manufacturer" />
+        app:layout_constraintTop_toBottomOf="@+id/manufacturer"
+        tools:text="@string/model" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/blade"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Лопасть: Double Wing"
+        app:layout_constraintBottom_toTopOf="@+id/weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/model" />
+        app:layout_constraintTop_toBottomOf="@+id/model"
+        tools:text="Лопасть: Double Wing" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/weight"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/weight"
+        app:layout_constraintBottom_toTopOf="@+id/damage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blade" />
+        app:layout_constraintTop_toBottomOf="@+id/blade"
+        tools:text="@string/item_weight" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/damage"
+        style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/damage"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weight" />
+        app:layout_constraintTop_toBottomOf="@+id/weight"
+        tools:text="@string/damage" />
+
+    <TextView
+        android:id="@+id/power"
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cost"
+        app:layout_constraintStart_toEndOf="@id/damage"
+        app:layout_constraintTop_toBottomOf="@+id/blade"
+        tools:text="81" />
 
     <TextView
         android:id="@+id/cost"
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/buyOar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/blade_image"
+        app:layout_constraintTop_toTopOf="@+id/weight"
         tools:text="@string/cost" />
 
+
+    <TextView
+        android:id="@+id/locked"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/item_locked"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_trade"
+        app:layout_constraintTop_toBottomOf="@id/blade_image" />
+
     <Button
-        android:id="@+id/buyOar"
+        android:id="@+id/button_trade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/buy"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/blade_image" />
-
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_margin"
-        tools:text="П"
-        app:layout_constraintEnd_toStartOf="@+id/blade_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

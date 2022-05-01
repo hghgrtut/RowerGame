@@ -3,29 +3,33 @@ package by.profs.rowgame.data.items
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import by.profs.rowgame.utils.ID_ROWER
-import by.profs.rowgame.utils.NAME_ROWER
-import by.profs.rowgame.utils.TABLE_ROWERS
-import com.squareup.moshi.JsonClass
+import by.profs.rowgame.app.ServiceLocator
+import by.profs.rowgame.data.consts.COL_ROWER_AGE
+import by.profs.rowgame.data.consts.COL_STRATEGY
+import by.profs.rowgame.data.consts.ID_ROWER
+import by.profs.rowgame.data.consts.NAME_ROWER
+import by.profs.rowgame.data.consts.TABLE_ROWERS
+import by.profs.rowgame.presenter.database.dao.RowerDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-@JsonClass(generateAdapter = true)
 @Entity(tableName = TABLE_ROWERS)
 data class Rower(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = ID_ROWER) val id: Int?,
     @ColumnInfo(name = NAME_ROWER) val name: String,
     @ColumnInfo(name = "gender") val gender: Int,
-    @ColumnInfo(name = "age") val age: Int,
+    @ColumnInfo(name = COL_ROWER_AGE) val age: Int,
     @ColumnInfo(name = "height") val height: Int,
     @ColumnInfo(name = "weight") val weight: Int,
     @ColumnInfo(name = "power") var power: Int,
     @ColumnInfo(name = "technics") var technics: Int,
     @ColumnInfo(name = "endurance") var endurance: Int,
+    @ColumnInfo(name = COL_STRATEGY) var strategy: Int,
     @ColumnInfo(name = "thumb") val thumb: String? = null,
-    @ColumnInfo(name = "photo") val photo: String? = null,
-    @ColumnInfo(name = "endpointAbout") val endpointAbout: String? = null,
+    @ColumnInfo(name = "about") val about: String? = null,
     @ColumnInfo(name = "cost") val cost: Int = 0,
-    @ColumnInfo(name = "injury") var injury: Int = 0, // remove if not necessary
-    @ColumnInfo(name = "injurability") val injurability: Double = 1.0 // remove if not necessary
+    @ColumnInfo(name = "isMine") var isMine: Boolean = true
 ) {
     companion object {
         const val MALE = 1
@@ -39,10 +43,18 @@ data class Rower(
     fun upTechnics(level: Int = 1) { technics += level }
 
     fun hurt(injur: Int): Boolean {
-        if (endurance < injur || power < injur || technics < injur) return false
+        if (endurance < injur || power < injur || technics < injur) {
+            ServiceLocator.get(RowerDao::class).deleteItem(id!!)
+            return false
+        }
         upEndurance(-injur)
         upPower(-injur)
         upTechnics(-injur)
+        saveUpdate()
         return true
+    }
+
+    fun saveUpdate() = CoroutineScope(Dispatchers.IO).launch {
+        ServiceLocator.get(RowerDao::class).updateItem(this@Rower)
     }
 }

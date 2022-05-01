@@ -4,14 +4,7 @@
     <color name="tint_ripple">#657FAD</color>
     <color name="background_primary">#C8D3E6</color>
     <color name="change_theme">@android:color/black</color>
-    <color name="hurted_rower">#657FAD</color>
-    <!-- Buttons in main menu -->
-    <color name="b1">#F0CD0C</color>
-    <color name="b2">#F0B906</color>
-    <color name="b3">#F7980A</color>
-    <color name="b4">#E05F14</color>
-    <color name="b5">#F7280A</color>
-    <color name="b6">#F20563</color>
-    <color name="b7">#F205C5</color>
+    <color name="triangle">#FF5252</color>
+    <color name="background">#CB40D5</color>
 
 </resources>

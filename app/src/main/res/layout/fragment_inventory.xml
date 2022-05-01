@@ -4,30 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.activity.MainActivity">
 
-    <TextView
-        android:id="@+id/money"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/boats"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/boats"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Money: 1200" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rowers" />
+
+    <Button
+        android:id="@+id/rowers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/rowers"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/oars"
+        app:layout_constraintStart_toEndOf="@id/boats" />
+
+    <Button
+        android:id="@+id/oars"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/oars"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rowers"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:name="by.profs.rowgame.ItemFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/padding"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/money"
-        tools:context=".view.inventory.InventoryFragment"
-        tools:listitem="@layout/item_oar" />
+        app:layout_constraintTop_toBottomOf="@id/rowers"
+        tools:context=".view.fragments.inventory.InventoryFragment"
+        tools:listitem="@layout/item_boat" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -36,8 +54,10 @@
         android:layout_gravity="bottom|end"
         android:backgroundTint="@android:color/black"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_add"/>
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/buy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

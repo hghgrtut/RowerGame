@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/rower_item_height">
+    android:layout_height="@dimen/rower_item_height"
+    android:paddingHorizontal="@dimen/padding_items"
+    android:background="?android:attr/selectableItemBackground">
 
 
     <ImageView
         android:id="@+id/rower_pic"
         android:layout_width="@dimen/rower_picture_size"
         android:layout_height="@dimen/rower_picture_size"
+        android:layout_marginEnd="@dimen/small_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="@dimen/small_margin"
         tools:srcCompat="@drawable/placeholder_man" />
 
     <TextView
@@ -32,8 +33,10 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/weight"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:text="@string/rower_height" />
 
     <TextView
@@ -41,8 +44,9 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/age"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/height"
+        app:layout_constraintTop_toBottomOf="@+id/height"
         tools:text="@string/rower_weight" />
 
     <TextView
@@ -50,8 +54,9 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/power"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weight"
+        app:layout_constraintTop_toBottomOf="@+id/weight"
         tools:text="@string/rower_age" />
 
     <TextView
@@ -59,8 +64,9 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/endurance"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/age"
+        app:layout_constraintTop_toBottomOf="@+id/age"
         tools:text="@string/rower_power" />
 
     <TextView
@@ -68,8 +74,9 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/technicality"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/power"
+        app:layout_constraintTop_toBottomOf="@+id/power"
         tools:text="@string/rower_endurance" />
 
     <TextView
@@ -77,7 +84,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/endurance"
+        app:layout_constraintTop_toBottomOf="@+id/endurance"
         tools:text="@string/rower_technicality" />
 </androidx.constraintlayout.widget.ConstraintLayout>

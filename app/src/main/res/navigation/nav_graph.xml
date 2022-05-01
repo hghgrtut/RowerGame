@@ -2,50 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/trainingFragment"
+    android:id="@+id/nav_graph">
 
     <fragment
-        android:id="@+id/mainFragment"
-        android:name="by.profs.rowgame.view.MainFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/main_fragment">
-        <action
-            android:id="@+id/action_mainFragment_to_inventoryFragment"
-            app:destination="@id/inventoryFragment">
-            <argument
-                android:name="itemType"
-                android:defaultValue="6" />
-        </action>
-        <action
-            android:id="@+id/action_mainFragment_to_rowerDetailsFragment"
-            app:destination="@id/rowerDetailsFragment" >
-            <argument
-                android:name="source"
-                android:defaultValue="1" />
-        </action>
-        <action
-            android:id="@+id/action_mainFragment_to_trainingFragment"
-            app:destination="@id/trainingFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_pairingFragment"
-            app:destination="@id/pairingFragment"
-            app:popUpTo="@id/mainFragment">
-            <argument
-                android:name="item"
-                android:defaultValue="1" />
-        </action>
-    </fragment>
-    <fragment
         android:id="@+id/inventoryFragment"
-        android:name="by.profs.rowgame.view.inventory.InventoryFragment"
+        android:name="by.profs.rowgame.view.fragments.inventory.InventoryFragment"
+        android:label="@string/inventory"
         tools:layout="@layout/fragment_inventory">
         <argument
             android:name="itemType"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_inventoryFragment_to_shopFragment"
-            app:destination="@id/shopFragment" />
         <action
             android:id="@+id/action_inventoryFragment_to_rowerDetailsFragment"
             app:destination="@id/rowerDetailsFragment" >
@@ -56,7 +23,8 @@
     </fragment>
     <fragment
         android:id="@+id/shopFragment"
-        android:name="by.profs.rowgame.view.shop.ShopFragment"
+        android:name="by.profs.rowgame.view.fragments.shop.ShopFragment"
+        android:label="@string/shop"
         tools:layout="@layout/fragment_shop">
         <argument
             android:name="itemType"
@@ -64,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/rowerDetailsFragment"
-        android:name="by.profs.rowgame.view.inventory.RowerDetailsFragment"
+        android:name="by.profs.rowgame.view.fragments.inventory.RowerDetailsFragment"
         android:label="@string/about_rower"
         tools:layout="@layout/fragment_rower_details">
         <argument
@@ -75,41 +43,30 @@
             app:argType="integer"
             android:defaultValue="-1" />
         <action
-            android:id="@+id/action_rowerDetailsFragment_to_netErrorFragment"
-            app:destination="@id/netErrorFragment"
-            app:popUpTo="@id/mainFragment" />
+            android:id="@+id/action_rowerDetailsFragment_to_newLegendFragment"
+            app:destination="@id/newLegendFragment" />
     </fragment>
     <fragment
-        android:id="@+id/netErrorFragment"
-        android:name="by.profs.rowgame.view.error.NetErrorFragment"
-        android:label="@string/no_internet"
-        tools:layout="@layout/error_network_layout" />
-    <fragment
         android:id="@+id/trainingFragment"
-        android:name="by.profs.rowgame.view.training.TrainingFragment"
+        android:name="by.profs.rowgame.view.fragments.training.TrainingFragment"
         android:label="@string/trainings"
         tools:layout="@layout/fragment_training" >
         <action
-            android:id="@+id/action_trainingFragment_to_competitionFragment"
-            app:destination="@id/competitionFragment"
-            app:popUpTo="@id/mainFragment" />
+            android:id="@+id/action_trainingFragment_to_preCompetitionFragment"
+            app:destination="@id/preCompetitionFragment" />
     </fragment>
     <fragment
         android:id="@+id/competitionFragment"
-        android:name="by.profs.rowgame.view.competition.CompetitionFragment"
+        android:name="by.profs.rowgame.view.fragments.competition.CompetitionFragment"
         android:label="@string/semifinal"
         tools:layout="@layout/fragment_competition" >
-        <argument
-            android:name="type"
-            app:argType="integer"
-            android:defaultValue="1" />
         <action
             android:id="@+id/action_competitionFragment_to_trainingFragment"
             app:destination="@id/trainingFragment" />
     </fragment>
     <fragment
         android:id="@+id/pairingFragment"
-        android:name="by.profs.rowgame.view.pairing.PairingFragment"
+        android:name="by.profs.rowgame.view.fragments.pairing.PairingFragment"
         android:label="PairingFragment"
         tools:layout="@layout/fragment_pairing" >
         <argument
@@ -118,11 +75,33 @@
             android:defaultValue="1" />
         <action
             android:id="@+id/action_pairingFragment_self"
-            app:destination="@id/pairingFragment"
-            app:popUpTo="@id/mainFragment">
+            app:destination="@id/pairingFragment">
             <argument
                 android:name="item"
                 android:defaultValue="1" />
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/newLegendFragment"
+        android:name="by.profs.rowgame.view.fragments.shop.NewLegendFragment"
+        android:label="@string/make_new_legend"
+        tools:layout="@layout/fragment_new_legend" >
+        <action
+            android:id="@+id/action_newLegendFragment_to_inventoryFragment"
+            app:destination="@id/inventoryFragment" >
+            <argument
+                android:name="itemType"
+                android:defaultValue="3" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/preCompetitionFragment"
+        android:name="by.profs.rowgame.view.fragments.competition.PreCompetitionFragment"
+        android:label="@string/competitions"
+        tools:layout="@layout/fragment_pre_competition">
+        <action
+            android:id="@+id/action_preCompetitionFragment_to_competitionFragment"
+            app:destination="@id/competitionFragment"
+            app:popUpTo="@id/trainingFragment" />
     </fragment>
 </navigation>

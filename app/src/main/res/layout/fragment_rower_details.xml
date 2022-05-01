@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <TextView
         android:id="@+id/name"
         style="@style/rowerDetailsTitle"
         android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Александр Дорощенко" />
 
     <TextView
@@ -15,6 +20,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name"
         tools:text="@string/rower_height" />
 
     <TextView
@@ -22,6 +29,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/height"
         tools:text="@string/rower_weight" />
 
     <TextView
@@ -29,6 +38,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weight"
         tools:text="@string/rower_age" />
 
     <TextView
@@ -36,6 +47,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/age"
         tools:text="@string/rower_power" />
 
     <TextView
@@ -43,6 +56,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/power"
         tools:text="@string/rower_endurance" />
 
     <TextView
@@ -50,17 +65,24 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/endurance"
         tools:text="@string/rower_technicality" />
 
     <ImageView
         android:id="@+id/rower_pic"
         android:layout_width="match_parent"
         android:layout_height="@dimen/rower_big_picture_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/technicalit"
         tools:srcCompat="@drawable/placeholder_man" />
 
     <TextView
         android:id="@+id/achievements_title"
         style="@style/rowerDetailsTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rower_pic"
         android:text="@string/achievements"/>
 
     <TextView
@@ -69,12 +91,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/achievements_title"
         android:visibility="invisible"
         tools:text=""/>
 
     <TextView
         android:id="@+id/about_title"
         style="@style/rowerDetailsTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/achievements"
         android:text="@string/about"/>
 
     <TextView
@@ -83,6 +110,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/about_title"
         android:visibility="invisible"
         tools:text="" />
 
@@ -91,8 +120,8 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cost"
         tools:text="@string/fame_balance" />
 
     <TextView
@@ -100,15 +129,27 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button"
         android:visibility="gone"
         tools:text="@string/fame_cost" />
 
     <Button
         android:id="@+id/button"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/fire_rower" />
+
+    <Button
+        android:id="@+id/button_new_legend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding"
-        android:text="@string/fire_rower"
-        android:layout_gravity="center"/>
-</LinearLayout>
+        android:layout_margin="@dimen/margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:text="@string/new_legend" />
+</androidx.constraintlayout.widget.ConstraintLayout>

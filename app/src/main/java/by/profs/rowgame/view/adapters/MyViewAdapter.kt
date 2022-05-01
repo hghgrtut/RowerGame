@@ -16,10 +16,10 @@ interface MyViewAdapter<T> {
         val damage: TextView = view.findViewById(R.id.damage)
         val manufacturer: TextView = view.findViewById(R.id.manufacturer)
         val model: TextView = view.findViewById(R.id.model)
-        val type: TextView = view.findViewById(R.id.type)
         val weight: TextView = view.findViewById(R.id.weight)
+        val locked: TextView = view.findViewById(R.id.locked)
 
-        val button: Button = view.findViewById(R.id.buyOar)
+        val button: Button = view.findViewById(R.id.button_trade)
     }
 
     fun displayItem(holder: ViewHolder, item: T)
